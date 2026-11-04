@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Where the AI box lives</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Geist+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#f6f6f7; --fg:#15151c; --fg2:#5b5b6b; --fg3:#8d8d9c; --card:#fff; --rim:rgba(20,20,40,.08); --ink:#5b5bd6; --lilac:#e9e6fb; --hot:#d64a4a; }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased }
+  .wrap { max-width:1320px; margin:0 auto; padding:40px 24px 80px }
+  .mono { font-family:'Geist Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--fg3) }
+  h1 { font-weight:400; font-size:28px; letter-spacing:-.02em; margin:8px 0 6px }
+  .lede { color:var(--fg2); max-width:720px; margin:0 0 36px }
+  .opt { display:grid; grid-template-columns: 1fr; gap:18px; align-items:start; margin:0 0 44px; padding:0 0 44px; border-bottom:1px solid var(--rim) }
+  @media (min-width:1200px) { .opt { grid-template-columns: 1fr 320px; gap:28px } }
+  .opt h2 { margin:0 0 4px; font-size:17px; font-weight:500 }
+  .opt h2 small { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--ink); margin-right:10px; text-transform:uppercase }
+  .opt p { margin:0 0 10px; color:var(--fg2) }
+  .opt ul { margin:0; padding-left:18px; color:var(--fg2) }
+  .opt li { margin:4px 0 }
+  .pick { display:inline-block; margin-top:12px; font-size:12px; padding:4px 10px; border-radius:999px; background:#eeedfe; color:var(--ink) }
+  /* mini desk */
+  .shot { position:relative; width:100%; aspect-ratio:1440/900; background:var(--bg); border-radius:14px; overflow:hidden; box-shadow:0 1px 0 var(--rim), 0 20px 50px -30px rgba(20,20,40,.4); font-size:9px }
+  .panel { position:absolute; left:0; top:0; bottom:0; width:27%; background:linear-gradient(180deg,#e4e1fb,#dfe6fb 45%,#fbe3ef); }
+  .panel .brand { position:absolute; left:14px; top:12px; background:#fff; border-radius:999px; padding:4px 10px; font-size:9px }
+  .panel .hello { position:absolute; left:14px; right:14px; top:44px; background:#fff; border-radius:12px; padding:12px 14px }
+  .panel .hello b { display:block; font-size:13px; font-weight:500; margin-bottom:3px }
+  .panel .hello span { color:var(--fg2) }
+  .panel .go { display:inline-block; margin-top:8px; background:var(--fg); color:#fff; border-radius:999px; padding:4px 9px }
+  .creature { position:absolute; left:50%; top:62%; width:70px; height:70px; margin-left:-35px; border-radius:50%; background:radial-gradient(circle at 45% 40%, #fff 0, #b9bcff 40%, rgba(185,188,255,0) 72%) }
+  .desk { position:absolute; left:30%; right:3%; top:0; bottom:0 }
+  .cols { position:absolute; left:0; right:0; top:16%; bottom:12%; display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px }
+  .col { display:grid; align-content:start; gap:8px }
+  .col .h { font-family:'Geist Mono',monospace; font-size:7px; letter-spacing:.08em; color:var(--fg3); text-transform:uppercase }
+  .c { background:#fff; border:1px solid var(--rim); border-radius:9px; height:62px; padding:8px 10px }
+  .c.hot { height:92px } .c.s { height:46px }
+  .c i { display:block; width:6px; height:6px; border-radius:50%; background:var(--fg3); margin-bottom:5px } .c.hot i { background:var(--hot) }
+  .c b { display:block; height:7px; width:70%; background:#2a2a35; border-radius:3px; opacity:.85 }
+  .c u { display:block; height:5px; width:50%; background:#d9d9e2; border-radius:3px; margin-top:6px }
+  .c em { display:inline-block; margin-top:9px; height:12px; width:46px; background:var(--fg); border-radius:999px }
+  .make { position:absolute; left:0; top:6%; display:flex; gap:6px } .make span { border:1px solid var(--rim); background:#fff; border-radius:999px; padding:3px 8px; font-size:8px }
+  .tools { position:absolute; right:0; top:4%; display:flex; gap:4px } .tools span { width:40px; height:14px; border-radius:999px; background:#fff; border:1px solid var(--rim) }
+  /* ask variants */
+  .ask { position:absolute; background:#fff; border-radius:999px; box-shadow:0 1px 0 var(--rim), 0 10px 30px -18px rgba(20,20,40,.5); display:flex; align-items:center; gap:8px; padding:0 8px 0 12px; color:var(--fg3); font-size:9px }
+  .ask .mic { margin-left:auto; width:18px; height:18px; border-radius:50%; background:var(--fg) }
+  .ask .star { color:var(--ink) }
+  .ask.now { left:34%; right:14%; bottom:3%; height:28px }
+  .ask.big { left:8%; right:8%; bottom:4%; height:40px; border-radius:20px; font-size:10px; box-shadow:0 1px 0 var(--rim), 0 0 0 6px #eeedfe, 0 24px 50px -24px rgba(91,91,214,.6) }
+  .ask.big .mic { width:26px; height:26px }
+  .sug { position:absolute; left:8%; bottom:11.5%; display:flex; gap:5px } .sug span { background:#fff; border:1px solid var(--rim); border-radius:999px; padding:3px 8px; font-size:8px; color:var(--fg2) }
+  .ask.top { left:0; right:0; top:5%; height:38px; border-radius:19px; font-size:10px; box-shadow:0 1px 0 var(--rim), 0 16px 40px -22px rgba(91,91,214,.55) }
+  .ask.top .mic { width:24px; height:24px }
+  .ask.inpanel { left:14px; right:14px; bottom:14px; height:34px; border-radius:17px; font-size:9.5px; box-shadow:0 1px 0 var(--rim), 0 16px 40px -20px rgba(91,91,214,.5) }
+  .thread { position:absolute; left:14px; right:14px; top:36%; bottom:58px; display:grid; align-content:end; gap:6px }
+  .thread .m { background:rgba(255,255,255,.75); border-radius:10px; padding:7px 9px; color:var(--fg2); font-size:8.5px; max-width:92% }
+  .thread .m.u { background:var(--fg); color:#fff; justify-self:end }
+  .dim { position:absolute; inset:0; background:rgba(246,246,247,.55); backdrop-filter:blur(1px) }
+  .tag { position:absolute; left:50%; transform:translateX(-50%); top:10px; z-index:2; white-space:nowrap; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:.06em; background:var(--fg); color:#fff; border-radius:999px; padding:3px 8px }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mono">The Desk · Modern · 3 Nov 2026</div>
+  <h1>Where the AI box should live</h1>
+  <p class="lede">Today the ask bar is a thin pill at the very bottom, under the cards, and it reads as a footer. The project is the AI, so the box should be the first thing the eye lands on and the thing every card points back to. Three ways to do that, from smallest change to biggest.</p>
+
+  <section class="opt">
+    <div class="shot">
+      <span class="tag">A · Hero bar at the bottom</span>
+      <div class="panel"><div class="brand">Cerebro</div><div class="hello"><b>Good morning, Maya.</b><span>Three things need you.</span><br><span class="go">Get started</span></div><div class="creature"></div></div>
+      <div class="desk">
+        <div class="make"><span>Website</span><span>Funnel</span><span>Campaign</span><span>Agent</span></div><div class="tools"><span></span><span></span></div>
+        <div class="cols">
+          <div class="col"><div class="h">Needs you</div><div class="c hot"><i></i><b></b><u></u><em></em></div><div class="c hot"><i></i><b></b><u></u><em></em></div></div>
+          <div class="col"><div class="h">Running for you</div><div class="c s"><i></i><b></b><u></u></div><div class="c s"><i></i><b></b><u></u></div><div class="c s"><i></i><b></b><u></u></div></div>
+          <div class="col"><div class="h">Worth a look</div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div></div>
+        </div>
+        <div class="sug"><span>Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span><span>Set up Glow Med Spa</span></div>
+        <div class="ask big"><span class="star">✦</span>Ask or tell me anything — “set up Glow Med Spa from scratch”<span class="mic"></span></div>
+      </div>
+    </div>
+    <div>
+      <h2><small>Option A</small>Hero bar at the bottom</h2>
+      <p>Same place, but it stops being a footer. The bar spans the whole desk, is twice as tall, sits on a lilac halo, and carries three suggestion chips above it that change with the desk. The cards end above it instead of running underneath. On focus the desk dims and the conversation grows upward out of the bar.</p>
+      <ul><li>Smallest change; every other layout keeps working.</li><li>Keeps the “answers first, question last” reading order.</li><li>Still at the bottom, so the eye reaches it last.</li></ul>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="shot">
+      <span class="tag">B · Command line on top</span>
+      <div class="panel"><div class="brand">Cerebro</div><div class="hello"><b>Good morning, Maya.</b><span>Three things need you.</span><br><span class="go">Get started</span></div><div class="creature"></div></div>
+      <div class="desk">
+        <div class="ask top"><span class="star">✦</span>Ask or tell me anything — “set up Glow Med Spa from scratch”<span class="mic"></span></div>
+        <div class="cols" style="top:19%">
+          <div class="col"><div class="h">Needs you</div><div class="c hot"><i></i><b></b><u></u><em></em></div><div class="c hot"><i></i><b></b><u></u><em></em></div></div>
+          <div class="col"><div class="h">Running for you</div><div class="c s"><i></i><b></b><u></u></div><div class="c s"><i></i><b></b><u></u></div><div class="c s"><i></i><b></b><u></u></div></div>
+          <div class="col"><div class="h">Worth a look</div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div></div>
+        </div>
+        <div class="make" style="top:auto;bottom:4%"><span>Website</span><span>Funnel</span><span>Campaign</span><span>Agent</span></div>
+      </div>
+    </div>
+    <div>
+      <h2><small>Option B</small>Command line on top</h2>
+      <p>The box moves to the top of the desk, full width, where the Make-something row is now. It is the first thing after the greeting: you tell the desk what you want, and the cards below are what it is already doing. Make-something becomes chips inside the box’s suggestions, and the voice button sits in the bar.</p>
+      <ul><li>Reads like a search or command line: “type here first”.</li><li>Frees the bottom, so the cards never hide behind anything.</li><li>Replies have to open as a room or push the cards down; there is no natural place for a thread.</li></ul>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="shot">
+      <span class="tag">C · The panel is the AI</span>
+      <div class="panel">
+        <div class="brand">Cerebro</div>
+        <div class="hello" style="top:40px"><b>Good morning, Maya.</b><span>Three things need you. Everything else is running.</span></div>
+        <div class="creature" style="top:30%;width:52px;height:52px;margin-left:-26px"></div>
+        <div class="thread"><div class="m">Harbor’s ads paused when the card expired. Want me to switch to the new card?</div><div class="m u">Yes, and lower the budget first</div><div class="m">Done. Restarting at $450 a week.</div></div>
+        <div class="ask inpanel"><span class="star">✦</span>Ask or tell me anything…<span class="mic"></span></div>
+      </div>
+      <div class="desk">
+        <div class="make"><span>Website</span><span>Funnel</span><span>Campaign</span><span>Agent</span></div><div class="tools"><span></span><span></span></div>
+        <div class="cols" style="bottom:4%">
+          <div class="col"><div class="h">Needs you</div><div class="c hot"><i></i><b></b><u></u><em></em></div><div class="c hot"><i></i><b></b><u></u><em></em></div></div>
+          <div class="col"><div class="h">Running for you</div><div class="c s"><i></i><b></b><u></u></div><div class="c s"><i></i><b></b><u></u></div><div class="c s"><i></i><b></b><u></u></div></div>
+          <div class="col"><div class="h">Worth a look</div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2><small>Option C · recommended</small>The panel is the AI</h2>
+      <p>The lilac panel already is the AI: the stitched field, the creature, the greeting. So the box goes there, at the bottom of the panel, with the conversation living above it. The left side becomes “talk to the AI”, the right side “what it is doing for you”. Pressing a card’s button, circling things, or Get started all land as lines in the same thread, so the room is no longer a separate overlay for quick things; it only opens for live work.</p>
+      <ul><li>The AI gets a permanent home instead of a strip.</li><li>Every action on the desk shows up as a line in the thread: one place to see what happened.</li><li>Biggest change: the room, the Get started button and the voice creature all move into the panel. Scribble and the Editorial look need their own version of it.</li></ul>
+      <span class="pick">My pick: C, with A’s suggestion chips inside the panel</span>
+    </div>
+  </section>
+</div>
+</body>
+</html>

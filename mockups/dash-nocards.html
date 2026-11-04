@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · without cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--hot:#d92d20;--warm:#b54708;--good:#079455;--ink:#2f5fe0;--L:#5b5bd6;--rim:rgba(21,22,27,.09);--rim2:rgba(21,22,27,.2);--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px;max-width:900px}
+.shot{background:var(--bg);border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25);margin-bottom:12px}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:11px 16px;border-bottom:1px solid var(--rim);background:#fff;display:flex;justify-content:space-between}.lab b{color:var(--fg);font-weight:500}
+.note{color:var(--fg3);font-size:12.5px;margin:0 2px 30px}.note b{color:var(--fg);font-weight:500}
+.page{padding:26px 36px 34px}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:22px}.back{border:1px solid var(--rim);background:#fff;border-radius:999px;padding:6px 12px;font-size:12px}.cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.eb{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.btn{font-size:11.5px;border-radius:999px;padding:5px 11px;background:#15161b;color:#fff;white-space:nowrap;flex:none}.btn.g{background:transparent;color:var(--fg2);border:1px solid var(--rim2)}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block}.d-hot{background:var(--hot)}.d-warm{background:#e5a23c}.d-ok{background:var(--good)}
+.cost{font-family:var(--mono);font-size:11px;color:var(--hot)}.cost.w{color:var(--warm)}
+.spark{width:70px;height:20px;flex:none}
+/* A · ruled rows */
+.A .grid{display:grid;grid-template-columns:1.2fr .9fr 1.2fr;gap:0 36px}
+.A .sec .eb{display:block;padding-bottom:8px;border-bottom:1px solid var(--rim2)}
+.A .r{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--rim)}
+.A .r .t{flex:1;min-width:0}.A .r b{display:block;font-weight:500;font-size:13.5px}.A .r small{display:block;color:var(--fg3);font-size:11.5px}
+.A .m{display:flex;align-items:baseline;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--rim)}.A .m span{color:var(--fg2);font-size:12.5px}.A .m b{font-weight:500;font-size:20px;letter-spacing:-.02em}.A .m small{display:block;text-align:right;color:var(--fg3);font-size:11px}
+/* B · KPI ribbon + one feed */
+.B .rib{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--rim2);border-bottom:1px solid var(--rim2);margin-bottom:22px}
+.B .k{padding:14px 16px;border-left:1px solid var(--rim)}.B .k:first-child{border-left:0;padding-left:0}
+.B .k .eb{display:block;margin-bottom:6px}.B .k b{font-size:26px;font-weight:400;letter-spacing:-.02em}.B .k small{display:block;color:var(--fg3);font-size:11.5px;margin-top:2px}
+.B .feed .r{display:grid;grid-template-columns:14px 1fr auto auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--rim)}
+.B .feed .r b{font-weight:500;font-size:14px}.B .feed .r small{color:var(--fg3);font-size:12px;margin-left:8px}
+.B .feed .head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+/* C · a written brief */
+.C .wrap{max-width:820px;margin:0 auto}
+.C h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:34px;line-height:1.15;margin:0 0 6px;letter-spacing:-.01em}.C h2 em{color:var(--hot)}
+.C .lede{font-size:15px;color:var(--fg2);font-weight:300;margin:0 0 22px;line-height:1.55}
+.C .figs{display:flex;gap:36px;padding:16px 0;border-top:1px solid var(--rim2);border-bottom:1px solid var(--rim2);margin-bottom:22px}
+.C .figs div b{display:block;font-family:'Instrument Serif',serif;font-size:36px;font-weight:400;line-height:1}.C .figs div small{color:var(--fg3);font-size:11.5px}
+.C .p{display:flex;gap:14px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--rim)}.C .p .n{font-family:var(--mono);font-size:11px;color:var(--fg3);width:22px}.C .p .t{flex:1;font-size:14.5px;font-weight:300}.C .p .t b{font-weight:500}
+/* D · two columns, numbers as a margin */
+.D .grid{display:grid;grid-template-columns:1fr 280px;gap:48px}
+.D .lst .grp{margin-bottom:20px}.D .lst .grp > .eb{display:block;margin-bottom:6px}
+.D .lst .r{display:flex;align-items:center;gap:12px;padding:10px 12px;margin:0 -12px;border-radius:10px}.D .lst .r:hover{background:#fff}
+.D .lst .r .t{flex:1}.D .lst .r b{font-weight:500;font-size:14px}.D .lst .r small{display:block;color:var(--fg3);font-size:12px}
+.D .side{border-left:1px solid var(--rim2);padding-left:28px}
+.D .side .m{padding:12px 0;border-bottom:1px dashed var(--rim)}.D .side .m .eb{display:block}.D .side .m .v{display:flex;align-items:center;justify-content:space-between;margin-top:4px}.D .side .m b{font-size:24px;font-weight:400;letter-spacing:-.02em}.D .side .m small{display:block;color:var(--fg3);font-size:11.5px}
+.make{display:flex;gap:6px;align-items:center;margin:0 0 22px;font-size:12.5px;color:var(--fg3)}.make span{border:1px solid var(--rim);background:#fff;border-radius:999px;padding:5px 11px;color:var(--fg2)}
+</style></head><body>
+<h1>Dashboard · without cards</h1>
+<p class="sub">Same content as today’s dashboard (needs you, running for you, worth a look). No boxes: structure comes from type, hairlines and spacing.</p>
+
+<div class="shot"><div class="lab"><b>A · Three columns, ruled rows</b><span>today’s layout, minus the boxes</span></div><div class="page A">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · everything that’s running</span></div>
+<div class="make">Make something <span>Website</span><span>Funnel</span><span>Campaign</span><span>Agent</span></div>
+<div class="grid">
+<div class="sec"><span class="eb">Needs you · 3</span>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Three accounts dipped</b><small>Ads paused · widget broke · <span class="cost">−$4.8k/mo</span></small></div><span class="btn">Run the 2 fixes</span></div>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Ads paused since Tuesday</b><small>Card expired · <span class="cost">−$2.4k/mo</span></small></div><span class="btn">Turn back on</span></div>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Missing calls after 5 PM</b><small>Front desk gone · <span class="cost">+18%</span></small></div><span class="btn">Set up text-back</span></div></div>
+<div class="sec"><span class="eb">Running for you</span>
+<div class="m"><span>AI team</span><div><b>27</b><small>4 working now</small></div></div>
+<div class="m"><span>Agency MRR</span><div><b>$412.8k</b><small>+6.2% on Sept</small></div></div>
+<div class="m"><span>AI spend · Oct</span><div><b>$1,920</b><small>of $2,500</small></div></div>
+<div class="m"><span>Bookings today</span><div><b>23</b><small>3 gaps this pm</small></div></div>
+<div class="m"><span>Social</span><div><b>4 PM</b><small>next post</small></div></div></div>
+<div class="sec"><span class="eb">Worth a look · 4</span>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>41 reviews waiting</b><small>Replies drafted · <span class="cost w">oldest 6 days</span></small></div><span class="btn g">Send all</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>Jen at Lumen Spa is upset</b><small>0:48 voicemail · reply drafted</small></div><span class="btn g">Send reply</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>New lead booked 11:00</b><small>Dr. Priya Nair · brief ready</small></div><span class="btn g">Prep me</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>3 invoices overdue</b><small><span class="cost w">$2,140</span></small></div><span class="btn g">Nudge</span></div></div>
+</div></div></div>
+<p class="note"><b>Closest to today.</b> Same three columns, but each item is a single ruled row with one button. About half the height, much calmer.</p>
+
+<div class="shot"><div class="lab"><b>B · Numbers ribbon + one list</b><span>metrics across the top, everything else in one feed</span></div><div class="page B">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · everything that’s running</span></div>
+<div class="rib">
+<div class="k"><span class="eb">Agency MRR</span><b>$412.8k</b><small>+6.2% on Sept</small></div>
+<div class="k"><span class="eb">AI spend · Oct</span><b>$1,920</b><small>77% of $2,500</small></div>
+<div class="k"><span class="eb">Bookings today</span><b>23</b><small>3 gaps this pm</small></div>
+<div class="k"><span class="eb">AI team</span><b>27</b><small>4 working now</small></div>
+<div class="k"><span class="eb">Social</span><b>4 PM</b><small>next post</small></div></div>
+<div class="feed"><div class="head"><span class="eb">Everything, most urgent first</span><span class="eb">7 items</span></div>
+<div class="r"><i class="dot d-hot"></i><div><b>Three accounts dipped</b><small>Ads paused · widget broke</small></div><span class="cost">−$4.8k/mo</span><span class="btn">Run the 2 fixes</span></div>
+<div class="r"><i class="dot d-hot"></i><div><b>Ads paused since Tuesday</b><small>Card on file expired</small></div><span class="cost">−$2.4k/mo</span><span class="btn">Turn back on</span></div>
+<div class="r"><i class="dot d-hot"></i><div><b>Missing calls after 5 PM</b><small>14 clinics</small></div><span class="cost">+18%</span><span class="btn">Set up text-back</span></div>
+<div class="r"><i class="dot d-warm"></i><div><b>41 reviews waiting</b><small>Replies drafted</small></div><span class="cost w">6 days</span><span class="btn g">Send all</span></div>
+<div class="r"><i class="dot d-warm"></i><div><b>Jen at Lumen Spa is upset</b><small>0:48 voicemail</small></div><span class="cost w">today</span><span class="btn g">Send reply</span></div>
+<div class="r"><i class="dot d-warm"></i><div><b>New lead booked 11:00</b><small>Dr. Priya Nair</small></div><span class="cost w">11:00</span><span class="btn g">Prep me</span></div>
+</div></div></div>
+<p class="note"><b>Most scannable.</b> Numbers read like a stock ticker; one list replaces the two item columns, sorted by urgency. Works well on the phone (ribbon scrolls sideways).</p>
+
+<div class="shot"><div class="lab"><b>C · A written brief</b><span>reads like a morning note</span></div><div class="page C"><div class="wrap">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · Monday, Nov 2</span></div>
+<h2>Three things are costing you <em>$4.8k a month</em>. Everything else is on track.</h2>
+<p class="lede">MRR is up 6.2% on September, AI spend is at 77% of its budget, and 23 people booked today. Four agents are working right now.</p>
+<div class="figs"><div><b>$412.8k</b><small>MRR</small></div><div><b>23</b><small>bookings today</small></div><div><b>77%</b><small>AI budget used</small></div><div><b>27</b><small>agents</small></div></div>
+<div class="p"><span class="n">01</span><span class="t"><b>Three accounts dipped.</b> Two fixes are safe to run now.</span><span class="btn">Run the 2 fixes</span></div>
+<div class="p"><span class="n">02</span><span class="t"><b>Harbor’s ads are off</b> since Tuesday; the card expired.</span><span class="btn">Turn back on</span></div>
+<div class="p"><span class="n">03</span><span class="t"><b>Calls after 5 PM go unanswered</b> at 14 clinics.</span><span class="btn">Set up text-back</span></div>
+<div class="p"><span class="n">—</span><span class="t">Also worth a look: 41 reviews, Jen’s voicemail, the 11:00 lead, 3 invoices.</span><span class="btn g">Show</span></div>
+</div></div></div>
+<p class="note"><b>Most “AI”.</b> The dashboard is a short note the AI wrote, with the key numbers set large. Least to scan, most to read.</p>
+
+<div class="shot"><div class="lab"><b>D · List + numbers in the margin</b><span>actions left, a quiet column of numbers right</span></div><div class="page D">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · everything that’s running</span></div>
+<div class="grid"><div class="lst">
+<div class="grp"><span class="eb">Needs you · 3</span>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Three accounts dipped</b><small>Ads paused · widget broke · <span class="cost">−$4.8k/mo</span></small></div><span class="btn">Run the 2 fixes</span><span class="btn g">Later</span></div>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Ads paused since Tuesday</b><small>Card expired · <span class="cost">−$2.4k/mo</span></small></div><span class="btn">Turn them back on</span><span class="btn g">Later</span></div>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Missing calls after 5 PM</b><small>Front desk gone · <span class="cost">+18%</span></small></div><span class="btn">Set up text-back</span><span class="btn g">Later</span></div></div>
+<div class="grp"><span class="eb">Worth a look · 4</span>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>41 reviews waiting for a reply</b><small>Warm replies drafted in your voice</small></div><span class="btn g">Send all 41</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>Jen at Lumen Spa is upset</b><small>Reply drafted; call at 2 PM</small></div><span class="btn g">Send the reply</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>New lead booked a call at 11:00</b><small>Brief ready, leads with Harbor’s results</small></div><span class="btn g">Prep me</span></div></div>
+</div>
+<div class="side"><span class="eb">Running for you</span>
+<div class="m"><span class="eb">Agency MRR</span><div class="v"><div><b>$412.8k</b><small>+6.2% on Sept</small></div><svg class="spark" viewBox="0 0 70 20"><path d="M2 15 L12 13 L22 14 L32 11 L42 12 L52 7 L62 6 L68 3" fill="none" stroke="#2f5fe0" stroke-width="1.5"/></svg></div></div>
+<div class="m"><span class="eb">AI spend · Oct</span><div class="v"><div><b>$1,920</b><small>77% of $2,500</small></div></div></div>
+<div class="m"><span class="eb">Bookings today</span><div class="v"><div><b>23</b><small>3 gaps this afternoon</small></div></div></div>
+<div class="m"><span class="eb">AI team</span><div class="v"><div><b>27</b><small>4 working right now</small></div></div></div>
+<div class="m" style="border:0"><span class="eb">Social</span><div class="v"><div><b>4 PM</b><small>next post scheduled</small></div></div></div>
+</div></div></div></div>
+<p class="note"><b>My pick.</b> What to do is the main column; the numbers sit quietly in the margin like a sidebar in a report. Clear hierarchy, and it matches the Focus landing’s row style.</p>
+</body></html>

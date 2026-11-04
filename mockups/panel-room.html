@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Panel and room, after a click</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Geist+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#f6f6f7; --fg:#15151c; --fg2:#5b5b6b; --fg3:#8d8d9c; --card:#fff; --rim:rgba(20,20,40,.08); --ink:#5b5bd6; --hot:#d64a4a }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased }
+  .wrap { max-width:1320px; margin:0 auto; padding:40px 24px 80px }
+  .mono { font-family:'Geist Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--fg3) }
+  h1 { font-weight:400; font-size:28px; letter-spacing:-.02em; margin:8px 0 6px }
+  .lede { color:var(--fg2); max-width:760px; margin:0 0 36px }
+  .opt { display:grid; grid-template-columns:1fr; gap:18px; margin:0 0 44px; padding:0 0 44px; border-bottom:1px solid var(--rim) }
+  @media (min-width:1200px) { .opt { grid-template-columns:1fr 330px; gap:28px } }
+  .opt h2 { margin:0 0 4px; font-size:17px; font-weight:500 } .opt h2 small { font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--ink); margin-right:10px; text-transform:uppercase }
+  .opt p { margin:0 0 10px; color:var(--fg2) } .opt ul { margin:0; padding-left:18px; color:var(--fg2) } .opt li { margin:4px 0 }
+  .pick { display:inline-block; margin-top:12px; font-size:12px; padding:4px 10px; border-radius:999px; background:#eeedfe; color:var(--ink) }
+  .shot { position:relative; width:100%; aspect-ratio:1440/900; background:var(--bg); border-radius:14px; overflow:hidden; box-shadow:0 1px 0 var(--rim), 0 20px 50px -30px rgba(20,20,40,.4); font-size:9px }
+  .tag { position:absolute; left:50%; transform:translateX(-50%); top:10px; z-index:3; font-family:'Geist Mono',monospace; font-size:9px; letter-spacing:.06em; background:var(--fg); color:#fff; border-radius:999px; padding:3px 8px; white-space:nowrap }
+  .panel { position:absolute; left:0; top:0; bottom:0; width:27%; background:linear-gradient(180deg,#e4e1fb,#dfe6fb 45%,#fbe3ef) }
+  .panel.rail { width:5% }
+  .panel .brand { position:absolute; left:12px; top:12px; background:#fff; border-radius:999px; padding:4px 10px }
+  .panel .hello { position:absolute; left:12px; right:12px; top:40px; background:#fff; border-radius:12px; padding:10px 12px } .hello b { display:block; font-size:12px; font-weight:500 } .hello span { color:var(--fg2) }
+  .thread { position:absolute; left:12px; right:12px; bottom:50px; display:grid; gap:6px } .thread .m { background:rgba(255,255,255,.75); border-radius:10px; padding:7px 9px; color:var(--fg2); font-size:8.5px; max-width:92% } .thread .m.u { background:var(--fg); color:#fff; justify-self:end } .thread.dim { opacity:.55 }
+  .ask { position:absolute; left:12px; right:12px; bottom:12px; height:28px; background:#fff; border-radius:999px; display:flex; align-items:center; padding:0 10px; color:var(--fg3); gap:6px } .ask .mic { margin-left:auto; width:18px; height:18px; border-radius:50%; background:var(--fg) }
+  .chips { display:flex; flex-wrap:wrap; gap:5px } .chips span { background:#fff; border:1px solid var(--rim); border-radius:999px; padding:4px 8px; font-size:8.5px; color:var(--fg) } .chips span.main { background:var(--fg); color:#fff; border-color:var(--fg) }
+  .room { position:absolute; left:27%; right:0; top:0; bottom:0; background:radial-gradient(circle at 50% 38%, #ffe7e7 0, rgba(255,231,231,0) 45%), var(--bg) }
+  .room.full { left:5% }
+  .room .head { position:absolute; left:16px; top:12px; font-family:'Geist Mono',monospace; font-size:8px; letter-spacing:.06em; color:var(--fg3) } .room .head::before { content:''; display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--hot); margin-right:6px }
+  .room .close { position:absolute; right:12px; top:10px; width:18px; height:18px; border-radius:50%; background:#fff; border:1px solid var(--rim) }
+  .creature { position:absolute; left:50%; top:30%; width:40px; height:40px; margin-left:-20px; border-radius:50%; background:radial-gradient(circle at 40% 40%, #ff8a8a, #5b5bd6) ; filter:blur(1px) }
+  .stage { position:absolute; left:50%; top:46%; width:min(52%, 420px); transform:translateX(-50%); display:grid; gap:6px }
+  .stage .eb { font-family:'Geist Mono',monospace; font-size:7.5px; letter-spacing:.06em; color:var(--fg3) }
+  .stage .nums { display:flex; gap:18px } .stage .nums b { display:block; font-size:16px; font-weight:400; letter-spacing:-.02em } .stage .nums b.r { color:var(--hot) } .stage .nums b.g { color:#2fa36b } .stage .nums span { font-size:8px; color:var(--fg2) }
+  .stage .row { display:flex; justify-content:space-between; border-top:1px solid var(--rim); padding:5px 0; font-size:8.5px } .stage .row i { color:var(--fg3); font-style:normal }
+  .stage .say { font-size:12px; line-height:1.35; color:var(--fg); text-align:center; margin:4px 0 2px }
+  .stage .chips { justify-content:center; margin-top:4px }
+  .bar { position:absolute; left:50%; bottom:12px; transform:translateX(-50%); height:26px; width:46%; background:#fff; border-radius:999px; border:1px solid var(--rim); display:flex; align-items:center; gap:6px; padding:0 8px; font-family:'Geist Mono',monospace; font-size:7px; color:var(--fg3) } .bar i { width:14px; height:14px; border-radius:50%; background:var(--fg); margin-left:auto }
+  .bar .wave { color:var(--ink); letter-spacing:-1px }
+  /* C: desk stays */
+  .desk { position:absolute; left:30%; right:3%; top:0; bottom:0 }
+  .cols { position:absolute; left:0; right:0; top:14%; bottom:6%; display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:14px }
+  .col { display:grid; align-content:start; gap:8px } .col .h { font-family:'Geist Mono',monospace; font-size:7px; letter-spacing:.08em; color:var(--fg3); text-transform:uppercase }
+  .c { background:#fff; border:1px solid var(--rim); border-radius:9px; height:56px; padding:8px 10px; opacity:.45 } .c i { display:block; width:6px; height:6px; border-radius:50%; background:var(--fg3); margin-bottom:5px } .c b { display:block; height:7px; width:70%; background:#2a2a35; border-radius:3px; opacity:.85 } .c u { display:block; height:5px; width:50%; background:#d9d9e2; border-radius:3px; margin-top:6px }
+  .c.open { opacity:1; height:auto; border:1.5px solid var(--ink); box-shadow:0 20px 40px -24px rgba(91,91,214,.6); padding:10px 12px } .c.open i { background:var(--hot) } .c.open .t { font-size:11px; font-weight:500; margin-bottom:6px } .c.open .nums { display:flex; gap:14px; margin:4px 0 } .c.open .nums b { font-size:14px; font-weight:400; display:block } .c.open .nums b.r { color:var(--hot) } .c.open .nums b.g { color:#2fa36b } .c.open .nums span { font-size:7.5px; color:var(--fg2) } .c.open .row { display:flex; justify-content:space-between; border-top:1px solid var(--rim); padding:4px 0; font-size:8px } .c.open .row i { display:inline; width:auto; height:auto; background:none; color:var(--fg3); font-style:normal; margin:0 }
+  .link { position:absolute; left:26.5%; top:52%; width:4%; height:1.5px; background:var(--ink); opacity:.6 } .link::after { content:''; position:absolute; right:-3px; top:-2px; width:5px; height:5px; border-radius:50%; background:var(--ink) }
+  .thread .m.now { background:#fff; border:1.5px solid var(--ink) }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mono">The Desk · Modern · Ask box in the panel · 3 Nov 2026</div>
+  <h1>After you click a card: where do the choices go?</h1>
+  <p class="lede">Right now the room opens in the middle, the AI's words and the choices land bottom-left in the panel, and nothing ties them together. The eye is in the room; the hands are in the panel. Three ways to fix it.</p>
+
+  <section class="opt">
+    <div class="shot">
+      <span class="tag">A · Panel folds to a rail</span>
+      <div class="panel rail"></div>
+      <div class="room full">
+        <div class="head">REVENUE · 3 ACCOUNTS</div><div class="close"></div>
+        <div class="creature"></div>
+        <div class="stage">
+          <div class="say">Harbor, Peak and Lumen are down $4.8k a month. Two fixes are safe to run now.</div>
+          <div class="eb">WHAT I'M WORKING FROM · live</div>
+          <div class="nums"><div><b class="r">−$4.8k</b><span>Lost this month</span></div><div><b class="g">$0</b><span>Won back</span></div></div>
+          <div class="row">Harbor Dental · ads<i>paused</i></div><div class="row">Peak Fitness · widget<i>broken</i></div><div class="row">Lumen Spa · reviews<i>stopped</i></div>
+          <div class="chips"><span class="main">Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span><span>Hold Lumen until Monday</span></div>
+        </div>
+        <div class="bar"><span class="wave">▮▮▮▮▮▮▮▮</span> HIGHLEVEL AI · READY <i></i></div>
+      </div>
+    </div>
+    <div>
+      <h2><small>Option A</small>Panel folds to a rail</h2>
+      <p>When a room opens, the panel slides down to a thin rail with the creature on it. The room gets the full width and behaves exactly like Bottom mode: words under the creature, choices under the data, one place to look. Close the room and the panel unfolds, with the whole exchange already in its thread.</p>
+      <ul><li>Nothing to learn: the room is the room you already know.</li><li>Panel becomes history and the place to start things, not the place to act.</li><li>Loses the "AI is always on the left" feeling while you're in a room.</li></ul>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="shot">
+      <span class="tag">B · Choices follow the eye</span>
+      <div class="panel">
+        <div class="brand">Cerebro</div><div class="hello"><b>Good morning, Maya.</b><span>Three things need you.</span></div>
+        <div class="thread dim"><div class="m">Harbor, Peak and Lumen are down $4.8k a month…</div></div>
+        <div class="ask">✦ Ask or tell me anything…<span class="mic"></span></div>
+      </div>
+      <div class="room">
+        <div class="head">REVENUE · 3 ACCOUNTS</div><div class="close"></div>
+        <div class="creature"></div>
+        <div class="stage">
+          <div class="say">Harbor, Peak and Lumen are down $4.8k a month. Two fixes are safe to run now.</div>
+          <div class="eb">WHAT I'M WORKING FROM · live</div>
+          <div class="nums"><div><b class="r">−$4.8k</b><span>Lost this month</span></div><div><b class="g">$0</b><span>Won back</span></div></div>
+          <div class="row">Harbor Dental · ads<i>paused</i></div><div class="row">Peak Fitness · widget<i>broken</i></div><div class="row">Lumen Spa · reviews<i>stopped</i></div>
+          <div class="chips"><span class="main">Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span><span>Hold Lumen until Monday</span></div>
+        </div>
+        <div class="bar"><span class="wave">▮▮▮▮▮▮▮▮</span> HIGHLEVEL AI · READY <i></i></div>
+      </div>
+    </div>
+    <div>
+      <h2><small>Option B · quickest</small>Choices follow the eye</h2>
+      <p>Keep the panel, but while a room is open it only logs. The AI's line and the choices sit in the room, under the data, where you're already looking. The panel's thread dims to show it's history, and its box still works if you'd rather type.</p>
+      <ul><li>One-line change to what's there now.</li><li>The panel keeps the record; the room keeps the action.</li><li>Still two surfaces on screen, so it's a compromise, not a resolution.</li></ul>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="shot">
+      <span class="tag">C · No room: the card opens in place</span>
+      <div class="panel">
+        <div class="brand">Cerebro</div><div class="hello"><b>Good morning, Maya.</b><span>Three things need you.</span></div>
+        <div class="thread"><div class="m">Harbor’s ads paused when the card expired. Want me to switch to the new card?</div><div class="m u">Yes</div><div class="m now">Harbor, Peak and Lumen are down $4.8k a month. Two fixes are safe to run now.</div><div class="chips"><span class="main">Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span></div></div>
+        <div class="ask">✦ Ask or tell me anything…<span class="mic"></span></div>
+      </div>
+      <div class="link"></div>
+      <div class="desk">
+        <div class="cols">
+          <div class="col"><div class="h">Needs you</div>
+            <div class="c open"><i></i><div class="t">Three accounts dipped</div><div class="nums"><div><b class="r">−$4.8k</b><span>Lost this month</span></div><div><b class="g">$0</b><span>Won back</span></div></div><div class="row">Harbor Dental · ads<i>paused</i></div><div class="row">Peak Fitness · widget<i>broken</i></div><div class="row">Lumen Spa · reviews<i>stopped</i></div></div>
+            <div class="c"><i></i><b></b><u></u></div></div>
+          <div class="col"><div class="h">Running for you</div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div></div>
+          <div class="col"><div class="h">Worth a look</div><div class="c"><i></i><b></b><u></u></div><div class="c"><i></i><b></b><u></u></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2><small>Option C · recommended</small>No room: the card opens in place</h2>
+      <p>In panel mode a click never opens an overlay. The card you clicked grows in place and shows what the AI is working from; the other cards dim. The AI speaks in the panel, and its choices sit right under its latest line, with a thin line tying the line to the open card. Rooms only open for live work and builds, where a stage is worth it.</p>
+      <ul><li>One conversation, one place to act, and the desk never disappears.</li><li>Matches the Option C promise: the panel is the AI.</li><li>Biggest build: card "open in place" states for every card type, plus Scribble.</li></ul>
+      <span class="pick">My pick: C. If you want it today, B first, then C.</span>
+    </div>
+  </section>
+</div>
+</body>
+</html>

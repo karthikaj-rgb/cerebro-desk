@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Room · where pause and mute go</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--good:#079455;--rim:rgba(21,22,27,.08);--rim2:rgba(21,22,27,.2);--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.shot{background:var(--bg);border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25)}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:11px 16px;border-bottom:1px solid var(--rim);background:#fff;display:flex;justify-content:space-between}.lab b{color:var(--fg);font-weight:500}
+.room{position:relative;height:380px;background:radial-gradient(40% 30% at 50% 22%,rgba(91,91,214,.14),transparent 72%),var(--bg)}
+.head{position:absolute;top:14px;left:18px;right:18px;display:flex;align-items:center;gap:8px}
+.head .sp{flex:1}
+.pill{display:flex;background:#fff;border:1px solid var(--rim);border-radius:20px;padding:3px;font-size:10.5px}.pill span{padding:4px 11px;border-radius:16px;color:var(--fg3);display:inline-flex;gap:4px;align-items:center}.pill span.on{background:#15161b;color:#fff}
+.ic{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid var(--rim);display:grid;place-items:center;font-size:13px;color:var(--fg2);flex:none}.ic.d{background:#15161b;color:#fff;border-color:#15161b}
+.mid{position:absolute;left:0;right:0;top:56px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.orb{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#efe9ff,#9d8cff 40%,#5b5bd6 75%,#2a2a6a);box-shadow:0 8px 20px -6px rgba(91,91,214,.5)}
+.st{font-size:12.5px;font-weight:500;margin-top:4px}.st small{display:block;font-weight:400;color:var(--fg3);font-size:11px;text-align:center}
+.say{font-size:14px;text-align:center;max-width:420px;line-height:1.4;margin-top:4px}
+.data{width:62%;font-size:10.5px;margin-top:10px}.data .row{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--rim)}.data .row i{font-style:normal;color:var(--good)}
+.bar{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:76%;background:#fff;border:1px solid var(--rim);border-radius:30px;padding:7px 8px 7px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px -14px rgba(0,0,0,.25)}
+.bar .sk{width:22px;height:22px;border-radius:50%;background:#eef0ff;color:#5b5bd6;display:grid;place-items:center;font-size:10px;flex:none}
+.bar .wv{display:flex;gap:2px}.bar .wv i{width:2px;height:8px;border-radius:1px;background:#5b5bd6}
+.bar .tx{flex:1;min-width:0}.bar .cap{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);display:flex;align-items:center;gap:6px}
+.bar .line{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.om{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#efe9ff,#9d8cff 40%,#5b5bd6 75%,#2a2a6a);box-shadow:0 0 0 4px rgba(157,140,255,.2);flex:none;position:relative}
+.mini{width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;font-size:11px;color:var(--fg2);background:#f2f2f5}
+.note{color:var(--fg3);font-size:12.5px;padding:10px 16px 14px;background:#fff;border-top:1px solid var(--rim)}.note b{color:var(--fg);font-weight:500}
+/* C · tray on the orb */
+.tray{position:absolute;bottom:100%;right:-6px;margin-bottom:10px;display:flex;gap:6px;background:#fff;border:1px solid var(--rim);border-radius:20px;padding:5px;box-shadow:0 10px 24px -14px rgba(0,0,0,.35)}
+.tray::after{content:'';position:absolute;bottom:-5px;right:18px;width:9px;height:9px;background:#fff;border-right:1px solid var(--rim);border-bottom:1px solid var(--rim);transform:rotate(45deg)}
+/* E · under the line */
+.txt{display:flex;gap:14px;font-size:11.5px;color:var(--fg3);margin-top:2px}.txt span{display:inline-flex;gap:4px;align-items:center}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Room · where pause and mute go</h1>
+<p class="sub">The voice bar keeps only the words and the orb mic. Five places for pause and mute. Close stays where it is.</p>
+<div class="grid">
+
+<div><div class="shot"><div class="lab"><b>A · Top right, with close</b><span>same as the phone</span></div>
+<div class="room"><div class="head"><span class="sp"></span><div class="pill"><span class="on"><i class="ti ti-phone"></i>Voice</span><span><i class="ti ti-message"></i>Chat</span></div><span class="sp"></span><span class="ic"><i class="ti ti-player-pause"></i></span><span class="ic"><i class="ti ti-volume"></i></span><span class="ic">×</span></div>
+<div class="mid"><div class="orb"></div><div class="st">I'm listening.<small>Just talk.</small></div><div class="say">Done. Harbor's ads are back on and Peak's booking widget works again.</div><div class="data"><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div></div></div>
+<div class="bar"><span class="sk"><i class="ti ti-sparkles"></i></span><div class="tx"><div class="cap">Listening</div><div class="line">Done. Harbor's ads are back on and Peak's booking widget works again.</div></div><span class="om"></span></div></div></div>
+<div class="note"><b>My pick.</b> All the "room" controls live in one corner on desktop and phone. The bar is only the conversation.</div></div>
+
+<div><div class="shot"><div class="lab"><b>B · Beside the Voice / Chat switch</b><span>one control strip, top centre</span></div>
+<div class="room"><div class="head"><span class="sp"></span><div class="pill"><span class="on"><i class="ti ti-phone"></i>Voice</span><span><i class="ti ti-message"></i>Chat</span></div><span class="ic"><i class="ti ti-player-pause"></i></span><span class="ic"><i class="ti ti-volume"></i></span><span class="sp"></span><span class="ic">×</span></div>
+<div class="mid"><div class="orb"></div><div class="st">I'm listening.<small>Just talk.</small></div><div class="say">Done. Harbor's ads are back on and Peak's booking widget works again.</div><div class="data"><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div></div></div>
+<div class="bar"><span class="sk"><i class="ti ti-sparkles"></i></span><div class="tx"><div class="cap">Listening</div><div class="line">Done. Harbor's ads are back on and Peak's booking widget works again.</div></div><span class="om"></span></div></div></div>
+<div class="note">Everything about <b>how you talk to it</b> sits together at the top: voice or chat, pause, mute.</div></div>
+
+<div><div class="shot"><div class="lab"><b>C · Tucked behind the orb</b><span>hover or long-press the mic</span></div>
+<div class="room"><div class="head"><span class="sp"></span><div class="pill"><span class="on"><i class="ti ti-phone"></i>Voice</span><span><i class="ti ti-message"></i>Chat</span></div><span class="sp"></span><span class="ic">×</span></div>
+<div class="mid"><div class="orb"></div><div class="st">I'm listening.<small>Just talk.</small></div><div class="say">Done. Harbor's ads are back on and Peak's booking widget works again.</div><div class="data"><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div></div></div>
+<div class="bar"><span class="sk"><i class="ti ti-sparkles"></i></span><div class="tx"><div class="cap">Listening</div><div class="line">Done. Harbor's ads are back on and Peak's booking widget works again.</div></div><span class="om"><span class="tray"><span class="ic"><i class="ti ti-player-pause"></i></span><span class="ic"><i class="ti ti-volume"></i></span></span></span></div></div></div>
+<div class="note">Shown with the tray open. <b>Cleanest screen</b>, but pause and mute are hidden until you hover the orb (long-press on the phone).</div></div>
+
+<div><div class="shot"><div class="lab"><b>D · Small, inside the bar's label</b><span>next to "Listening"</span></div>
+<div class="room"><div class="head"><span class="sp"></span><div class="pill"><span class="on"><i class="ti ti-phone"></i>Voice</span><span><i class="ti ti-message"></i>Chat</span></div><span class="sp"></span><span class="ic">×</span></div>
+<div class="mid"><div class="orb"></div><div class="st">I'm listening.<small>Just talk.</small></div><div class="say">Done. Harbor's ads are back on and Peak's booking widget works again.</div><div class="data"><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div></div></div>
+<div class="bar"><span class="sk"><i class="ti ti-sparkles"></i></span><div class="tx"><div class="cap">Listening <span class="mini"><i class="ti ti-player-pause"></i></span><span class="mini"><i class="ti ti-volume"></i></span></div><div class="line">Done. Harbor's ads are back on and Peak's booking widget works again.</div></div><span class="om"></span></div></div></div>
+<div class="note">Stays in the bar but <b>shrinks to small icons</b> beside the status, so the words get the width. Small tap targets on phone.</div></div>
+
+<div><div class="shot"><div class="lab"><b>E · Under the spoken line</b><span>quiet text links in the stage</span></div>
+<div class="room"><div class="head"><span class="sp"></span><div class="pill"><span class="on"><i class="ti ti-phone"></i>Voice</span><span><i class="ti ti-message"></i>Chat</span></div><span class="sp"></span><span class="ic">×</span></div>
+<div class="mid"><div class="orb"></div><div class="st">I'm listening.<small>Just talk.</small></div><div class="say">Done. Harbor's ads are back on and Peak's booking widget works again.</div><div class="txt"><span><i class="ti ti-player-pause"></i>Pause</span><span><i class="ti ti-volume"></i>Mute</span><span><i class="ti ti-reload"></i>Say again</span></div><div class="data"><div class="row">Harbor Dental · ads<i>live ✓</i></div></div></div>
+<div class="bar"><span class="sk"><i class="ti ti-sparkles"></i></span><div class="tx"><div class="cap">Listening</div><div class="line">Done. Harbor's ads are back on and Peak's booking widget works again.</div></div><span class="om"></span></div></div></div>
+<div class="note">The controls sit <b>right where the AI's words are</b>, as small text links. Adds "Say again". Scrolls away with the content.</div></div>
+
+</div></body></html>

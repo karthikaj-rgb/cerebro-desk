@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · make it feel like AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--ac:#5b5bd6;--ac2:#9d8cff;--hot:#e5484d;--good:#079455;--rim:rgba(21,22,27,.08);--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px;max-width:760px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}}
+@media(max-width:600px){body{padding:16px}}
+.shot{border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25);background:#fff}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:11px 16px;border-bottom:1px solid var(--rim);display:flex;justify-content:space-between;gap:10px}.lab b{color:var(--fg);font-weight:500}
+.note{color:var(--fg3);font-size:12.5px;padding:10px 16px 14px;border-top:1px solid var(--rim)}.note b{color:var(--fg);font-weight:500}
+.stage{position:relative;height:400px;overflow:hidden;background:var(--bg)}
+.orb{border-radius:50%;background:radial-gradient(circle at 38% 32%,#efe9ff,#9d8cff 40%,#5b5bd6 75%,#2a2a6a)}
+.mono{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+
+/* A · Living aurora */
+.a{background:#f7f7fa}
+.a .blob{position:absolute;border-radius:50%;filter:blur(50px);opacity:.55;animation:drift 14s ease-in-out infinite alternate}
+.a .b1{width:340px;height:260px;background:#c9c2ff;left:8%;top:-60px}
+.a .b2{width:260px;height:220px;background:#ffc9cf;right:6%;top:40px;animation-duration:11s;animation-delay:-4s}
+.a .b3{width:300px;height:200px;background:#c4ecff;left:35%;bottom:-80px;animation-duration:17s}
+@keyframes drift{to{transform:translate(40px,30px) scale(1.15)}}
+.a .in{position:relative;padding:34px 36px;display:flex;flex-direction:column;gap:18px}
+.a .hello{font-size:26px;font-weight:300;letter-spacing:-.01em;max-width:430px;line-height:1.25}
+.a .hello b{font-weight:500}
+.a .row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.8);max-width:470px}
+.a .dot{width:8px;height:8px;border-radius:50%;background:var(--hot);box-shadow:0 0 0 0 rgba(229,72,77,.5);animation:ping 2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+.a .row .t{flex:1}.a .row small{display:block;color:var(--fg3)}
+.a .row .go{font-size:11.5px;background:#15161b;color:#fff;border-radius:16px;padding:5px 11px}
+
+/* B · Dashboard written as a sentence */
+.b .in{padding:40px 38px}
+.b .para{font-size:22px;font-weight:300;line-height:1.6;letter-spacing:-.005em;max-width:560px;min-height:240px}
+.b .tok{display:inline-flex;align-items:center;gap:5px;padding:0 9px;border-radius:9px;font-weight:500;font-size:19px;background:#efedff;color:var(--ac);border:1px solid rgba(91,91,214,.18);animation:pop .5s ease both}
+.b .tok.hot{background:#fff0f0;color:var(--hot);border-color:rgba(229,72,77,.2)}
+.b .tok.ok{background:#ebf9f1;color:var(--good);border-color:rgba(7,148,85,.2)}
+@keyframes pop{from{opacity:0;transform:translateY(4px) scale(.96)}}
+.b .caret{display:inline-block;width:2px;height:22px;background:var(--ac);vertical-align:-4px;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.b .foot{position:absolute;left:38px;bottom:24px;display:flex;gap:8px}
+.b .chip{border:1px solid var(--rim);border-radius:16px;padding:5px 12px;font-size:12px;background:#fff}
+
+/* C · Orbit of accounts */
+.c{background:radial-gradient(50% 50% at 50% 50%,#fbfaff,#f3f3f7)}
+.c svg{position:absolute;inset:0;width:100%;height:100%}
+.c .core{position:absolute;left:50%;top:50%;width:64px;height:64px;transform:translate(-50%,-50%);box-shadow:0 0 50px 4px rgba(157,140,255,.35);animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{transform:translate(-50%,-50%) scale(1.07)}}
+.c .node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;white-space:nowrap}
+.c .node i{width:12px;height:12px;border-radius:50%;background:#d7d7e0;border:2px solid #fff;box-shadow:0 0 0 1px var(--rim)}
+.c .node.hot i{background:var(--hot);animation:ping 2s infinite}
+.c .node.ok i{background:var(--good)}
+.c .node small{color:var(--fg3);font-size:10.5px}
+.c .ring{fill:none;stroke:rgba(91,91,214,.13);stroke-dasharray:3 6}
+.c .scan{transform-origin:50% 50%;animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.c .cap{position:absolute;left:0;right:0;bottom:20px;text-align:center;font-size:13.5px}
+
+/* D · Agent at work, live */
+.d{background:#0f1016;color:#e9e9f1}
+.d .in{padding:26px 28px;display:grid;grid-template-columns:1fr 1.1fr;gap:24px;height:100%}
+.d .mono{color:#7b7d8f}
+.d .big{font-size:22px;font-weight:300;line-height:1.3;margin:10px 0 18px}
+.d .big b{font-weight:500;background:linear-gradient(90deg,#c9c2ff,#ffb3c0);-webkit-background-clip:text;color:transparent}
+.d .stat{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid rgba(255,255,255,.07);font-size:12.5px}
+.d .stat span:last-child{font-family:var(--mono)}
+.d .feed{border-left:1px solid rgba(255,255,255,.08);padding-left:22px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.d .ev{display:flex;gap:10px;font-size:12.5px;animation:pop .5s ease both}
+.d .ev i{flex:none;width:16px;height:16px;border-radius:50%;margin-top:1px;display:grid;place-items:center;font-style:normal;font-size:9px}
+.d .ev.done i{background:rgba(7,148,85,.2);color:#3dd68c}
+.d .ev.run i{border:1.5px solid #9d8cff;border-top-color:transparent;animation:spin 1s linear infinite}
+.d .ev.run span{background:linear-gradient(90deg,#8b8da0 30%,#fff 50%,#8b8da0 70%);background-size:200% 100%;-webkit-background-clip:text;color:transparent;animation:shim 1.6s linear infinite}
+@keyframes shim{to{background-position:-200% 0}}
+.d .ev small{display:block;color:#6d6f80;font-family:var(--mono);font-size:10px}
+
+/* E · Glow border + scan */
+.e{background:#f7f7fa;display:grid;place-items:center}
+.e .panel{position:relative;width:82%;border-radius:18px;padding:1.5px;background:conic-gradient(from var(--ang),#9d8cff,#ffb3c0,#9be7ff,#9d8cff);animation:rot 5s linear infinite}
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes rot{to{--ang:360deg}}
+.e .inner{position:relative;border-radius:16.5px;background:#fff;padding:20px 22px;overflow:hidden}
+.e .inner::after{content:'';position:absolute;left:0;right:0;height:60px;top:-60px;background:linear-gradient(180deg,transparent,rgba(157,140,255,.16),transparent);animation:scan 3.2s ease-in-out infinite}
+@keyframes scan{to{top:100%}}
+.e .tr{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--rim);font-size:13px}
+.e .tr:first-of-type{border-top:0}
+.e .tr .n{flex:1}.e .tr .v{font-family:var(--mono);font-size:12px}
+.e .spark{width:70px;height:20px}
+.e .tag{font-size:10.5px;padding:2px 8px;border-radius:10px;background:#fff0f0;color:var(--hot)}
+.e .tag.ok{background:#ebf9f1;color:var(--good)}
+.e .head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.e .head .orb{width:18px;height:18px}
+</style></head><body>
+<h1>Dashboard · make it feel like AI</h1>
+<p class="sub">Five ways to make the card-free dashboard feel alive and AI-first, not like a report. They are all animated, so watch each one for a few seconds. Any of them can sit on top of layout D or E.</p>
+<div class="grid">
+
+<div><div class="shot"><div class="lab"><b>A · Living aurora</b><span>colour = how your day is</span></div>
+<div class="stage a"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+<div class="in"><div class="mono">Tuesday · 9:12 AM</div>
+<div class="hello">Morning. <b>Two things</b> need you. Everything else I handled overnight.</div>
+<div class="row"><span class="dot"></span><div class="t">Harbor Dental's ads paused<small>Card declined · $1.2k a week at risk</small></div><span class="go">Fix</span></div>
+<div class="row"><span class="dot"></span><div class="t">Peak's booking widget is down<small>Since 6 AM · 4 missed bookings</small></div><span class="go">Fix</span></div>
+</div></div>
+<div class="note">A soft gradient field moves slowly behind frosted rows. Its colour shifts with the day: <b>warm when things are hot, cool and calm when nothing needs you.</b></div></div></div>
+
+<div><div class="shot"><div class="lab"><b>B · The dashboard is a sentence</b><span>numbers live inside the words</span></div>
+<div class="stage b"><div class="in"><div class="para" id="para"></div></div>
+<div class="foot"><span class="chip">Fix both</span><span class="chip">Show me the numbers</span><span class="chip">Later</span></div></div>
+<div class="note"><b>My pick.</b> The AI writes your dashboard to you as it speaks. Every number is a live token you can tap to open. It feels like a person briefing you, not a chart.</div></div></div>
+
+<div><div class="shot"><div class="lab"><b>C · Your accounts in orbit</b><span>the AI at the centre</span></div>
+<div class="stage c"><svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="#9d8cff" stop-opacity="0"/><stop offset="1" stop-color="#9d8cff" stop-opacity=".35"/></linearGradient></defs>
+<circle class="ring" cx="300" cy="200" r="95"/><circle class="ring" cx="300" cy="200" r="160"/>
+<g class="scan"><path d="M300 200 L300 40 A160 160 0 0 1 438 120 Z" fill="url(#sg)" opacity=".5"/></g></svg>
+<div class="core orb"></div>
+<div class="node hot" style="left:34%;top:28%"><i></i>Harbor Dental<small>ads paused</small></div>
+<div class="node hot" style="left:71%;top:62%"><i></i>Peak Fitness<small>widget down</small></div>
+<div class="node ok" style="left:66%;top:22%"><i></i>Lumen Spa<small>fixed overnight</small></div>
+<div class="node" style="left:24%;top:66%"><i></i>Smile Studio<small>quiet</small></div>
+<div class="node ok" style="left:52%;top:80%"><i></i>Acme Clinics<small>12 replies sent</small></div>
+<div class="node" style="left:83%;top:38%"><i></i>Bay Physio<small>quiet</small></div>
+<div class="cap">Scanning 6 accounts · <b style="color:var(--hot);font-weight:500">2 need you</b></div></div>
+<div class="note">A radar sweeps your accounts. Hot ones pulse red and drift closer to the centre. <b>Great for "what's going on?" at a glance</b>, weaker when you have 40 accounts.</div></div></div>
+
+<div><div class="shot"><div class="lab"><b>D · Watch it work</b><span>dark, live agent feed</span></div>
+<div class="stage d"><div class="in"><div><div class="mono">While you were away</div>
+<div class="big">I fixed <b>14 things</b> and saved you about 3 hours.</div>
+<div class="stat"><span>Revenue recovered</span><span>$4.8k / mo</span></div>
+<div class="stat"><span>Replies sent</span><span>41</span></div>
+<div class="stat"><span>Calls returned</span><span>9</span></div>
+<div class="stat"><span>Waiting on you</span><span style="color:#ff8a8f">2</span></div></div>
+<div class="feed" id="feed"></div></div></div>
+<div class="note">The right side is a live feed of what the AI is doing right now, with shimmering text on the running step. <b>Shows the AI is working, not waiting.</b> Dark mode makes it feel like a command centre.</div></div></div>
+
+<div><div class="shot"><div class="lab"><b>E · Thinking border</b><span>small touch, works on any layout</span></div>
+<div class="stage e"><div class="panel"><div class="inner">
+<div class="head"><span class="orb"></span><span class="mono">Checking your accounts</span></div>
+<div class="tr"><span class="n">Harbor Dental · ads</span><svg class="spark" viewBox="0 0 70 20"><polyline fill="none" stroke="#e5484d" stroke-width="1.5" points="0,5 12,6 24,4 36,8 48,14 60,17 70,18"/></svg><span class="tag">paused</span></div>
+<div class="tr"><span class="n">Peak · bookings</span><svg class="spark" viewBox="0 0 70 20"><polyline fill="none" stroke="#e5484d" stroke-width="1.5" points="0,8 12,7 24,9 36,6 48,16 60,18 70,18"/></svg><span class="tag">down</span></div>
+<div class="tr"><span class="n">Lumen Spa · reviews</span><svg class="spark" viewBox="0 0 70 20"><polyline fill="none" stroke="#079455" stroke-width="1.5" points="0,16 12,14 24,15 36,10 48,8 60,5 70,3"/></svg><span class="tag ok">fixed</span></div>
+<div class="tr"><span class="n">Acme · missed calls</span><svg class="spark" viewBox="0 0 70 20"><polyline fill="none" stroke="#079455" stroke-width="1.5" points="0,14 12,12 24,13 36,9 48,9 60,6 70,5"/></svg><span class="tag ok">handled</span></div>
+</div></div></div>
+<div class="note">A slowly rotating gradient border and a light scan line run only <b>while the AI is checking or fixing</b>, then settle. Cheap to add, instantly reads as "AI".</div></div></div>
+
+</div>
+<script>
+// B · type the sentence
+const parts=[['Morning, Karthik. Overnight I fixed '],['tok ok','12 things'],['. Two need you: '],['tok hot','Harbor’s ads'],[' paused after a card decline, costing '],['tok hot','$1.2k a week'],[', and '],['tok hot','Peak’s booking widget'],[' has been down since 6 AM. Revenue is up '],['tok','8% this week'],['.']]
+const para=document.getElementById('para')
+function typeB(){para.innerHTML='';let i=0
+ const step=()=>{if(i>=parts.length){para.insertAdjacentHTML('beforeend','<span class="caret"></span>');setTimeout(typeB,5000);return}
+  const p=parts[i++]
+  if(p.length===2){para.insertAdjacentHTML('beforeend',`<span class="${p[0]}">${p[1]}</span>`);setTimeout(step,260)}
+  else{const words=p[0].split(/(\s+)/);let w=0;const t=()=>{if(w>=words.length)return step();para.append(words[w++]);setTimeout(t,45)};t()}}
+ step()}
+typeB()
+// D · live feed
+const evs=[['done','Restarted Lumen’s review requests','9:02'],['done','Sent 41 review replies for Acme','9:04'],['done','Called back 9 missed callers','9:06'],['run','Checking Harbor’s ad account','now'],['done','Rebooked 3 cancelled visits','9:08'],['run','Drafting Peak’s widget fix','now']]
+const feed=document.getElementById('feed');let k=0
+function addEv(){const [s,t,time]=evs[k%evs.length];k++
+ feed.querySelectorAll('.ev.run').forEach(e=>{e.className='ev done';e.querySelector('i').textContent='✓';e.querySelector("small").textContent="just now"})
+ feed.insertAdjacentHTML('afterbegin',`<div class="ev ${s}"><i>${s==='done'?'✓':''}</i><div><span>${t}</span><small>${time}</small></div></div>`)
+ while(feed.children.length>5)feed.lastChild.remove()}
+for(let n=0;n<4;n++)addEv();setInterval(addEv,2200)
+</script>
+</body></html>

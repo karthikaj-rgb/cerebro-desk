@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · do the magic</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--ac:#5b5bd6;--ac2:#9d8cff;--hot:#e5484d;--good:#079455;--rim:rgba(21,22,27,.08);--mono:'Geist Mono',ui-monospace,monospace;--serif:'Instrument Serif',Georgia,serif}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px;max-width:760px}
+.list{display:flex;flex-direction:column;gap:26px}
+.shot{border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25);background:#fff;min-width:0}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:11px 16px;border-bottom:1px solid var(--rim);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.lab b{color:var(--fg);font-weight:500}
+.note{color:var(--fg3);font-size:12.5px;padding:10px 16px 14px;border-top:1px solid var(--rim)}.note b{color:var(--fg);font-weight:500}
+.stage{position:relative;height:580px;overflow:hidden;background:var(--bg)}
+.orb{border-radius:50%;background:radial-gradient(circle at 38% 32%,#efe9ff,#9d8cff 40%,#5b5bd6 75%,#2a2a6a);flex:none}
+.mono{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.back{position:absolute;left:16px;top:16px;z-index:30;font-size:12px;padding:5px 12px;border-radius:16px;background:rgba(255,255,255,.78);border:1px solid var(--rim);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--fg2);cursor:pointer}
+.back.dk{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#c8c9d6}
+.btn{display:inline-flex;align-items:center;white-space:nowrap;font-size:12px;font-weight:500;background:#15161b;color:#fff;border-radius:16px;padding:6px 12px;cursor:pointer;border:0;line-height:1.2}
+.btn.g{background:#fff;color:var(--fg);border:1px solid var(--rim)}
+.btn.s{font-size:11.5px;padding:4px 10px}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block}
+.d-hot{background:var(--hot)}.d-warm{background:var(--ac2)}.d-ok{background:var(--good)}
+.cost{font-family:var(--mono);color:var(--hot);white-space:nowrap}
+.up{color:var(--good);font-family:var(--mono)}
+@keyframes ping{70%{box-shadow:0 0 0 8px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+.ping{box-shadow:0 0 0 0 rgba(229,72,77,.5);animation:ping 2s infinite}
+@keyframes breathe{50%{transform:scale(1.07)}}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}}
+@keyframes shim{to{background-position:-200% 0}}
+@keyframes blink{50%{opacity:0}}
+@keyframes rot{to{--ang:360deg}}
+
+/* ============ A · Depth field ============ */
+.A{background:radial-gradient(120% 85% at 50% 0%,#ffffff 0%,#f5f4fb 42%,#e9e8f3 100%)}
+.A .floor{position:absolute;left:-60%;right:-60%;top:96px;height:130%;transform-origin:50% 0;transform:perspective(380px) rotateX(66deg);background-image:linear-gradient(rgba(91,91,214,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(91,91,214,.15) 1px,transparent 1px);background-size:70px 70px;animation:floor 3.6s linear infinite;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 60%,transparent 92%);mask-image:linear-gradient(to bottom,transparent 0%,#000 22%,#000 60%,transparent 92%)}
+@keyframes floor{to{background-position:0 70px}}
+.A .haze{position:absolute;left:50%;top:-120px;width:560px;height:300px;margin-left:-280px;border-radius:50%;background:radial-gradient(closest-side,rgba(157,140,255,.28),transparent);pointer-events:none}
+.A .aorb{position:absolute;left:50%;top:38px;width:44px;height:44px;margin-left:-22px;box-shadow:0 0 0 9px rgba(157,140,255,.10),0 0 60px 16px rgba(157,140,255,.35);animation:breathe 4s ease-in-out infinite;z-index:2}
+.A .hud{position:absolute;right:18px;top:20px;z-index:3}
+.A .lw{position:absolute;inset:0}
+.A .layer{position:absolute;left:0;right:0;display:flex;justify-content:center;flex-wrap:wrap;will-change:transform;transition:transform .35s ease-out}
+.A .cap{flex-basis:100%;text-align:center;margin-bottom:8px}
+.A .far{top:110px;gap:10px;opacity:.82}
+.A .mid{top:190px;gap:14px}
+.A .near{top:332px;gap:18px}
+.A .fp{padding:6px 12px;border-radius:20px;background:rgba(255,255,255,.62);border:1px solid var(--rim);font-size:11.5px;color:var(--fg2);filter:blur(.2px);white-space:nowrap}
+.A .fp b{color:var(--fg);font-weight:500;font-family:var(--mono);font-size:11px}
+.A .mi{width:252px;padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.84);border:1px solid var(--rim);box-shadow:0 16px 30px -22px rgba(40,40,90,.35);display:flex;gap:10px;align-items:center;font-size:12.5px;backdrop-filter:blur(6px)}
+.A .mi .t{flex:1;min-width:0}.A .mi small{display:block;color:var(--fg3);font-size:11.5px}
+.A .mi .lk{color:var(--ac);font-weight:500;font-size:12px;white-space:nowrap;cursor:pointer}
+.A .ni{width:330px;padding:16px 18px 15px;border-radius:18px;background:#fff;border:1px solid var(--rim);box-shadow:0 34px 60px -30px rgba(40,40,120,.42),0 0 0 5px rgba(255,255,255,.55);animation:bob 6s ease-in-out infinite alternate}
+.A .ni:nth-child(3){animation-delay:-2s}.A .ni:nth-child(4){animation-delay:-4s}
+@keyframes bob{to{transform:translateY(-6px)}}
+.A .ni .k{display:flex;align-items:center;gap:7px;color:var(--hot)}
+.A .ni h3{font-size:16.5px;font-weight:500;margin:9px 0 2px;letter-spacing:-.005em}
+.A .ni p{margin:0;color:var(--fg3);font-size:12px}
+.A .ni .f{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:10px}
+.A .ni .cost{font-size:17px}
+
+/* ============ B · Money flow ============ */
+.B{display:grid;grid-template-columns:minmax(0,1fr) 380px;background:#fbfbfd}
+.B .field{position:relative;overflow:hidden;background:radial-gradient(55% 60% at 50% 50%,#f1efff,#fbfbfd 72%)}
+.B canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.B .core{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;box-shadow:0 0 0 12px rgba(157,140,255,.10),0 0 70px 14px rgba(157,140,255,.38);animation:breathe 3.4s ease-in-out infinite}
+.B .coreL{position:absolute;left:50%;top:50%;transform:translate(-50%,52px);text-align:center;white-space:nowrap}
+.B .coreL b{display:block;font-size:20px;font-weight:500;letter-spacing:-.01em}
+.B .node{position:absolute;display:flex;align-items:center;gap:9px;transform:translate(-9px,-50%);white-space:nowrap}
+.B .node.l{flex-direction:row-reverse;transform:translate(calc(-100% + 9px),-50%);text-align:right}
+.B .node.v,.B .node.v.l{flex-direction:column;transform:translate(-50%,-9px);text-align:center;gap:4px}
+.B .node i{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid #c9c2ff;flex:none;position:relative}
+.B .node i::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--ac2)}
+.B .node.hot i{border-color:#f4b7b9}.B .node.hot i::after{background:var(--hot)}
+.B .node.hot i{box-shadow:0 0 0 0 rgba(229,72,77,.5);animation:ping 2.2s infinite}
+.B .node.ok i{border-color:#a8e2c4}.B .node.ok i::after{background:var(--good)}
+.B .node b{font-weight:500;font-size:13px;display:block}
+.B .node small{color:var(--fg3);font-size:11.5px}
+.B .node.hot small{color:var(--hot)}
+.B .legend{position:absolute;left:18px;bottom:16px;display:flex;gap:14px;align-items:center}
+.B .legend span{display:inline-flex;align-items:center;gap:6px}
+.B .panel{border-left:1px solid var(--rim);background:#fff;padding:22px 22px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.B .big{font-size:30px;font-weight:300;letter-spacing:-.02em;margin-top:4px}
+.B .big .up{font-size:13px;margin-left:6px}
+.B .leak{color:var(--hot);font-size:13px;margin:2px 0 10px}
+.B .r{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--rim)}
+.B .r .t{flex:1;min-width:0}.B .r small{display:block;color:var(--fg3);font-size:11.5px}
+.B .c{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:12.5px}
+.B .c a{color:var(--ac);font-weight:500;white-space:nowrap;cursor:pointer}
+.B .run{margin-top:auto;color:var(--fg3);font-size:11.5px;border-top:1px solid var(--rim);padding-top:10px}
+.B .run b{color:var(--fg);font-weight:500}
+
+/* ============ C · Scrub the day ============ */
+.C{background:#fff;display:flex;flex-direction:column;padding:58px 28px 22px;height:auto}
+.C .top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.C .clock{font-size:40px;font-weight:300;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.C .clock span{font-size:14px;color:var(--fg3);letter-spacing:0;margin-left:10px;font-weight:400}
+.C .strip{display:flex;gap:22px;flex-wrap:wrap}
+.C .strip div{font-size:11.5px;color:var(--fg3)}
+.C .strip b{display:block;font-size:16px;font-weight:500;color:var(--fg);font-family:var(--mono);letter-spacing:-.02em}
+.C .tw{position:relative;margin:22px -28px 14px;padding:0 28px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.C .tw::-webkit-scrollbar{display:none}
+.C .track{position:relative;min-width:980px;height:212px;cursor:ew-resize}
+.C .axis{position:absolute;left:0;right:0;top:104px;height:2px;border-radius:2px;background:repeating-linear-gradient(90deg,#d9d9e3 0 4px,transparent 4px 8px)}
+.C .past{position:absolute;left:0;top:104px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(157,140,255,.2),#5b5bd6)}
+.C .hr{position:absolute;top:194px;transform:translateX(-50%)}
+.C .ev{position:absolute;z-index:2;border-left:1px dashed #d4d4de;display:flex;flex-direction:column;justify-content:flex-start}
+.C .ev.b{justify-content:flex-end}
+.C .ev .l{margin-left:-1px;padding:3px 8px;border-radius:8px;white-space:nowrap;font-size:12px;transition:background .3s,box-shadow .3s;background:#fff}
+.C .ev .l small{display:block;font-family:var(--mono);font-size:10px;color:var(--fg3)}
+.C .ev.pl .l{color:var(--fg2)}
+.C .ev.on .l{background:#efedff;box-shadow:0 0 0 1px rgba(91,91,214,.18)}
+.C .mk{position:absolute;top:105px;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);z-index:2}
+.C .mk.dn{background:#5b5bd6;box-shadow:0 0 0 3px #fff}
+.C .mk.pl{background:#fff;border:2px solid #9d8cff}
+.C .now{position:absolute;top:8px;bottom:26px;width:2px;margin-left:-1px;background:linear-gradient(transparent,rgba(229,72,77,.5) 30%,rgba(229,72,77,.5) 70%,transparent)}
+.C .nowo{position:absolute;top:105px;width:26px;height:26px;transform:translate(-50%,-50%);z-index:3;box-shadow:0 0 0 4px #fff,0 0 24px 6px rgba(157,140,255,.45);animation:breathe 3s ease-in-out infinite}
+.C .nowt{position:absolute;top:186px;transform:translateX(-50%);background:#fff0f0;color:var(--hot);border-radius:8px;padding:1px 7px;z-index:3}
+.C .scrub{position:absolute;top:0;bottom:26px;width:1px;background:rgba(91,91,214,.35);transition:left .9s cubic-bezier(.3,.8,.2,1);z-index:1;pointer-events:none}
+.C .scrub::after{content:'';position:absolute;left:50%;top:105px;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);background:#fff;border:2px solid var(--ac);box-shadow:0 4px 12px -4px rgba(91,91,214,.6)}
+.C .bot{display:grid;grid-template-columns:1.15fr 1fr;gap:18px;margin-top:auto}
+.C .detail{border:1px solid var(--rim);border-radius:14px;background:linear-gradient(180deg,#fbfbff,#fff);padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-height:132px}
+.C .detail .tg{display:flex;align-items:center;gap:8px}
+.C .detail h4{margin:4px 0 0;font-size:17px;font-weight:500;letter-spacing:-.01em}
+.C .detail p{margin:0;color:var(--fg3)}
+.C .detail .f{margin-top:auto;padding-top:8px}
+.C .detail.swap{animation:pop .45s ease both}
+.C .wait .r{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--rim)}
+.C .wait .r:first-of-type{border-top:0}
+.C .wait .t{flex:1;min-width:0}.C .wait small{color:var(--fg3);margin-left:6px}
+
+/* ============ D · Arranged by the AI ============ */
+.D{background:linear-gradient(180deg,#fcfcff,#f2f2f7);padding:58px 22px 22px;display:flex;flex-direction:column;gap:14px}
+.D .think{position:absolute;left:110px;right:22px;top:16px;display:flex;align-items:center;gap:10px;min-height:28px}
+.D .think .orb{width:22px;height:22px;box-shadow:0 0 18px 2px rgba(157,140,255,.45);animation:breathe 3s ease-in-out infinite}
+.D .think .msg{font-size:13.5px;color:var(--fg2);animation:pop .4s ease both}
+.D .think .msg.busy{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(90deg,#9a9cab 30%,#5b5bd6 50%,#9a9cab 70%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shim 1.2s linear infinite}
+.D .think .when{margin-left:auto;white-space:nowrap}
+.D .grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-flow:dense;gap:10px}
+.D .tile{position:relative;background:#fff;border:1px solid var(--rim);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px;overflow:hidden;min-width:0;box-shadow:0 8px 24px -20px rgba(30,30,60,.3)}
+.D .tile .rk{position:absolute;right:12px;top:11px;font-family:var(--mono);font-size:10px;color:#b4b6c3}
+.D .tile .kd{display:flex;align-items:center;gap:6px}
+.D .tile .tt{font-size:14px;font-weight:500;margin-top:5px;line-height:1.25}
+.D .tile .ts{color:var(--fg3);font-size:11.5px}
+.D .tile .bt{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:6px;flex-wrap:wrap}
+.D .tile .v{font-family:var(--mono);font-size:15px;letter-spacing:-.02em;white-space:nowrap}
+.D .tile .v.hot{color:var(--hot)}
+.D .tile .rv{font-family:var(--mono);font-size:22px;letter-spacing:-.03em;margin-top:2px}
+.D .tile svg.sp{width:100%;height:26px;margin-top:auto}
+.D .tile .meter{height:5px;border-radius:5px;background:#eeeef3;margin-top:auto;overflow:hidden}
+.D .tile .meter i{display:block;height:100%;width:77%;border-radius:5px;background:linear-gradient(90deg,#9d8cff,#5b5bd6)}
+.D .tile .why{display:none}
+.D .tile.big{grid-column:span 2;grid-row:span 2;padding:20px 22px;border-color:transparent;background:radial-gradient(70% 60% at 100% 0%,rgba(255,179,192,.16),transparent 70%),radial-gradient(60% 60% at 0% 100%,rgba(157,140,255,.16),transparent 70%),#fff;box-shadow:0 30px 60px -36px rgba(60,50,160,.45)}
+.D .tile.big::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--ang),#9d8cff,#ffb3c0,#9be7ff,#5b5bd6,#9d8cff);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:rot 6s linear infinite;pointer-events:none}
+.D .tile.big .tt{font-size:26px;font-weight:400;letter-spacing:-.02em;margin-top:12px;max-width:460px}
+.D .tile.big .ts{font-size:13px}
+.D .tile.big .v{font-size:24px}
+.D .tile.big .btn{font-size:13px;padding:8px 15px}
+.D .tile.big .why{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding-top:14px;border-top:1px dashed rgba(91,91,214,.25)}
+.D .tile.big .why .orb{width:16px;height:16px;margin-top:4px}
+.D .tile.big .why p{margin:0;font-family:var(--serif);font-style:italic;font-size:20px;line-height:1.25;color:#3d3db0}
+.D .tile.big .why p span{font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ac2);display:block;margin-bottom:2px}
+
+/* ============ E · Ask line (dark) ============ */
+.E{background:radial-gradient(80% 70% at 50% 0%,#1d1c33,#0c0d12 70%);color:#e6e6ef;font-family:var(--mono);height:600px}
+.E::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:22px 22px;-webkit-mask-image:linear-gradient(#000,transparent 80%);mask-image:linear-gradient(#000,transparent 80%);pointer-events:none}
+.E .win{position:relative;max-width:900px;margin:0 auto;padding:62px 28px 22px;height:100%;display:flex;flex-direction:column}
+.E .rep{position:absolute;right:18px;top:16px;font-size:11px;color:#8d8fa3;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:4px 10px;cursor:pointer;background:rgba(255,255,255,.04)}
+.E .pr{display:flex;align-items:center;gap:10px;font-size:15px;color:#fff;min-height:24px}
+.E .pr .orb{width:16px;height:16px;box-shadow:0 0 16px 2px rgba(157,140,255,.55)}
+.E .pr .gt{color:#9d8cff}
+.E .car{display:inline-block;width:8px;height:17px;background:#9d8cff;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+.E .out{margin-top:14px;flex:1;min-height:0}
+.E .ln{display:flex;gap:18px;align-items:baseline;font-size:12.5px;line-height:1.5;padding:2px 0;animation:pop .35s ease both}
+.E .ln .c1{flex:0 0 30ch;min-width:0}
+.E .ln .c2{flex:0 0 18ch;text-align:right;white-space:nowrap}
+.E .ln .c3{flex:1;min-width:0}
+.E .h{color:#6f7186;letter-spacing:.14em;font-size:10.5px;margin-top:14px;padding-bottom:2px}
+.E .h.hot{color:#ff8a8f}
+.E .dim{color:#6f7186}
+.E .hv{color:#ff8a8f}.E .gv{color:#3dd68c}.E .av{color:#c9c2ff}
+.E .key{display:inline-flex;gap:7px;align-items:center;border:1px solid rgba(157,140,255,.32);background:rgba(157,140,255,.08);color:#d9d4ff;border-radius:7px;padding:1px 8px;font-size:11.5px;white-space:nowrap;cursor:pointer}
+.E .key kbd{font-family:var(--mono);font-size:10px;color:#8f86e0}
+.E .key.pri{background:linear-gradient(90deg,rgba(157,140,255,.32),rgba(255,179,192,.2));border-color:rgba(201,194,255,.5);color:#fff}
+.E .x{color:#ff8a8f}
+.E .ag i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#34364a;margin-right:3px}
+.E .ag i.w{background:#9d8cff;box-shadow:0 0 6px #9d8cff;animation:blink 1.4s steps(1) infinite}
+.E .ag i.w:nth-child(2){animation-delay:.3s}.E .ag i.w:nth-child(3){animation-delay:.7s}.E .ag i.w:nth-child(4){animation-delay:1s}
+.E .tail{display:flex;align-items:center;gap:10px;font-size:13px;color:#fff;border-top:1px solid rgba(255,255,255,.08);padding-top:12px;margin-top:10px}
+.E .tail .ghost{color:#5d5f73}
+.E .tail .hint{margin-left:auto;color:#5d5f73;font-size:11px}
+
+/* ============ F · AI's eye ============ */
+.F{background:#f6f6f9;padding:58px 22px 22px}
+.F .hud{position:absolute;right:20px;top:18px;display:flex;align-items:center;gap:8px}
+.F .hud .orb{width:16px;height:16px;box-shadow:0 0 14px 2px rgba(157,140,255,.5)}
+.F .bento{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:1.25fr 1.25fr 1fr 48px;gap:10px;height:100%}
+.F .ft{position:relative;background:#fff;border:1px solid var(--rim);border-radius:14px;padding:12px 14px;overflow:hidden;min-width:0;display:flex;flex-direction:column}
+.F .val{font-family:var(--mono);letter-spacing:-.03em;font-size:22px;margin-top:4px}
+.F .mrr{grid-column:1/3;grid-row:1/3}
+.F .mrr .val{font-size:40px;margin-top:8px}
+.F .mrr svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:120px}
+.F .accts{grid-column:3/7;grid-row:1/2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;padding:0}
+.F .ac{padding:12px 14px;border-left:1px solid var(--rim);display:flex;flex-direction:column;min-width:0}
+.F .ac:first-child{border-left:0}
+.F .ac b{font-weight:500;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.F .ac small{font-size:11px;color:var(--fg3)}
+.F .ac.hot small{color:var(--hot)}
+.F .ac svg{width:100%;height:34px;margin-top:auto}
+.F .spend{grid-column:3/4;grid-row:2/3}
+.F .book{grid-column:4/5;grid-row:2/3}
+.F .team{grid-column:5/6;grid-row:2/3}
+.F .post{grid-column:6/7;grid-row:2/3}
+.F .ft small{color:var(--fg3);font-size:11.5px}
+.F .ring{display:flex;align-items:center;gap:10px;margin-top:auto}
+.F .ring svg{width:52px;height:52px;flex:none;transform:rotate(-90deg)}
+.F .ring circle{fill:none;stroke-width:5}
+.F .ring .bg{stroke:#eeeef3}
+.F .ring .fgc{stroke:url(#fgrad);stroke-linecap:round;stroke-dasharray:138.2;stroke-dashoffset:138.2;transition:stroke-dashoffset 1.6s cubic-bezier(.3,.8,.2,1)}
+.F.on .ring .fgc{stroke-dashoffset:31.8}
+.F .bars{display:flex;align-items:flex-end;gap:3px;height:34px;margin-top:auto}
+.F .bars i{flex:1;border-radius:2px;background:linear-gradient(#9d8cff,#5b5bd6);transform-origin:bottom;transform:scaleY(0);transition:transform .8s cubic-bezier(.3,.8,.2,1)}
+.F .bars i.gap{background:none;border:1px dashed #c9c2ff}
+.F.on .bars i{transform:scaleY(1)}
+.F .dots{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:auto;max-width:130px}
+.F .dots i{width:8px;height:8px;border-radius:50%;background:#e3e3ea}
+.F .dots i.w{background:#9d8cff;box-shadow:0 0 0 0 rgba(157,140,255,.6);animation:pingv 1.8s infinite}
+@keyframes pingv{70%{box-shadow:0 0 0 5px rgba(157,140,255,0)}100%{box-shadow:0 0 0 0 rgba(157,140,255,0)}}
+.F .need{grid-row:3/4}
+.F .n1{grid-column:1/3}.F .n2{grid-column:3/5}.F .n3{grid-column:5/7}
+.F .need .hd{display:flex;align-items:center;gap:7px;font-weight:500;font-size:13.5px}
+.F .need .f{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.F .worth{grid-column:1/7;grid-row:4/5;flex-direction:row;align-items:center;gap:8px;padding:0 8px;flex-wrap:wrap}
+.F .worth .mono{padding:0 6px}
+.F .chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;padding:5px 6px 5px 11px;border-radius:16px;background:#f6f6f9;border:1px solid var(--rim)}
+.F .chip a{color:var(--ac);font-weight:500;background:#fff;border-radius:12px;padding:2px 8px;cursor:pointer;border:1px solid rgba(91,91,214,.15)}
+.F .spark path{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s ease}
+.F.on .spark path{stroke-dashoffset:0}
+.F .spark path.fill{fill:url(#mg);stroke:none;stroke-dasharray:none;opacity:0;transition:opacity 1.2s ease .4s}
+.F.on .spark path.fill{opacity:1}
+.F .scanl{position:absolute;left:0;right:0;top:-90px;height:90px;background:linear-gradient(180deg,transparent,rgba(157,140,255,.10),transparent);animation:scanl 5.5s ease-in-out infinite;pointer-events:none;z-index:5}
+@keyframes scanl{to{top:100%}}
+.F .eye{position:absolute;z-index:8;pointer-events:none;transition:left .75s cubic-bezier(.5,0,.2,1),top .75s cubic-bezier(.5,0,.2,1),width .75s cubic-bezier(.5,0,.2,1),height .75s cubic-bezier(.5,0,.2,1)}
+.F .eye i{position:absolute;width:16px;height:16px;border:2px solid var(--ac);transition:border-color .3s,margin .3s}
+.F .eye i:nth-child(1){left:-7px;top:-7px;border-right:0;border-bottom:0;border-top-left-radius:6px}
+.F .eye i:nth-child(2){right:-7px;top:-7px;border-left:0;border-bottom:0;border-top-right-radius:6px}
+.F .eye i:nth-child(3){left:-7px;bottom:-7px;border-right:0;border-top:0;border-bottom-left-radius:6px}
+.F .eye i:nth-child(4){right:-7px;bottom:-7px;border-left:0;border-top:0;border-bottom-right-radius:6px}
+.F .eye.lock i{border-color:var(--hot)}
+.F .eye.lock.soft i{border-color:var(--ac)}
+.F .eye::after{content:'';position:absolute;inset:0;border-radius:14px;background:rgba(229,72,77,.04);opacity:0;transition:opacity .3s}
+.F .eye.lock::after{opacity:1}
+.F .eye.lock.soft::after{background:rgba(91,91,214,.04)}
+.F .tag{position:absolute;z-index:9;display:flex;align-items:center;gap:10px;background:#15161b;color:#fff;border-radius:12px;padding:7px 8px 7px 12px;font-size:12px;white-space:nowrap;box-shadow:0 14px 30px -14px rgba(0,0,0,.5);opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s}
+.F .tag.show{opacity:1;transform:none}
+.F .tag .mono{color:#ff8a8f}
+.F .tag.soft .mono{color:#c9c2ff}
+.F .tag .btn{background:#fff;color:#15161b;font-size:11.5px;padding:4px 10px}
+
+/* ============ responsive ============ */
+@media(max-width:1000px){
+  .B{grid-template-columns:1fr;height:auto}.B .field{height:400px}.B .panel{border-left:0;border-top:1px solid var(--rim)}
+}
+@media(max-width:700px){
+  body{padding:16px}
+  .stage{height:auto}
+  .A .lw{position:relative;display:flex;flex-direction:column;gap:26px;padding:104px 16px 26px}
+  .A .layer{position:static;transform:none!important}
+  .A .near{order:1;gap:12px}.A .mid{order:2;gap:10px}.A .far{order:3;gap:8px}
+  .A .ni,.A .mi{width:100%}.A .ni{animation:none}
+  .A .hud{display:none}
+  .B .field{height:340px}
+  .B .node b{font-size:12px}.B .node small{font-size:10.5px}
+  .B .legend{display:none}
+  .C{padding:58px 16px 18px}
+  .C .tw{margin:18px -16px 12px;padding:0 16px}
+  .C .bot{grid-template-columns:1fr}
+  .C .clock{font-size:34px}
+  .D{padding:58px 12px 14px}
+  .D .think{position:static;margin:-8px 0 2px;min-height:44px;align-items:flex-start}
+  .D .think .when{display:none}
+  .D .grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:minmax(118px,auto)}
+  .D .tile.big{grid-row:span 1;grid-column:span 2}
+  .D .tile.big .tt{font-size:21px}
+  .E{height:auto}
+  .E .win{padding:58px 16px 18px}
+  .E .ln{flex-wrap:wrap;gap:2px 12px;font-size:11.5px;padding:4px 0}
+  .E .ln .c1{flex:1 1 100%}.E .ln .c2{flex:0 0 auto;text-align:left}.E .ln .c3{flex:0 0 auto}
+  .E .tail .hint{display:none}
+  .F{padding:58px 12px 14px}
+  .F .hud .txt{display:none}
+  .F .bento{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:auto}
+  .F .ft{min-height:116px}
+  .F .mrr,.F .accts,.F .need,.F .worth{grid-column:1/-1!important;grid-row:auto!important}
+  .F .spend,.F .book,.F .team,.F .post{grid-column:auto;grid-row:auto}
+  .F .mrr{min-height:170px}
+  .F .accts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .F .ac{border-top:1px solid var(--rim)}
+  .F .ac:nth-child(-n+3){border-top:0}.F .ac:nth-child(4){border-left:0}
+  .F .worth{padding:10px 8px}
+  .F .tag{white-space:normal;max-width:calc(100% - 24px);flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:40s!important;transition-duration:.2s!important}
+  .A .floor,.F .scanl{animation:none}
+  .E .car{animation:none}
+}
+</style></head><body>
+<h1>Dashboard · do the magic</h1>
+<p class="sub">Six bolder takes on the Dashboard view, the place that shows everything running, built so it feels like an AI product and still works as a board you can act on.</p>
+
+<div class="list">
+
+<!-- ============ A ============ -->
+<div class="shot">
+  <div class="lab"><span><b>A · Depth field</b></span><span>closer means sooner</span></div>
+  <div class="stage A" id="A">
+    <div class="back">← Back</div>
+    <div class="haze"></div>
+    <div class="floor"></div>
+    <div class="orb aorb"></div>
+    <div class="hud mono">Move to look around</div>
+    <div class="lw">
+      <div class="layer far" data-d="6">
+        <div class="cap mono">On the horizon · running fine</div>
+        <div class="fp">Agency MRR <b>$412.8k</b> <span class="up">+6.2%</span></div>
+        <div class="fp">AI spend <b>77%</b> of $2,500</div>
+        <div class="fp">Bookings <b>23</b> today · 3 gaps</div>
+        <div class="fp">AI team <b>4 of 27</b> working</div>
+        <div class="fp">Next post <b>4 PM</b></div>
+      </div>
+      <div class="layer mid" data-d="14">
+        <div class="cap mono">A little closer · worth a look</div>
+        <div class="mi"><i class="dot d-warm"></i><div class="t">41 reviews waiting<small>Replies drafted</small></div><span class="lk">Send all 41</span></div>
+        <div class="mi"><i class="dot d-warm"></i><div class="t">Jen at Lumen Spa upset<small>0:48 voicemail</small></div><span class="lk">Send the reply</span></div>
+        <div class="mi"><i class="dot d-warm"></i><div class="t">New lead, call at 11:00<small>Smile Studio</small></div><span class="lk">Prep me</span></div>
+        <div class="mi"><i class="dot d-warm"></i><div class="t">3 invoices overdue<small>$2,140 in total</small></div><span class="lk">Remind them</span></div>
+      </div>
+      <div class="layer near" data-d="28">
+        <div class="cap mono">Right in front of you · needs you</div>
+        <div class="ni"><div class="k mono"><i class="dot d-hot ping"></i>Needs you</div><h3>Three accounts dipped</h3><p>Harbor Dental, Peak Fitness, Acme Clinics</p><div class="f"><span class="cost">−$4.8k/mo</span><span class="btn">Run the 2 fixes</span></div></div>
+        <div class="ni"><div class="k mono"><i class="dot d-hot ping"></i>Needs you</div><h3>Ads paused since Tuesday</h3><p>Harbor Dental · card on file expired</p><div class="f"><span class="cost">−$2.4k/mo</span><span class="btn">Turn them back on</span></div></div>
+        <div class="ni"><div class="k mono"><i class="dot d-hot ping"></i>Needs you</div><h3>Missing calls after 5 PM</h3><p>Acme Clinics · front desks close at 5</p><div class="f"><span class="cost">+18%</span><span class="btn">Set up text-back</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="note">Distance is urgency: what needs you sits right in front, what runs fine sits on the horizon, and the scene shifts a little as you move. It feels spatial and calm, but depth costs room, so the far items carry less detail.</div>
+</div>
+
+<!-- ============ B ============ -->
+<div class="shot">
+  <div class="lab"><span><b>B · Money flow</b></span><span>the agency as a living system</span></div>
+  <div class="stage B" id="B">
+    <div class="field">
+      <div class="back">← Back</div>
+      <canvas></canvas>
+      <div class="core orb"></div>
+      <div class="coreL"><span class="mono">Your agency</span><b>$412.8k/mo</b></div>
+      <div class="legend mono"><span><i class="dot d-warm"></i>Money coming in</span><span><i class="dot d-hot"></i>Money leaking</span></div>
+    </div>
+    <div class="panel">
+      <span class="mono">Coming in this month</span>
+      <div class="big">$412.8k<span class="up">+6.2%</span></div>
+      <div class="leak">$4.8k a month is leaking from 3 accounts.</div>
+      <span class="mono">Needs you</span>
+      <div class="r"><i class="dot d-hot"></i><div class="t">Three accounts dipped<small><span class="cost">−$4.8k/mo</span> · 2 fixes ready</small></div><span class="btn s">Run the 2 fixes</span></div>
+      <div class="r"><i class="dot d-hot"></i><div class="t">Ads paused since Tuesday<small><span class="cost">−$2.4k/mo</span> · card expired</small></div><span class="btn s">Turn them back on</span></div>
+      <div class="r"><i class="dot d-hot"></i><div class="t">Missing calls after 5 PM<small><span class="cost">+18%</span> · Acme Clinics</small></div><span class="btn s">Set up text-back</span></div>
+      <span class="mono" style="margin-top:8px">Worth a look</span>
+      <div class="c"><span>41 reviews waiting</span><a>Send all 41</a></div>
+      <div class="c"><span>Jen at Lumen Spa upset</span><a>Send the reply</a></div>
+      <div class="c"><span>New lead, call at 11:00</span><a>Prep me</a></div>
+      <div class="c"><span>3 invoices overdue · $2,140</span><a>Remind them</a></div>
+      <div class="run">AI spend <b>$1,920</b> of $2,500 · <b>23</b> bookings, 3 gaps · <b>4 of 27</b> agents working · post at <b>4 PM</b></div>
+    </div>
+  </div>
+  <div class="note">Each account feeds the agency; dots that peel off in red are money you are losing, so a leak is visible before you read a number. Great for a gut read of health; the exact figures live in the side rail, not the picture.</div>
+</div>
+
+<!-- ============ C ============ -->
+<div class="shot">
+  <div class="lab"><span><b>C · Scrub the day</b></span><span>what I did, what I will do</span></div>
+  <div class="stage C" id="C">
+    <div class="back">← Back</div>
+    <div class="top">
+      <div><div class="mono" style="margin-bottom:8px">Today, as the AI sees it</div><div class="clock"><em id="cTime" style="font-style:normal">10:42 AM</em><span>Drag the line. Left of now is done, right is planned.</span></div></div>
+      <div class="strip">
+        <div><b>$412.8k</b>MRR · <span class="up">+6.2%</span></div>
+        <div><b>77%</b>AI spend</div>
+        <div><b>23</b>bookings today</div>
+        <div><b>4/27</b>agents working</div>
+      </div>
+    </div>
+    <div class="tw"><div class="track" id="cTrack"></div></div>
+    <div class="bot">
+      <div class="detail" id="cDetail"></div>
+      <div class="wait">
+        <div class="mono" style="margin-bottom:6px;color:var(--hot)">Waiting on you, right now</div>
+        <div class="r"><i class="dot d-hot"></i><div class="t">Three accounts dipped<small class="cost">−$4.8k/mo</small></div><span class="btn s">Run the 2 fixes</span></div>
+        <div class="r"><i class="dot d-hot"></i><div class="t">Ads paused since Tuesday<small class="cost">−$2.4k/mo</small></div><span class="btn s">Turn them back on</span></div>
+        <div class="r"><i class="dot d-hot"></i><div class="t">Missing calls after 5 PM<small class="cost">+18%</small></div><span class="btn s">Set up text-back</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="note">A day you can scrub: everything the AI already handled sits left of now, everything it plans sits right, and the three things that wait on you stay pinned below. It builds trust in the AI, but totals are harder to scan than on a grid.</div>
+</div>
+
+<!-- ============ D ============ -->
+<div class="shot">
+  <div class="lab"><span><b>D · Arranged by the AI</b></span><span>it reorders itself and says why</span></div>
+  <div class="stage D" id="D">
+    <div class="back">← Back</div>
+    <div class="think"><div class="orb"></div><div class="msg" id="dMsg">Sorted by money at risk.</div><span class="when mono" id="dWhen">Re-ranked just now</span></div>
+    <div class="grid" id="dGrid"></div>
+  </div>
+  <div class="note"><b>My pick.</b> A plain, readable board, but the AI rearranges it live, makes the top thing big and says in one line why it is first. It feels intelligent without making you learn a new picture; the trade-off is that things move, so we would only re-rank on real events.</div>
+</div>
+
+<!-- ============ E ============ -->
+<div class="shot">
+  <div class="lab"><span><b>E · Ask line</b></span><span>a dashboard you ask for</span></div>
+  <div class="stage E" id="E">
+    <div class="back dk">← Back</div>
+    <div class="rep" id="eRep">↻ Replay</div>
+    <div class="win">
+      <div class="pr"><div class="orb"></div><span class="gt">›</span><span id="eQ"></span><span class="car" id="eCar"></span></div>
+      <div class="out" id="eOut"></div>
+      <div class="tail"><span class="gt" style="color:#9d8cff">›</span><span class="ghost">run the 2 fixes</span><span class="car"></span><span class="hint">tab to accept · ⌘K to ask anything</span></div>
+    </div>
+  </div>
+  <div class="note">An ultra-minimal command line that answers in plain words and streams the whole board in a few seconds, with every action one key away. Fastest for power users and very honest, but it can feel cold to some owners.</div>
+</div>
+
+<!-- ============ F ============ -->
+<div class="shot">
+  <div class="lab"><span><b>F · The AI's eye</b></span><span>it scans the board and locks onto problems</span></div>
+  <div class="stage F" id="F">
+    <div class="back">← Back</div>
+    <div class="hud mono"><div class="orb"></div><span class="txt">Scanning 12 signals · 3 need you</span></div>
+    <div class="scanl"></div>
+    <div class="bento" id="fBento">
+      <div class="ft mrr"><span class="mono">Agency MRR</span><div class="val"><span class="cu" data-to="412.8" data-pre="$" data-suf="k" data-dec="1">$0k</span></div><span class="up" style="font-size:12px">+6.2% this month</span>
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none" class="spark"><defs><linearGradient id="mg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#9d8cff" stop-opacity=".28"/><stop offset="1" stop-color="#9d8cff" stop-opacity="0"/></linearGradient><linearGradient id="fgrad" x1="0" x2="1"><stop offset="0" stop-color="#9d8cff"/><stop offset="1" stop-color="#5b5bd6"/></linearGradient></defs><path class="fill" d="M0 98 C40 92 60 96 90 82 S150 74 180 62 S250 50 300 26 L300 120 L0 120 Z"/><path d="M0 98 C40 92 60 96 90 82 S150 74 180 62 S250 50 300 26" pathLength="1" stroke="#5b5bd6"/></svg>
+      </div>
+      <div class="ft accts">
+        <div class="ac hot" id="fHarbor"><b>Harbor Dental</b><small>Ads off 6 days</small><svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark"><path d="M0 8 L15 9 L30 8 L45 13 L60 18 L75 22 L100 26" pathLength="1" stroke="#e5484d"/></svg></div>
+        <div class="ac hot"><b>Peak Fitness</b><small>Bookings down</small><svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark"><path d="M0 10 L15 9 L30 12 L45 11 L60 17 L75 19 L100 23" pathLength="1" stroke="#e5484d"/></svg></div>
+        <div class="ac"><b>Lumen Spa</b><small>Client upset</small><svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark"><path d="M0 18 L15 16 L30 17 L45 15 L60 16 L75 14 L100 15" pathLength="1" stroke="#9d8cff"/></svg></div>
+        <div class="ac"><b>Smile Studio</b><small>New lead today</small><svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark"><path d="M0 24 L15 22 L30 22 L45 18 L60 16 L75 12 L100 7" pathLength="1" stroke="#079455"/></svg></div>
+        <div class="ac hot"><b>Acme Clinics</b><small>Calls missed</small><svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark"><path d="M0 12 L15 11 L30 13 L45 12 L60 15 L75 16 L100 19" pathLength="1" stroke="#e5484d"/></svg></div>
+      </div>
+      <div class="ft spend" id="fSpend"><span class="mono">AI spend</span><div class="ring"><svg viewBox="0 0 52 52"><circle class="bg" cx="26" cy="26" r="22"/><circle class="fgc" cx="26" cy="26" r="22"/></svg><div><div class="val" style="font-size:18px;margin:0"><span class="cu" data-to="77" data-suf="%">0%</span></div><small>$1,920 of $2,500</small></div></div></div>
+      <div class="ft book"><span class="mono">Bookings today</span><div class="val"><span class="cu" data-to="23">0</span></div><small>3 gaps this afternoon</small><div class="bars"><i style="height:60%"></i><i style="height:80%"></i><i style="height:100%"></i><i style="height:70%"></i><i style="height:90%"></i><i class="gap" style="height:100%"></i><i class="gap" style="height:100%"></i><i style="height:50%"></i><i class="gap" style="height:100%"></i><i style="height:40%"></i></div></div>
+      <div class="ft team"><span class="mono">AI team</span><div class="val"><span class="cu" data-to="4">0</span><span style="font-size:13px;color:var(--fg3)"> of 27</span></div><small>working now</small><div class="dots" id="fDots"></div></div>
+      <div class="ft post"><span class="mono">Next social post</span><div class="val">4 PM</div><small>Peak Fitness · summer class promo</small></div>
+      <div class="ft need n1" id="fN1"><div class="hd"><i class="dot d-hot ping"></i>Three accounts dipped</div><small>Harbor, Peak and Acme · 2 fixes ready</small><div class="f"><span class="cost">−$4.8k/mo</span><span class="btn s">Run the 2 fixes</span></div></div>
+      <div class="ft need n2" id="fN2"><div class="hd"><i class="dot d-hot ping"></i>Ads paused since Tuesday</div><small>Harbor Dental · card expired</small><div class="f"><span class="cost">−$2.4k/mo</span><span class="btn s">Turn them back on</span></div></div>
+      <div class="ft need n3" id="fN3"><div class="hd"><i class="dot d-hot ping"></i>Missing calls after 5 PM</div><small>Acme Clinics · front desks gone</small><div class="f"><span class="cost">+18%</span><span class="btn s">Set up text-back</span></div></div>
+      <div class="ft worth"><span class="mono">Worth a look</span>
+        <span class="chip" id="fRev">41 reviews waiting<a>Send all 41</a></span>
+        <span class="chip">Jen at Lumen Spa upset<a>Send the reply</a></span>
+        <span class="chip">New lead, call at 11:00<a>Prep me</a></span>
+        <span class="chip">3 invoices overdue · $2,140<a>Remind them</a></span>
+      </div>
+    </div>
+    <div class="eye" id="fEye"><i></i><i></i><i></i><i></i></div>
+    <div class="tag" id="fTag"></div>
+  </div>
+  <div class="note">Everything sits on one calm board while the AI's viewfinder moves across it, locks onto a problem and offers the fix right there. Very legible and the numbers draw in live; if the scan never rests it can start to feel like surveillance.</div>
+</div>
+
+</div>
+
+<script>
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- A · parallax ---------- */
+(()=>{
+  const st=document.getElementById('A'), layers=[...st.querySelectorAll('.layer')];
+  let mx=0,my=0,user=0;
+  st.addEventListener('pointermove',e=>{const r=st.getBoundingClientRect();mx=(e.clientX-r.left)/r.width-.5;my=(e.clientY-r.top)/r.height-.5;user=performance.now()});
+  function tick(t){
+    if(innerWidth>700){
+      let x=mx,y=my;
+      if(performance.now()-user>2500){x=Math.sin(t/3200)*.35;y=Math.cos(t/4100)*.2}
+      layers.forEach(l=>{const d=+l.dataset.d;l.style.transform=`translate(${(-x*d).toFixed(2)}px,${(-y*d*.6).toFixed(2)}px)`});
+    }
+    if(!RM)requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ---------- B · money flow ---------- */
+(()=>{
+  const field=document.querySelector('#B .field'), cv=field.querySelector('canvas'), cx=cv.getContext('2d');
+  const accts=[
+    {n:'Acme Clinics',s:'Calls missed after 5 PM',a:-90,cls:'hot',leak:.25,rate:.32},
+    {n:'Peak Fitness',s:'−$1.6k/mo · widget broke',a:-18,cls:'hot',leak:.45,rate:.24},
+    {n:'Lumen Spa',s:'Jen is upset',a:54,cls:'',leak:0,rate:.22},
+    {n:'Smile Studio',s:'New lead today',a:126,cls:'ok',leak:0,rate:.2},
+    {n:'Harbor Dental',s:'−$2.4k/mo · ads off',a:198,cls:'hot',leak:.7,rate:.12}
+  ];
+  accts.forEach(a=>{const el=document.createElement('div');el.className='node '+a.cls;el.innerHTML=`<i></i><div><b>${a.n}</b><small>${a.s}</small></div>`;field.appendChild(el);a.el=el});
+  let W,H,C={x:0,y:0},dpr=Math.min(2,devicePixelRatio||1);
+  function layout(){
+    W=field.clientWidth;H=field.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+    C={x:W/2,y:H/2};const rx=W<600?W*.32:Math.min(W*.36,320),ry=H*.36;
+    accts.forEach(a=>{const r=a.a*Math.PI/180;a.x=C.x+Math.cos(r)*rx;a.y=C.y+Math.sin(r)*ry;
+      const left=a.x<C.x-20;a.el.classList.toggle('l',left);a.el.classList.toggle('v',W<600);a.el.style.left=a.x+'px';a.el.style.top=a.y+'px';
+      const dx=C.x-a.x,dy=C.y-a.y;a.cx=(a.x+C.x)/2-dy*.22;a.cy=(a.y+C.y)/2+dx*.22;});
+  }
+  new ResizeObserver(layout).observe(field);layout();
+  const P=[];
+  function bez(a,t){const u=1-t;return{x:u*u*a.x+2*u*t*a.cx+t*t*C.x,y:u*u*a.y+2*u*t*a.cy+t*t*C.y}}
+  function spawn(a){const lk=Math.random()<a.leak;P.push({a,t:0,sp:.0045+Math.random()*.003,lk,lt:.25+Math.random()*.35,free:null,life:1,r:1.3+Math.random()*1})}
+  function frame(){
+    cx.clearRect(0,0,W,H);
+    accts.forEach(a=>{cx.beginPath();cx.moveTo(a.x,a.y);cx.quadraticCurveTo(a.cx,a.cy,C.x,C.y);cx.strokeStyle=a.cls==='hot'?'rgba(229,72,77,.12)':'rgba(91,91,214,.12)';cx.lineWidth=1;cx.setLineDash([2,5]);cx.stroke();cx.setLineDash([]);
+      if(Math.random()<a.rate*(RM?.3:1))spawn(a)});
+    for(let i=P.length-1;i>=0;i--){const p=P[i];let pos;
+      if(p.free){p.free.x+=p.free.vx;p.free.y+=p.free.vy;p.free.vy+=.02;p.life-=.012;pos=p.free;
+        if(p.life<=0){P.splice(i,1);continue}
+        cx.fillStyle=`rgba(229,72,77,${(p.life*.85).toFixed(3)})`;}
+      else{p.t+=p.sp*(RM?.5:1);pos=bez(p.a,p.t);
+        if(p.lk&&p.t>p.lt){const q=bez(p.a,p.t-.02);const tx=pos.x-q.x,ty=pos.y-q.y,l=Math.hypot(tx,ty)||1;const s=Math.random()<.5?1:-1;p.free={x:pos.x,y:pos.y,vx:(-ty/l)*s*.9+tx/l*.4,vy:(tx/l)*s*.9+ty/l*.4}}
+        if(p.t>=1){P.splice(i,1);continue}
+        const al=Math.min(1,p.t*6)*(1-Math.max(0,(p.t-.85)/.15));
+        cx.fillStyle=p.lk&&p.t>p.lt-.1?`rgba(229,72,77,${al.toFixed(3)})`:(i%3?`rgba(91,91,214,${(al*.8).toFixed(3)})`:`rgba(157,140,255,${al.toFixed(3)})`);}
+      cx.beginPath();cx.arc(pos.x,pos.y,p.r,0,7);cx.fill();}
+    requestAnimationFrame(frame);
+  }
+  for(let k=0;k<160;k++){accts.forEach(a=>{if(Math.random()<a.rate)spawn(a)});P.forEach(p=>{if(!p.free)p.t+=p.sp})}
+  P.forEach(p=>{if(p.t>=1)p.t=.99});
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- C · scrub the day ---------- */
+(()=>{
+  const track=document.getElementById('cTrack'),det=document.getElementById('cDetail'),clock=document.getElementById('cTime');
+  const T0=6,T1=20,NOW=10.7;
+  const evs=[
+    {h:6.5,k:'dn',t:'Checked all 5 accounts',s:'Overnight sweep finished',d:'I read ads, calls, bookings and reviews for every account while you slept.',b:'See the sweep'},
+    {h:7.25,k:'dn',t:'Found 3 accounts dipping',s:'−$4.8k/mo',d:'Harbor Dental, Peak Fitness and Acme Clinics are down. I prepared 2 fixes.',b:'See the fixes'},
+    {h:8,k:'dn',t:'Drafted 41 review replies',s:'Ready to send',d:'Every reply is written in the client’s voice and waits for one tap.',b:'Send all 41'},
+    {h:8.75,k:'dn',t:'Spotted Harbor ads paused',s:'Card expired Tuesday',d:'The card on file expired, so Google stopped the ads. That costs about $80 a day.',b:'Turn them back on'},
+    {h:9.5,k:'dn',t:'Drafted a reply to Jen',s:'Lumen Spa · voicemail',d:'Jen left an upset 0:48 voicemail. I drafted a calm reply and booked a 2 PM call slot.',b:'Send the reply'},
+    {h:10.1,k:'dn',t:'Wrote the 11:00 brief',s:'Dr. Priya Nair',d:'The brief for your new lead leads with Harbor’s results.',b:'Read the brief'},
+    {h:11,k:'pl',t:'Call with a new lead',s:'Smile Studio',d:'Dr. Priya Nair booked a call. Your brief is ready.',b:'Prep me'},
+    {h:13.5,k:'pl',t:'Fill 3 booking gaps',s:'From the waitlist',d:'There are 3 open slots this afternoon. I will text the waitlist at 1:30.',b:'Looks good'},
+    {h:14,k:'pl',t:'Call Jen at Lumen Spa',s:'Lumen Spa',d:'If the reply goes out first, the call starts on a better note.',b:'Send the reply'},
+    {h:16,k:'pl',t:'Social post goes out',s:'Peak Fitness',d:'Summer class promo is scheduled. You can still edit it.',b:'Preview post'},
+    {h:17,k:'pl',t:'Text-back can start',s:'Needs your yes',d:'Missed calls after 5 PM are up 18%. Say yes and I will text every missed caller.',b:'Set up text-back'},
+    {h:18,k:'pl',t:'Chase 3 overdue invoices',s:'$2,140',d:'I will send a friendly reminder to each client after hours.',b:'Looks good'}
+  ];
+  const rows=[{top:6,b:0},{top:150,b:1},{top:50,b:0},{top:150,b:1,alt:1}];
+  const pct=h=>((h-T0)/(T1-T0)*100);
+  let html=`<div class="axis"></div><div class="past" style="width:${pct(NOW)}%"></div>`;
+  for(let h=8;h<=18;h+=2){const l=h===12?'12 PM':h>12?(h-12)+' PM':h+' AM';html+=`<span class="hr mono" style="left:${pct(h)}%">${l}</span>`}
+  evs.forEach((e,i)=>{
+    const above=i%2===0,hi=(i>>1)%2===0;const lblTop=above?(hi?4:52):(hi?150:118);
+    const st=above?`top:${lblTop}px;height:${104-lblTop}px`:`top:106px;height:${lblTop-106+34}px`;
+    e.el=document.createElement('div');e.el.className='ev '+e.k+(above?'':' b');e.el.setAttribute('style',`left:${pct(e.h)}%;${st}`);
+    e.el.innerHTML=`<div class="l">${e.t}<small>${fmt(e.h)} · ${e.s}</small></div>`;
+    html+=`<span class="mk ${e.k}" style="left:${pct(e.h)}%"></span>`;
+  });
+  html+=`<div class="now" style="left:${pct(NOW)}%"></div><div class="nowo orb" style="left:${pct(NOW)}%"></div><span class="nowt mono" style="left:${pct(NOW)}%">Now</span><div class="scrub" id="cScrub"></div>`;
+  track.innerHTML=html;evs.forEach(e=>track.appendChild(e.el));
+  const sc=document.getElementById('cScrub');
+  function fmt(h){let H=Math.floor(h),m=Math.round((h-H)*60);if(m===60){H++;m=0}const ap=H>=12?'PM':'AM';const hh=H>12?H-12:H;return `${hh}:${String(m).padStart(2,'0')} ${ap}`}
+  let cur=-1;
+  function show(i){if(i===cur)return;cur=i;const e=evs[i];evs.forEach((x,j)=>x.el.classList.toggle('on',j===i));
+    sc.style.left=pct(e.h)+'%';clock.textContent=fmt(e.h);
+    const done=e.k==='dn';
+    det.classList.remove('swap');void det.offsetWidth;det.classList.add('swap');
+    det.innerHTML=`<div class="tg">${done?'<span class="dot" style="background:#5b5bd6"></span><span class="mono" style="color:var(--ac)">Done by me</span>':'<span class="dot" style="border:2px solid #9d8cff;width:9px;height:9px"></span><span class="mono">Planned</span>'}<span class="mono">· ${fmt(e.h)}</span></div><h4>${e.t}</h4><p>${e.d}</p><div class="f"><span class="btn ${done&&!/Send|Turn/.test(e.b)?'g':''} s">${e.b}</span></div>`;
+  }
+  let i=4,hold=0;show(i);
+  if(!RM)setInterval(()=>{if(performance.now()<hold)return;i=(i+1)%evs.length;show(i)},2600);
+  function pick(ev){const r=track.getBoundingClientRect();const h=T0+(ev.clientX-r.left)/r.width*(T1-T0);let b=0;evs.forEach((e,j)=>{if(Math.abs(e.h-h)<Math.abs(evs[b].h-h))b=j});i=b;show(b);hold=performance.now()+7000}
+  let drag=false;track.addEventListener('pointerdown',e=>{drag=true;pick(e)});addEventListener('pointermove',e=>{if(drag)pick(e)});addEventListener('pointerup',()=>drag=false);
+  const tw=track.parentElement;if(tw.scrollWidth>tw.clientWidth)tw.scrollLeft=track.clientWidth*pct(NOW)/100-tw.clientWidth/2;
+})();
+
+/* ---------- D · arranged by the AI ---------- */
+(()=>{
+  const grid=document.getElementById('dGrid'),msg=document.getElementById('dMsg'),when=document.getElementById('dWhen');
+  const spUp='<svg class="sp" viewBox="0 0 100 26" preserveAspectRatio="none"><path d="M0 20 L14 18 L28 19 L42 14 L56 15 L70 10 L84 9 L100 4" fill="none" stroke="#5b5bd6" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>';
+  const K={need:'<i class="dot d-hot ping"></i><span class="mono" style="color:var(--hot)">Needs you</span>',look:'<i class="dot d-warm"></i><span class="mono" style="color:var(--ac)">Worth a look</span>',run:'<i class="dot d-ok"></i><span class="mono">Running</span>'};
+  const I={
+    n1:{k:'need',t:'Three accounts dipped',s:'Harbor Dental, Peak Fitness, Acme Clinics',v:'−$4.8k/mo',b:'Run the 2 fixes'},
+    n2:{k:'need',t:'Ads paused since Tuesday',s:'Harbor Dental · card expired',v:'−$2.4k/mo',b:'Turn them back on'},
+    n3:{k:'need',t:'Missing calls after 5 PM',s:'Acme Clinics · 14 front desks',v:'+18%',b:'Set up text-back'},
+    w1:{k:'look',t:'41 reviews waiting',s:'Replies drafted',b:'Send all 41'},
+    w2:{k:'look',t:'Jen at Lumen Spa is upset',s:'0:48 voicemail · reply drafted',b:'Send the reply'},
+    w3:{k:'look',t:'New lead booked a call',s:'Dr. Priya Nair · Smile Studio',v:'11:00',b:'Prep me'},
+    w4:{k:'look',t:'3 invoices overdue',s:'Oldest is 12 days',v:'$2,140',b:'Remind them'},
+    r1:{k:'run',t:'Agency MRR',rv:'$412.8k',x:'<span class="up" style="font-size:11.5px">+6.2% this month</span>'+spUp},
+    r2:{k:'run',t:'AI spend',rv:'$1,920',x:'<span class="ts">of $2,500 · 77%</span><div class="meter"><i></i></div>'},
+    r3:{k:'run',t:'Bookings today',rv:'23',x:'<span class="ts">3 gaps this afternoon</span>'},
+    r4:{k:'run',t:'AI team',rv:'4 of 27',x:'<span class="ts">agents working now</span>'},
+    r5:{k:'run',t:'Next social post',rv:'4 PM',x:'<span class="ts">Peak Fitness</span>'}
+  };
+  const S=[
+    {o:'n1 n2 n3 w2 w3 w1 w4 r1 r2 r3 r4 r5',m:'Sorted by money at risk.',y:'Most money at risk, $4.8k a month. Both fixes are ready, one tap each.'},
+    {o:'w3 n1 n2 n3 w2 w1 w4 r1 r3 r2 r4 r5',m:'10:55 · Your 11:00 call starts in 5 minutes, so I moved it up.',y:'Starts in 5 minutes. The brief leads with Harbor’s results.'},
+    {o:'w2 n1 n2 n3 w3 w1 w4 r1 r2 r3 r4 r5',m:'Jen just called again, so she is first now.',y:'Second call today. A reply now keeps Lumen Spa from leaving.'},
+    {o:'n2 n1 n3 w2 w1 w4 w3 r1 r2 r4 r3 r5',m:'Harbor is on day 6 without ads. Moved it up.',y:'Each day off costs about $80. Turning them back on takes one tap.'}
+  ];
+  const els={};
+  Object.entries(I).forEach(([id,d])=>{const el=document.createElement('div');el.className='tile';
+    let foot='';
+    if(d.k!=='run')foot=`<div class="bt">${d.v?`<span class="v ${d.k==='need'&&d.v.startsWith('−')||d.v==='+18%'?'hot':''}">${d.v}</span>`:'<span></span>'}<span class="btn ${d.k==='need'?'':'g'} s">${d.b}</span></div>`;
+    el.innerHTML=`<span class="rk"></span><div class="kd">${K[d.k]}</div><div class="tt">${d.t}</div>${d.s?`<div class="ts">${d.s}</div>`:''}${d.rv?`<div class="rv">${d.rv}</div>`:''}${d.x||''}<div class="why"><div class="orb"></div><p><span>Why this is first</span><em class="y"></em></p></div>${foot}`;
+    els[id]=el;grid.appendChild(el)});
+  function apply(s,anim){
+    const ids=s.o.split(' ');const first=new Map();
+    if(anim)ids.forEach(id=>first.set(id,els[id].getBoundingClientRect()));
+    ids.forEach((id,n)=>{const el=els[id];el.classList.toggle('big',n===0);el.querySelector('.rk').textContent=String(n+1).padStart(2,'0');grid.appendChild(el)});
+    els[ids[0]].querySelector('.why em').textContent=s.y;
+    if(!anim)return;
+    ids.forEach((id,n)=>{const el=els[id],a=first.get(id),b=el.getBoundingClientRect();const dx=a.left-b.left,dy=a.top-b.top;
+      if(Math.abs(dx)+Math.abs(dy)<1&&a.width===b.width)return;
+      el.animate([{transform:`translate(${dx}px,${dy}px)`,opacity:n===0||a.width!==b.width?.4:1},{transform:'none',opacity:1}],{duration:RM?1:750,easing:'cubic-bezier(.2,.8,.2,1)'})});
+  }
+  let k=0;apply(S[0],false);
+  function step(){
+    msg.className='msg busy';msg.textContent='Re-ranking…';when.textContent='Thinking';
+    setTimeout(()=>{k=(k+1)%S.length;apply(S[k],true);msg.className='msg';void msg.offsetWidth;msg.textContent=S[k].m;when.textContent='Re-ranked just now';},RM?0:900);
+  }
+  setInterval(step,RM?14000:6500);
+})();
+
+/* ---------- E · ask line ---------- */
+(()=>{
+  const q=document.getElementById('eQ'),out=document.getElementById('eOut');
+  const L=[
+    '<div class="ln dim">read 5 accounts, 27 agents and 1,284 events in 0.8s</div>',
+    '<div class="h hot">NEEDS YOU · 3</div>',
+    '<div class="ln"><span class="c1"><span class="x">✕</span> Three accounts dipped</span><span class="c2 hv">−$4.8k/mo</span><span class="c3"><span class="key pri"><kbd>↵</kbd>Run the 2 fixes</span></span></div>',
+    '<div class="ln"><span class="c1"><span class="x">✕</span> Ads paused since Tuesday</span><span class="c2 hv">−$2.4k/mo</span><span class="c3"><span class="key"><kbd>⌘1</kbd>Turn them back on</span></span></div>',
+    '<div class="ln"><span class="c1"><span class="x">✕</span> Missing calls after 5 PM</span><span class="c2 hv">+18%</span><span class="c3"><span class="key"><kbd>⌘2</kbd>Set up text-back</span></span></div>',
+    '<div class="h">WORTH A LOOK · 4</div>',
+    '<div class="ln"><span class="c1"><span class="av">·</span> 41 reviews waiting</span><span class="c2 dim">drafted</span><span class="c3"><span class="key"><kbd>⌘3</kbd>Send all 41</span></span></div>',
+    '<div class="ln"><span class="c1"><span class="av">·</span> Jen at Lumen Spa upset</span><span class="c2 dim">0:48 voicemail</span><span class="c3"><span class="key"><kbd>⌘4</kbd>Send the reply</span></span></div>',
+    '<div class="ln"><span class="c1"><span class="av">·</span> New lead booked a call</span><span class="c2 av">11:00</span><span class="c3"><span class="key"><kbd>⌘5</kbd>Prep me</span></span></div>',
+    '<div class="ln"><span class="c1"><span class="av">·</span> 3 invoices overdue</span><span class="c2">$2,140</span><span class="c3"><span class="key"><kbd>⌘6</kbd>Remind them</span></span></div>',
+    '<div class="h">RUNNING FOR YOU</div>',
+    '<div class="ln"><span class="c1">Agency MRR</span><span class="c2">$412.8k</span><span class="c3"><span class="gv">▲ 6.2%</span> <span class="av">▁▂▂▃▄▄▅▆▇</span></span></div>',
+    '<div class="ln"><span class="c1">AI spend</span><span class="c2">$1,920 / $2,500</span><span class="c3"><span class="av">███████▋</span><span class="dim">░░</span> 77%</span></div>',
+    '<div class="ln"><span class="c1">Bookings today</span><span class="c2">23</span><span class="c3 dim">3 gaps this afternoon</span></div>',
+    '<div class="ln"><span class="c1">AI team</span><span class="c2">4 of 27</span><span class="c3 ag"><i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i> <span class="dim">working now</span></span></div>',
+    '<div class="ln"><span class="c1">Next social post</span><span class="c2">4 PM</span><span class="c3 dim">Peak Fitness</span></div>'
+  ];
+  const Q='what’s running right now?';
+  let timers=[];
+  function run(){
+    timers.forEach(clearTimeout);timers=[];out.innerHTML='';q.textContent='';
+    if(RM){q.textContent=Q;out.innerHTML=L.join('');return}
+    let t=200;
+    [...Q].forEach((c,i)=>{timers.push(setTimeout(()=>q.textContent=Q.slice(0,i+1),t));t+=38});
+    t+=350;
+    L.forEach(l=>{timers.push(setTimeout(()=>out.insertAdjacentHTML('beforeend',l),t));t+=l.includes('class="h')?160:110});
+  }
+  run();document.getElementById('eRep').onclick=run;
+})();
+
+/* ---------- F · AI's eye ---------- */
+(()=>{
+  const st=document.getElementById('F'),eye=document.getElementById('fEye'),tag=document.getElementById('fTag');
+  const dots=document.getElementById('fDots');for(let i=0;i<27;i++){const d=document.createElement('i');if([2,9,15,22].includes(i))d.className='w';dots.appendChild(d)}
+  function countUp(el){const to=+el.dataset.to,dec=+(el.dataset.dec||0),pre=el.dataset.pre||'',suf=el.dataset.suf||'';const t0=performance.now(),D=RM?1:1600;
+    (function f(n){const p=Math.min(1,(n-t0)/D),e=1-Math.pow(1-p,3);el.textContent=pre+(to*e).toFixed(dec)+suf;if(p<1)requestAnimationFrame(f)})(t0)}
+  const go=()=>{if(st.classList.contains('on'))return;st.classList.add('on');st.querySelectorAll('.cu').forEach(countUp)};
+  if('IntersectionObserver' in window){new IntersectionObserver((es,o)=>{if(es.some(e=>e.isIntersecting)){go();o.disconnect()}},{threshold:.2}).observe(st)}
+  setTimeout(go,1200);
+  const T=[
+    {el:'fN2',h:true,l:'Locked',t:'Ads paused since Tuesday · −$2.4k/mo',b:'Turn them back on'},
+    {el:'fHarbor',h:true,l:'Why',t:'Harbor Dental is falling because its ads are off',b:'Show me'},
+    {el:'fN1',h:true,l:'Locked',t:'Three accounts dipped · −$4.8k/mo',b:'Run the 2 fixes'},
+    {el:'fN3',h:true,l:'Locked',t:'Missing calls after 5 PM · +18%',b:'Set up text-back'},
+    {el:'fRev',h:false,l:'Noticed',t:'41 review replies are ready',b:'Send all 41'},
+    {el:'fSpend',h:false,l:'Watching',t:'AI spend at 77% with 9 days left. On track.',b:'Fine'}
+  ];
+  let i=0;
+  function aim(n){const t=T[n],el=document.getElementById(t.el),sr=st.getBoundingClientRect(),r=el.getBoundingClientRect();
+    tag.classList.remove('show');eye.classList.remove('lock','soft');
+    const x=r.left-sr.left,y=r.top-sr.top;Object.assign(eye.style,{left:x+'px',top:y+'px',width:r.width+'px',height:r.height+'px'});
+    setTimeout(()=>{eye.classList.add('lock');if(!t.h)eye.classList.add('soft');
+      tag.className='tag'+(t.h?'':' soft');tag.innerHTML=`<span class="mono">${t.l}</span><span>${t.t}</span><span class="btn">${t.b}</span>`;
+      const tw=tag.offsetWidth,th=tag.offsetHeight,W=st.clientWidth,H=st.clientHeight;
+      let tx=Math.max(12,Math.min(x+r.width/2-tw/2,W-tw-12));let ty=y+r.height+14;if(ty+th>H-8)ty=y-th-14;
+      tag.style.left=tx+'px';tag.style.top=ty+'px';requestAnimationFrame(()=>tag.classList.add('show'))},RM?0:800);
+  }
+  setTimeout(()=>aim(0),300);
+  setInterval(()=>{i=(i+1)%T.length;aim(i)},RM?9000:3400);
+  addEventListener('resize',()=>aim(i));
+})();
+</script>
+</body></html>

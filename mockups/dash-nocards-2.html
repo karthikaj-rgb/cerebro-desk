@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard · without cards, more options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--hot:#d92d20;--warm:#b54708;--good:#079455;--ink:#2f5fe0;--L:#5b5bd6;--rim:rgba(21,22,27,.09);--rim2:rgba(21,22,27,.2);--mono:'Geist Mono',monospace;--serif:'Instrument Serif',serif}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px;max-width:900px}
+.shot{background:var(--bg);border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25);margin-bottom:12px}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:11px 16px;border-bottom:1px solid var(--rim);background:#fff;display:flex;justify-content:space-between}.lab b{color:var(--fg);font-weight:500}
+.note{color:var(--fg3);font-size:12.5px;margin:0 2px 30px}.note b{color:var(--fg);font-weight:500}
+.page{padding:26px 36px 34px}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:22px}.back{border:1px solid var(--rim);background:#fff;border-radius:999px;padding:6px 12px;font-size:12px}.cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.top .push{margin-left:auto}
+.eb{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.btn{font-size:11.5px;border-radius:999px;padding:5px 11px;background:#15161b;color:#fff;white-space:nowrap;flex:none}.btn.g{background:transparent;color:var(--fg2);border:1px solid var(--rim2)}
+.dot{width:7px;height:7px;border-radius:50%;flex:none;display:inline-block}.d-hot{background:var(--hot)}.d-warm{background:#e5a23c}.d-ok{background:var(--good)}
+.cost{font-family:var(--mono);font-size:11px;color:var(--hot)}.cost.w{color:var(--warm)}.cost.ok{color:var(--good)}
+.make{display:flex;gap:6px;align-items:center;margin:0 0 22px;font-size:12.5px;color:var(--fg3)}.make span{border:1px solid var(--rim);background:#fff;border-radius:999px;padding:5px 11px;color:var(--fg2)}
+/* slim numbers line, shared by F, G, I */
+.nums{display:flex;flex-wrap:wrap;gap:6px 26px;align-items:baseline;padding:10px 0;border-top:1px solid var(--rim2);border-bottom:1px solid var(--rim2);margin-bottom:22px;font-size:12.5px;color:var(--fg3)}
+.nums b{color:var(--fg);font-weight:500;font-size:14px;margin-right:5px;letter-spacing:-.01em}
+
+/* E · by account */
+.E .acct{display:grid;grid-template-columns:250px 1fr;gap:0 40px;padding:16px 0;border-top:1px solid var(--rim)}
+.E .acct:first-of-type{border-top:1px solid var(--rim2)}
+.E .who h3{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1.1;margin:0 0 4px;letter-spacing:-.01em}
+.E .who .h{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--fg3)}
+.E .r{display:flex;align-items:center;gap:12px;padding:6px 0}
+.E .r + .r{border-top:1px dashed var(--rim)}
+.E .r .t{flex:1;min-width:0}.E .r b{font-weight:500;font-size:14px}.E .r small{color:var(--fg3);font-size:12px;margin-left:8px}
+.E .r .cost{min-width:90px;text-align:right;white-space:nowrap}
+.E .calm{color:var(--fg3);font-size:12.5px;padding:6px 0}
+.E .foot{display:flex;flex-wrap:wrap;gap:6px 28px;padding-top:14px;border-top:1px solid var(--rim2);font-size:12.5px;color:var(--fg3)}.E .foot b{color:var(--fg);font-weight:500;margin-right:4px}
+
+/* F · day timeline */
+.F .tl{position:relative}
+.F .slot{display:grid;grid-template-columns:86px 28px 1fr;align-items:start}
+.F .when{font-family:var(--mono);font-size:11px;color:var(--fg3);text-align:right;padding-top:3px;letter-spacing:.04em}
+.F .axis{position:relative;align-self:stretch;display:flex;justify-content:center}
+.F .axis:before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--rim2)}
+.F .axis i{position:relative;margin-top:7px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1.5px solid var(--fg3)}
+.F .slot.now .axis i{background:var(--hot);border-color:var(--hot);box-shadow:0 0 0 4px rgba(217,45,32,.14)}
+.F .slot.now .when{color:var(--hot);font-weight:500}
+.F .body{padding:0 0 22px 6px}
+.F .body h4{margin:0 0 2px;font-weight:500;font-size:14.5px}.F .body .sm{color:var(--fg3);font-size:12px}
+.F .r{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--rim)}
+.F .r:last-child{border-bottom:0}
+.F .r .t{flex:1}.F .r b{font-weight:500;font-size:14px}.F .r small{color:var(--fg3);font-size:12px;margin-left:8px}
+.F .r .cost{width:80px;text-align:right}
+.F .ev{display:flex;align-items:center;gap:14px}.F .ev .t{flex:1}
+.F .gap .body{padding-bottom:16px}.F .gap .body .sm{font-style:italic;font-family:var(--serif);font-size:16px;color:var(--fg3)}
+
+/* G · inbox split */
+.G .split{display:grid;grid-template-columns:380px 1fr;min-height:470px}
+.G .list{border-right:1px solid var(--rim2);padding-right:0}
+.G .list .eb{display:block;padding:12px 0 6px}
+.G .li{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:10px 18px 10px 0;border-bottom:1px solid var(--rim);position:relative}
+.G .li b{font-weight:400;font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.G .li small{color:var(--fg3);font-size:11.5px}
+.G .li.on{margin-left:-14px;padding-left:14px;background:#fff}
+.G .li.on:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--fg)}
+.G .li.on b{font-weight:500}
+.G .det{padding:6px 0 0 40px;max-width:740px}
+.G .det .crumb{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.G .det h2{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.1;margin:0 0 8px;letter-spacing:-.01em}
+.G .det .lede{font-size:14.5px;font-weight:300;color:var(--fg2);line-height:1.6;margin:0 0 20px}
+.G .det .lede b{font-weight:500;color:var(--fg)}
+.G .fix{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:baseline;padding:12px 0;border-top:1px solid var(--rim)}
+.G .fix .n{font-family:var(--mono);font-size:11px;color:var(--fg3)}.G .fix b{font-weight:500;font-size:14px}.G .fix p{margin:2px 0 0;color:var(--fg3);font-size:12.5px}
+.G .acts{display:flex;gap:8px;align-items:center;padding-top:16px;border-top:1px solid var(--rim2);margin-top:4px}
+.G .acts .why{margin-left:auto;font-size:12px;color:var(--fg3)}
+
+/* H · big numbers as type */
+.H .spread{display:grid;grid-template-columns:1.35fr 1.15fr .8fr .8fr .9fr;border-top:2px solid var(--fg);border-bottom:1px solid var(--rim2);margin-bottom:26px}
+.H .n{padding:16px 22px 18px;border-left:1px solid var(--rim)}.H .n:first-child{padding-left:0;border-left:0}
+.H .n .eb{display:block;margin-bottom:4px}
+.H .n b{display:block;font-family:var(--serif);font-weight:400;font-size:76px;line-height:.95;letter-spacing:-.02em}
+.H .n b sup{font-size:.42em;vertical-align:.95em;margin-right:2px}
+.H .n small{display:block;color:var(--fg2);font-size:12.5px;margin-top:8px}
+.H .n small em{font-style:normal;color:var(--good)}
+.H .bar{height:3px;background:var(--rim);margin-top:8px;width:100%;position:relative}.H .bar i{position:absolute;left:0;top:0;bottom:0;width:77%;background:var(--fg)}
+.H .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.H .cols > div > .eb{display:block;padding-bottom:6px;border-bottom:1px solid var(--rim2)}
+.H .p{display:grid;grid-template-columns:28px 1fr auto auto;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rim)}
+.H .p .k{font-family:var(--mono);font-size:11px;color:var(--fg3)}.H .p b{font-weight:500;font-size:13.5px}.H .p small{color:var(--fg3);font-size:12px;margin-left:6px}
+
+/* I · compact table */
+.I .bar2{display:flex;align-items:center;gap:18px;margin-bottom:10px;font-size:12.5px}
+.I .bar2 .f{color:var(--fg3)}.I .bar2 .f.on{color:var(--fg);font-weight:500;border-bottom:1.5px solid var(--fg);padding-bottom:2px}
+.I .bar2 .r{margin-left:auto;display:flex;gap:14px;color:var(--fg3);font-size:12px;align-items:center}
+.I table{width:100%;border-collapse:collapse;font-size:13px}
+.I th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);font-weight:400;text-align:left;padding:8px 10px;border-top:1px solid var(--rim2);border-bottom:1px solid var(--rim2);white-space:nowrap}
+.I th i{font-size:12px;vertical-align:-2px;margin-left:3px;opacity:.6}.I th.s{color:var(--fg)}.I th.s i{opacity:1}
+.I th:first-child,.I td:first-child{padding-left:0}.I th:last-child,.I td:last-child{padding-right:0;text-align:right}
+.I td{padding:9px 10px;border-bottom:1px solid var(--rim);vertical-align:middle}
+.I td.it b{font-weight:500}.I td.it small{display:block;color:var(--fg3);font-size:11.5px}
+.I td.cl{color:var(--fg2)}
+.I td.num{font-family:var(--mono);font-size:11.5px;text-align:right}
+.I th.num{text-align:right}
+.I .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.I .st.h{color:var(--hot)}.I .st.w{color:var(--warm)}.I .st.k{color:var(--fg3)}
+.I td .lnk{color:var(--fg);font-weight:500;font-size:12px;white-space:nowrap}.I td .lnk i{font-size:13px;vertical-align:-2px;margin-left:2px;color:var(--fg3)}
+.I td.sel{width:22px;padding-left:0}.I td.sel i,.I th.sel i{display:inline-block;width:12px;height:12px;border:1px solid var(--rim2);border-radius:3px;opacity:1;margin:0;vertical-align:-1px}
+.I .tfoot{display:flex;justify-content:space-between;padding-top:12px;font-size:12px;color:var(--fg3)}
+</style></head><body>
+<h1>Dashboard · without cards, more options</h1>
+<p class="sub">Five more directions after A–D, same content. Still no boxes: each one changes what organises the page (clients, time, selection, scale, columns) rather than how the rows look.</p>
+
+<!-- E -->
+<div class="shot"><div class="lab"><b>E · By account</b><span>everything grouped under the client it belongs to</span></div><div class="page E">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · everything that’s running</span><span class="cap push">5 accounts need something · 7 items</span></div>
+<div class="make">Make something <span>Website</span><span>Funnel</span><span>Campaign</span><span>Agent</span></div>
+
+<div class="acct"><div class="who"><h3>Harbor Dental</h3><div class="h"><i class="dot d-hot"></i>Ads off 6 days · revenue dipping</div></div>
+<div><div class="r"><i class="dot d-hot"></i><div class="t"><b>Ads paused since Tuesday</b><small>Card on file expired</small></div><span class="cost">−$2.4k/mo at risk</span><span class="btn">Turn them back on</span></div></div></div>
+
+<div class="acct"><div class="who"><h3>Peak Fitness</h3><div class="h"><i class="dot d-hot"></i>Bookings down since Friday</div></div>
+<div><div class="r"><i class="dot d-hot"></i><div class="t"><b>Booking widget broke</b><small>One of three accounts that dipped · fix is ready</small></div><span class="cost">−$4.8k/mo, all 3</span><span class="btn">Run the 2 fixes</span></div></div></div>
+
+<div class="acct"><div class="who"><h3>Lumen Spa</h3><div class="h"><i class="dot d-warm"></i>Client relationship at risk</div></div>
+<div><div class="r"><i class="dot d-warm"></i><div class="t"><b>Jen is upset</b><small>0:48 voicemail · reply drafted, call at 2 PM</small></div><span class="cost w">today</span><span class="btn g">Send the reply</span></div></div></div>
+
+<div class="acct"><div class="who"><h3>Smile Studio</h3><div class="h"><i class="dot d-ok"></i>New lead · Dr. Priya Nair</div></div>
+<div><div class="r"><i class="dot d-warm"></i><div class="t"><b>Booked a call at 11:00</b><small>Brief ready, leads with Harbor’s results</small></div><span class="cost w">11:00</span><span class="btn g">Prep me</span></div></div></div>
+
+<div class="acct"><div class="who"><h3>Across clinics</h3><div class="h"><i class="dot d-hot"></i>Patterns, not one account</div></div>
+<div><div class="r"><i class="dot d-hot"></i><div class="t"><b>Missing calls after 5 PM</b><small>14 clinics · +18% this month</small></div><span class="cost">+18%</span><span class="btn">Set up text-back</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>41 reviews waiting</b><small>Replies drafted · oldest 6 days</small></div><span class="cost w">6 days</span><span class="btn g">Send all 41</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>3 invoices overdue</b><small>Reminders drafted</small></div><span class="cost w">$2,140</span><span class="btn g">Nudge them</span></div></div></div>
+
+<div class="foot"><span class="eb" style="margin-right:4px">Running for you</span><span><b>$412.8k</b>MRR, +6.2% on September</span><span><b>$1,920</b>of $2,500 AI spend (77%)</span><span><b>23</b>bookings today, 3 gaps this afternoon</span><span><b>27</b>agents, 4 working now</span><span><b>4 PM</b>next post</span></div>
+</div></div>
+<p class="note"><b>My pick.</b> Best for agency owners who think in clients, not issue types; every item has an obvious home and a quiet client reads as quiet. Trade-off: cross-client work needs an “Across clinics” bucket, and urgency order is by client rather than strictly by cost.</p>
+
+<!-- F -->
+<div class="shot"><div class="lab"><b>F · Day timeline</b><span>today on a time axis, what needs you pinned at now</span></div><div class="page F">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · Wednesday, Nov 4</span><span class="cap push">9:12 AM</span></div>
+<div class="nums"><span><b>$412.8k</b>MRR +6.2%</span><span><b>$1,920</b>of $2,500 AI spend</span><span><b>23</b>bookings today</span><span><b>27</b>agents · 4 working</span><span><b>4 PM</b>next post</span></div>
+<div class="tl">
+<div class="slot now"><div class="when">NOW</div><div class="axis"><i></i></div><div class="body"><h4>Needs you before anything else</h4>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Three accounts dipped</b><small>Ads paused · booking widget broke</small></div><span class="cost">−$4.8k/mo</span><span class="btn">Run the 2 fixes</span></div>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Ads paused since Tuesday</b><small>Harbor Dental · card on file expired</small></div><span class="cost">−$2.4k/mo</span><span class="btn">Turn them back on</span></div>
+<div class="r"><i class="dot d-hot"></i><div class="t"><b>Missing calls after 5 PM</b><small>14 clinics · do this before tonight</small></div><span class="cost">+18%</span><span class="btn">Set up text-back</span></div>
+</div></div>
+<div class="slot"><div class="when">11:00</div><div class="axis"><i></i></div><div class="body"><div class="ev"><div class="t"><h4>Call with a new lead, Dr. Priya Nair</h4><div class="sm">Smile Studio · brief ready, leads with Harbor’s results</div></div><span class="btn g">Prep me</span></div></div></div>
+<div class="slot"><div class="when">2:00 PM</div><div class="axis"><i></i></div><div class="body"><div class="ev"><div class="t"><h4>Call Jen at Lumen Spa</h4><div class="sm">She left a 0:48 voicemail and is upset · reply drafted, send it first</div></div><span class="btn g">Send the reply</span></div></div></div>
+<div class="slot gap"><div class="when">2–5 PM</div><div class="axis"><i></i></div><div class="body"><div class="sm">3 booking gaps this afternoon; the agents are filling them.</div></div></div>
+<div class="slot"><div class="when">4:00 PM</div><div class="axis"><i></i></div><div class="body"><div class="ev"><div class="t"><h4>Next social post goes out</h4><div class="sm">Scheduled and approved</div></div><span class="btn g">Preview</span></div></div></div>
+<div class="slot"><div class="when">TONIGHT</div><div class="axis"><i></i></div><div class="body"><div class="ev"><div class="t"><h4>Front desks close at 14 clinics</h4><div class="sm">Text-back will catch missed calls once it’s on (pinned at now)</div></div></div></div></div>
+<div class="slot"><div class="when">ANY TIME</div><div class="axis" style="--x:0"><i></i></div><div class="body" style="padding-bottom:0">
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>41 reviews waiting</b><small>Replies drafted · oldest 6 days</small></div><span class="cost w">6 days</span><span class="btn g">Send all 41</span></div>
+<div class="r"><i class="dot d-warm"></i><div class="t"><b>3 invoices overdue</b><small>Reminders drafted</small></div><span class="cost w">$2,140</span><span class="btn g">Nudge them</span></div>
+</div></div>
+</div>
+<div class="make" style="margin:18px 0 0">Make something <span>Website</span><span>Funnel</span><span>Campaign</span><span>Agent</span></div>
+</div></div>
+<p class="note"><b>Best for planning the day.</b> Calls and posts land where they happen, so the owner sees what is coming, not just what is wrong. Trade-off: items with no time (reviews, invoices) sit awkwardly in an “any time” tail, and the page gets long on busy days.</p>
+
+<!-- G -->
+<div class="shot"><div class="lab"><b>G · Inbox split</b><span>a narrow list left, the selected item read in full right</span></div><div class="page G">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · everything that’s running</span></div>
+<div class="nums"><span><b>$412.8k</b>MRR +6.2%</span><span><b>$1,920</b>of $2,500 AI spend</span><span><b>23</b>bookings, 3 gaps</span><span><b>27</b>agents · 4 working</span><span><b>4 PM</b>next post</span></div>
+<div class="split">
+<div class="list">
+<span class="eb">Needs you · 3</span>
+<div class="li on"><i class="dot d-hot"></i><div><b>Three accounts dipped</b><small>Ads paused · widget broke</small></div><span class="cost">−$4.8k/mo</span></div>
+<div class="li"><i class="dot d-hot"></i><div><b>Ads paused since Tuesday</b><small>Harbor Dental</small></div><span class="cost">−$2.4k/mo</span></div>
+<div class="li"><i class="dot d-hot"></i><div><b>Missing calls after 5 PM</b><small>14 clinics</small></div><span class="cost">+18%</span></div>
+<span class="eb" style="padding-top:18px">Worth a look · 4</span>
+<div class="li"><i class="dot d-warm"></i><div><b>41 reviews waiting</b><small>Replies drafted</small></div><span class="cost w">6 days</span></div>
+<div class="li"><i class="dot d-warm"></i><div><b>Jen at Lumen Spa is upset</b><small>0:48 voicemail</small></div><span class="cost w">2 PM</span></div>
+<div class="li"><i class="dot d-warm"></i><div><b>New lead booked a call at 11:00</b><small>Dr. Priya Nair</small></div><span class="cost w">11:00</span></div>
+<div class="li" style="border-bottom:0"><i class="dot d-warm"></i><div><b>3 invoices overdue</b><small>3 clients</small></div><span class="cost w">$2,140</span></div>
+</div>
+<div class="det">
+<div class="crumb"><i class="dot d-hot"></i><span class="eb">Needs you · 1 of 3</span></div>
+<h2>Three accounts dipped this week</h2>
+<p class="lede">Together they are down <b>$4.8k a month</b>. Two of the three causes are things I can fix now without changing anything the client sees: Harbor Dental’s ads are paused, and Peak Fitness’s booking widget stopped loading on mobile. The third looks seasonal, so I’ll keep watching it.</p>
+<div class="fix"><span class="n">01</span><div><b>Turn Harbor Dental’s ads back on</b><p>Ask for a new card and resume the same campaigns at the same budget.</p></div><span class="cost">−$2.4k/mo</span></div>
+<div class="fix"><span class="n">02</span><div><b>Repair the booking widget at Peak Fitness</b><p>Roll back last Thursday’s theme update, which broke the script on mobile.</p></div><span class="cost">−$1.6k/mo</span></div>
+<div class="fix"><span class="n">—</span><div><b style="font-weight:400;color:var(--fg2)">Third account: watching, no action</b><p>Bookings follow last November’s curve within 4%.</p></div><span class="cost w">−$0.8k/mo</span></div>
+<div class="acts"><span class="btn">Run the 2 fixes</span><span class="btn g">Just the first</span><span class="btn g">Later</span><span class="why">Next: Ads paused since Tuesday ↓</span></div>
+</div>
+</div>
+</div></div>
+<p class="note"><b>Best for working through the list.</b> One item gets full attention with its reasoning and fixes in plain text, like an email client. Trade-off: you only see one item’s detail at a time, so it feels less like an at-a-glance dashboard.</p>
+
+<!-- H -->
+<div class="shot"><div class="lab"><b>H · Big numbers as type</b><span>a magazine spread, actions as a numbered list beneath</span></div><div class="page H">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · everything that’s running</span><span class="cap push">October so far</span></div>
+<div class="spread">
+<div class="n"><span class="eb">Agency MRR</span><b><sup>$</sup>412.8k</b><small><em>+6.2%</em> on September</small></div>
+<div class="n"><span class="eb">AI spend · Oct</span><b><sup>$</sup>1,920</b><small>of $2,500 · 77%</small><div class="bar"><i></i></div></div>
+<div class="n"><span class="eb">Bookings today</span><b>23</b><small>3 gaps this afternoon</small></div>
+<div class="n"><span class="eb">AI team</span><b>27</b><small>4 working right now</small></div>
+<div class="n"><span class="eb">Social</span><b>4<span style="font-size:.5em"> PM</span></b><small>next post</small></div>
+</div>
+<div class="cols">
+<div><span class="eb">Needs you · 3</span>
+<div class="p"><span class="k">01</span><span><b>Three accounts dipped</b><small>ads paused · widget broke</small></span><span class="cost">−$4.8k/mo</span><span class="btn">Run the 2 fixes</span></div>
+<div class="p"><span class="k">02</span><span><b>Ads paused since Tuesday</b><small>Harbor Dental</small></span><span class="cost">−$2.4k/mo</span><span class="btn">Turn them back on</span></div>
+<div class="p"><span class="k">03</span><span><b>Missing calls after 5 PM</b><small>14 clinics</small></span><span class="cost">+18%</span><span class="btn">Set up text-back</span></div>
+</div>
+<div><span class="eb">Worth a look · 4</span>
+<div class="p"><span class="k">04</span><span><b>41 reviews waiting</b><small>drafted</small></span><span class="cost w">6 days</span><span class="btn g">Send all 41</span></div>
+<div class="p"><span class="k">05</span><span><b>Jen at Lumen Spa is upset</b><small>call 2 PM</small></span><span class="cost w">0:48</span><span class="btn g">Send the reply</span></div>
+<div class="p"><span class="k">06</span><span><b>New lead at 11:00</b><small>Dr. Priya Nair</small></span><span class="cost w">11:00</span><span class="btn g">Prep me</span></div>
+<div class="p"><span class="k">07</span><span><b>3 invoices overdue</b></span><span class="cost w">$2,140</span><span class="btn g">Nudge them</span></div>
+</div>
+</div>
+<div class="make" style="margin:20px 0 0">Make something <span>Website</span><span>Funnel</span><span>Campaign</span><span>Agent</span></div>
+</div></div>
+<p class="note"><b>Most striking.</b> Best when the owner opens the page to feel the health of the business at a glance; the numbers carry the page like a magazine cover. Trade-off: it leads with what is fine, so the $4.8k problem sits below the fold on a laptop.</p>
+
+<!-- I -->
+<div class="shot"><div class="lab"><b>I · Compact table</b><span>one dense, sortable table for power users</span></div><div class="page I">
+<div class="top"><span class="back">← Back</span><span class="cap">Dashboard · everything that’s running</span></div>
+<div class="nums"><span><b>$412.8k</b>MRR +6.2%</span><span><b>$1,920</b>of $2,500 AI spend</span><span><b>23</b>bookings, 3 gaps</span><span><b>27</b>agents · 4 working</span><span><b>4 PM</b>next post</span></div>
+<div class="bar2"><span class="f on">All · 7</span><span class="f">Needs you · 3</span><span class="f">Worth a look · 4</span><span class="f">Done today · 12</span>
+<span class="r"><span><i class="ti ti-search"></i> Filter</span><span>Group: none <i class="ti ti-chevron-down"></i></span><span>Make <i class="ti ti-plus"></i></span></span></div>
+<table>
+<thead><tr><th class="sel"><i></i></th><th>Item <i class="ti ti-selector"></i></th><th>Client <i class="ti ti-selector"></i></th><th class="num s">Impact <i class="ti ti-arrow-down"></i></th><th>Status <i class="ti ti-selector"></i></th><th>Age <i class="ti ti-selector"></i></th><th>Action</th></tr></thead>
+<tbody>
+<tr><td class="sel"><i></i></td><td class="it"><b>Three accounts dipped</b><small>Ads paused · booking widget broke</small></td><td class="cl">Harbor, Peak +1</td><td class="num cost">−$4.8k/mo</td><td><span class="st h">Needs you</span></td><td class="num" style="color:var(--fg3)">2d</td><td><span class="lnk">Run the 2 fixes <i class="ti ti-arrow-right"></i></span></td></tr>
+<tr><td class="sel"><i></i></td><td class="it"><b>Ads paused since Tuesday</b><small>Card on file expired</small></td><td class="cl">Harbor Dental</td><td class="num cost">−$2.4k/mo</td><td><span class="st h">Needs you</span></td><td class="num" style="color:var(--fg3)">6d</td><td><span class="lnk">Turn them back on <i class="ti ti-arrow-right"></i></span></td></tr>
+<tr><td class="sel"><i></i></td><td class="it"><b>3 invoices overdue</b><small>Reminders drafted</small></td><td class="cl">3 clients</td><td class="num cost w">$2,140</td><td><span class="st w">Worth a look</span></td><td class="num" style="color:var(--fg3)">9d</td><td><span class="lnk">Nudge them <i class="ti ti-arrow-right"></i></span></td></tr>
+<tr><td class="sel"><i></i></td><td class="it"><b>Missing calls after 5 PM</b><small>Front desk closed · +18% this month</small></td><td class="cl">14 clinics</td><td class="num cost">+18%</td><td><span class="st h">Needs you</span></td><td class="num" style="color:var(--fg3)">30d</td><td><span class="lnk">Set up text-back <i class="ti ti-arrow-right"></i></span></td></tr>
+<tr><td class="sel"><i></i></td><td class="it"><b>41 reviews waiting</b><small>Replies drafted in your voice</small></td><td class="cl">Across clinics</td><td class="num" style="color:var(--fg3)">—</td><td><span class="st w">Worth a look</span></td><td class="num" style="color:var(--fg3)">6d</td><td><span class="lnk">Send all 41 <i class="ti ti-arrow-right"></i></span></td></tr>
+<tr><td class="sel"><i></i></td><td class="it"><b>Jen is upset</b><small>0:48 voicemail · reply drafted, call at 2 PM</small></td><td class="cl">Lumen Spa</td><td class="num" style="color:var(--fg3)">—</td><td><span class="st w">Worth a look</span></td><td class="num" style="color:var(--fg3)">1h</td><td><span class="lnk">Send the reply <i class="ti ti-arrow-right"></i></span></td></tr>
+<tr><td class="sel"><i></i></td><td class="it"><b>New lead booked a call at 11:00</b><small>Brief ready</small></td><td class="cl">Dr. Priya Nair</td><td class="num" style="color:var(--fg3)">—</td><td><span class="st k">Scheduled</span></td><td class="num" style="color:var(--fg3)">today</td><td><span class="lnk">Prep me <i class="ti ti-arrow-right"></i></span></td></tr>
+</tbody></table>
+<div class="tfoot"><span>7 open · sorted by impact</span><span>Make something: Website · Funnel · Campaign · Agent</span></div>
+</div></div>
+<p class="note"><b>Most dense.</b> Best for power users managing many accounts who want to sort, filter and bulk-act; it scales to 70 rows as easily as 7. Trade-off: it reads like a spreadsheet, so the AI’s voice and the sense of “here’s what matters” mostly disappear.</p>
+</body></html>

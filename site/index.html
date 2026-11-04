@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Glow Med Spa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0b10; --fg: #f4f2ff; --fg2: rgba(244,242,255,.68); --fg3: rgba(244,242,255,.42);
+    --a: #c9b8ff; --b: #ffb8d9; --c: #8fd3ff; --glass: rgba(255,255,255,.06); --rim: rgba(255,255,255,.1);
+    --ease: cubic-bezier(.2,.8,.2,1);
+  }
+  [data-brand='harbor'] { --a: #7fe0c9; --b: #8fd3ff; --c: #e6fff7; }
+  [data-brand='peak'] { --a: #d9ff5a; --b: #ff8a5b; --c: #fff; --bg: #0c0e0a; }
+  [data-tone='dark'] { --bg: #000; --glass: rgba(255,255,255,.04) }
+  [data-tone='warm'] { --a: #ffb8a0; --b: #ff8fb0; --c: #ffd9c2 }
+  * { box-sizing: border-box }
+  html { scroll-behavior: smooth }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; cursor: none }
+  @media (pointer: coarse) { body { cursor: auto } .cursor { display: none } }
+  @media (max-width: 900px) { h1 .w span { animation: none !important; transform: none !important } .countdown { flex-direction: row !important; flex-wrap: wrap; gap: 16px } .countdown span { display: inline-block; margin-right: 14px } }
+  ::selection { background: var(--a); color: #000 }
+  .serif { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400 }
+  .mono { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg3) }
+
+  /* aurora + grain */
+  .aurora { position: fixed; inset: -20%; z-index: 0; pointer-events: none; filter: blur(70px) saturate(1.2); opacity: .75 }
+  .aurora i { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: drift 22s ease-in-out infinite alternate }
+  .aurora i:nth-child(1) { width: 55vw; height: 55vw; left: -10%; top: -10%; background: radial-gradient(circle, var(--a), transparent 65%) }
+  .aurora i:nth-child(2) { width: 50vw; height: 50vw; right: -12%; top: 10%; background: radial-gradient(circle, var(--b), transparent 65%); animation-delay: -8s; animation-duration: 26s }
+  .aurora i:nth-child(3) { width: 45vw; height: 45vw; left: 30%; bottom: -20%; background: radial-gradient(circle, var(--c), transparent 65%); animation-delay: -14s; animation-duration: 30s }
+  @keyframes drift { from { transform: translate(0,0) scale(1) } to { transform: translate(8vw, 6vh) scale(1.15) } }
+  .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); mix-blend-mode: overlay }
+  .cursor { position: fixed; z-index: 100; width: 18px; height: 18px; border-radius: 50%; background: var(--fg); mix-blend-mode: difference; pointer-events: none; transform: translate(-50%,-50%); transition: width .25s var(--ease), height .25s var(--ease) }
+  .cursor.big { width: 64px; height: 64px }
+  .glow { position: fixed; z-index: 0; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--a) 35%, transparent), transparent 65%); pointer-events: none; transform: translate(-50%,-50%); filter: blur(10px); opacity: .5 }
+
+  main { position: relative; z-index: 2 }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px }
+
+  /* nav */
+  nav { position: sticky; top: 16px; z-index: 50; margin: 16px auto 0; width: min(1240px, calc(100% - 64px)); display: flex; align-items: center; justify-content: space-between; padding: 10px 10px 10px 18px; border-radius: 999px; background: rgba(12,12,18,.55); backdrop-filter: blur(18px) saturate(1.3); border: 1px solid var(--rim) }
+  nav .logo { display: flex; align-items: center; gap: 10px; font-weight: 500; letter-spacing: -.01em }
+  nav .logo i { width: 22px; height: 22px; border-radius: 7px; background: conic-gradient(from 200deg, var(--a), var(--b), var(--c), var(--a)); display: inline-block }
+  nav .links { display: flex; gap: 22px; color: var(--fg2); font-size: 14px }
+  nav .links a { color: inherit; text-decoration: none; transition: color .2s } nav .links a:hover { color: var(--fg) }
+  .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--fg); color: #0b0b10; border: 0; border-radius: 999px; padding: 12px 20px; font: inherit; font-weight: 500; text-decoration: none; cursor: none; position: relative; overflow: hidden; transition: transform .3s var(--ease) }
+  .btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.6), transparent 70%); transform: translateX(-120%); transition: transform .8s var(--ease) }
+  .btn:hover::after { transform: translateX(120%) }
+  .btn.ghost { background: var(--glass); color: var(--fg); border: 1px solid var(--rim); backdrop-filter: blur(10px) }
+  .btn .arr { transition: transform .3s var(--ease) } .btn:hover .arr { transform: translateX(4px) }
+
+  /* hero */
+  .hero { min-height: 92vh; display: grid; align-content: center; padding: 120px 0 80px }
+  .hero .eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 7px 12px 7px 8px; border-radius: 999px; border: 1px solid var(--rim); background: var(--glass); backdrop-filter: blur(10px); font-size: 13px; color: var(--fg2); margin-bottom: 30px }
+  .hero .eyebrow b { width: 8px; height: 8px; border-radius: 50%; background: var(--a); box-shadow: 0 0 0 0 var(--a); animation: pulse 2s infinite }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--a) 50%, transparent) } 100% { box-shadow: 0 0 0 12px transparent } }
+  h1 { font-size: clamp(56px, 9.5vw, 148px); line-height: .92; letter-spacing: -.045em; font-weight: 500; margin: 0 0 28px; max-width: 14ch }
+  h1 .serif { background: linear-gradient(90deg, var(--a), var(--b)); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em }
+  h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom } h1 .w span { display: inline-block; transform: translateY(110%); animation: up 1s var(--ease) forwards }
+  @keyframes up { to { transform: translateY(0) } }
+  .hero p { font-size: clamp(17px, 1.6vw, 22px); color: var(--fg2); max-width: 46ch; margin: 0 0 36px; font-weight: 300 }
+  .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center }
+  .hero .trust { display: flex; align-items: center; gap: 12px; margin-top: 44px; color: var(--fg3); font-size: 13px }
+  .hero .trust .av { display: flex } .hero .trust .av i { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -8px; background: linear-gradient(135deg, var(--a), var(--b)) } .hero .trust .av i:nth-child(2) { background: linear-gradient(135deg, var(--b), var(--c)) } .hero .trust .av i:nth-child(3) { background: linear-gradient(135deg, var(--c), var(--a)) }
+
+  /* marquee */
+  .marquee { border-block: 1px solid var(--rim); padding: 18px 0; overflow: hidden; white-space: nowrap; -webkit-mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent) }
+  .marquee div { display: inline-block; animation: slide 28s linear infinite } .marquee span { display: inline-block; padding: 0 28px; font-size: 15px; color: var(--fg2) } .marquee span::before { content: '✦'; color: var(--a); margin-right: 28px }
+  @keyframes slide { to { transform: translateX(-50%) } }
+
+  /* sections */
+  section { padding: 120px 0 }
+  .sh { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; margin-bottom: 56px }
+  h2 { font-size: clamp(36px, 5vw, 68px); letter-spacing: -.035em; line-height: 1; margin: 10px 0 0; font-weight: 500 }
+  .sh p { color: var(--fg2); font-size: 18px; font-weight: 300; margin: 0; max-width: 44ch; justify-self: end }
+
+  /* bento */
+  .bento { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 230px; gap: 14px }
+  .tile { position: relative; border-radius: 24px; padding: 26px; background: var(--glass); border: 1px solid var(--rim); overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; transition: transform .5s var(--ease), border-color .3s; transform-style: preserve-3d }
+  .tile::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, color-mix(in srgb, var(--a) 60%, transparent), transparent 40%, transparent 60%, color-mix(in srgb, var(--b) 60%, transparent)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .4s }
+  .tile:hover::before { opacity: 1 } .tile:hover { transform: translateY(-4px) }
+  .tile .orb { position: absolute; width: 60%; aspect-ratio: 1; border-radius: 50%; right: -20%; top: -30%; background: radial-gradient(circle, color-mix(in srgb, var(--a) 55%, transparent), transparent 65%); filter: blur(20px); transition: transform .6s var(--ease) } .tile:hover .orb { transform: scale(1.3) translate(-10%, 10%) }
+  .tile .k { font-size: 13px; color: var(--fg3); margin-bottom: 6px } .tile h3 { margin: 0; font-size: 24px; letter-spacing: -.02em; font-weight: 500 } .tile p { margin: 6px 0 0; color: var(--fg2); font-size: 14px; max-width: 34ch }
+  .tile .price { position: absolute; top: 22px; right: 24px; font-family: 'Instrument Serif', serif; font-size: 30px; font-style: italic; color: var(--fg) }
+  .tile.l { grid-column: span 4 } .tile.m { grid-column: span 2 } .tile.s { grid-column: span 2 } .tile.w { grid-column: span 3 }
+  .tile.hero { grid-column: span 4; grid-row: span 2; background: linear-gradient(160deg, color-mix(in srgb, var(--a) 22%, transparent), color-mix(in srgb, var(--b) 12%, transparent)) } .tile.hero h3 { font-size: 40px; max-width: 12ch }
+  .tile.dark { background: var(--fg); color: #0b0b10 } .tile.dark p, .tile.dark .k { color: rgba(0,0,0,.6) }
+
+  /* stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px }
+  .stat { padding: 30px 28px; border-radius: 24px; border: 1px solid var(--rim); background: var(--glass) }
+  .stat b { display: block; font-size: clamp(44px, 5vw, 72px); letter-spacing: -.04em; font-weight: 500; line-height: 1 } .stat b em { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--a) } .stat span { color: var(--fg2); font-size: 14px }
+
+  /* quotes */
+  .quotes { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; -webkit-mask: linear-gradient(90deg, #000 85%, transparent) }
+  .quote { flex: 0 0 min(460px, 80vw); scroll-snap-align: start; padding: 34px; border-radius: 28px; background: var(--glass); border: 1px solid var(--rim) }
+  .quote q { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.25; display: block; margin-bottom: 20px; quotes: '“' '”' } .quote .who { color: var(--fg3); font-size: 13px } .quote .who b { color: var(--fg); font-weight: 500; display: block }
+  .stars { color: var(--a); letter-spacing: 2px; margin-bottom: 12px }
+
+  /* booking */
+  .book { padding: 0 0 140px }
+  .book .card { border-radius: 36px; padding: 64px; background: linear-gradient(160deg, color-mix(in srgb, var(--a) 28%, var(--bg)), color-mix(in srgb, var(--b) 18%, var(--bg))); border: 1px solid var(--rim); display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-items: center; position: relative; overflow: hidden }
+  .book .card::after { content: ''; position: absolute; width: 60%; aspect-ratio: 1; right: -20%; bottom: -40%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--b) 60%, transparent), transparent 65%); filter: blur(30px) }
+  .form { position: relative; z-index: 1; display: grid; gap: 10px; background: rgba(10,10,16,.55); backdrop-filter: blur(18px); border: 1px solid var(--rim); border-radius: 24px; padding: 22px }
+  .form label { font-size: 12px; color: var(--fg3) } .form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+  .form input, .form select { width: 100%; background: var(--glass); border: 1px solid var(--rim); border-radius: 12px; padding: 12px 14px; color: var(--fg); font: inherit; outline: none } .form input:focus { border-color: var(--a) }
+  .slots { display: flex; flex-wrap: wrap; gap: 8px } .slot { padding: 9px 12px; border-radius: 999px; border: 1px solid var(--rim); font-size: 13px; color: var(--fg2); cursor: none; transition: all .2s } .slot:hover, .slot.on { background: var(--fg); color: #0b0b10; border-color: var(--fg) }
+  .done { display: none; text-align: center; padding: 30px 0 } .done .tick { width: 64px; height: 64px; border-radius: 50%; background: var(--a); color: #0b0b10; display: grid; place-items: center; margin: 0 auto 16px; font-size: 28px; animation: pop .5s var(--ease) } @keyframes pop { from { transform: scale(.4) } }
+  .form.ok .fields { display: none } .form.ok .done { display: block }
+
+  footer { padding: 40px 0 60px; color: var(--fg3); font-size: 13px; display: flex; justify-content: space-between; border-top: 1px solid var(--rim) }
+
+  /* reveal */
+  [data-static] *, [data-static] *::before, [data-static] *::after { animation: none !important; transition: none !important }
+  [data-static] .rv { opacity: 1 !important; transform: none !important }
+  [data-static] h1 .w span { transform: none !important }
+  [data-static] .cursor, [data-static] .glow { display: none }
+  .rv { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease) } .rv.in { opacity: 1; transform: none }
+
+  /* funnel */
+  [data-v='funnel'] .marquee, [data-v='funnel'] #services, [data-v='funnel'] #stories { display: none }
+  [data-v='funnel'] .hero { min-height: 0; padding-top: 90px }
+  .offer { display: none } [data-v='funnel'] .offer { display: block }
+  .offer .pill { display: inline-flex; gap: 10px; align-items: center; padding: 8px 14px; border-radius: 999px; background: var(--fg); color: #0b0b10; font-weight: 500; font-size: 14px; margin-bottom: 20px } .offer .pill .mono { color: rgba(0,0,0,.55) }
+  .steps { display: flex; gap: 8px; margin-bottom: 22px } .steps span { flex: 1; height: 3px; border-radius: 3px; background: var(--rim); overflow: hidden; position: relative } .steps span::after { content: ''; position: absolute; inset: 0; background: var(--a); transform: scaleX(0); transform-origin: left; transition: transform .6s var(--ease) } .steps span.on::after { transform: scaleX(1) }
+  .countdown { font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--fg2); display: flex; gap: 14px; margin-top: 18px } .countdown b { color: var(--fg); font-size: 22px; font-weight: 400; display: block }
+
+  @media (max-width: 900px) { nav .links { display: none } .sh { grid-template-columns: 1fr } .sh p { justify-self: start } .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px } .tile.hero, .tile.l, .tile.w, .tile.m, .tile.s { grid-column: span 2 } .stats { grid-template-columns: 1fr 1fr } .book .card { grid-template-columns: 1fr; padding: 32px } .wrap { padding: 0 20px } }
+</style>
+    <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body data-brand="glow" data-v="site">
+<div class="aurora"><i></i><i></i><i></i></div>
+<div class="grain"></div>
+<div class="glow" id="glow"></div>
+<div class="cursor" id="cur"></div>
+
+<main>
+  <nav>
+    <div class="logo"><i></i><span id="brandName">Glow Med Spa</span></div>
+    <div class="links"><a href="#services">Treatments</a><a href="#stories">Stories</a><a href="#book">Hours</a><a href="#book">Contact</a></div>
+    <a class="btn" href="#book">Book a visit <span class="arr">→</span></a>
+  </nav>
+
+  <header class="hero wrap">
+    <div class="offer">
+      <div class="steps"><span class="on"></span><span></span><span></span></div>
+      <div class="pill" id="offerPill">Spring Glow · <span class="mono">15% off first visit</span></div>
+    </div>
+    <div class="eyebrow"><b></b><span id="eyebrow">Open Saturdays · Now booking March</span></div>
+    <h1 id="h1"></h1>
+    <p id="lede"></p>
+    <div class="cta"><a class="btn" href="#book" id="cta1">Book a visit <span class="arr">→</span></a><a class="btn ghost" href="#services" id="cta2">See treatments</a></div>
+    <div class="countdown offer" id="count"><span><b>02</b>days</span><span><b>14</b>hrs</span><span><b>09</b>min</span></div>
+    <div class="trust"><span class="av"><i></i><i></i><i></i></span><span id="trust">4.9 ★ from 412 reviews · loved in Austin</span></div>
+  </header>
+
+  <div class="marquee"><div id="ticker"></div></div>
+
+  <section id="services" class="wrap">
+    <div class="sh rv"><div><div class="mono" id="svcEye">Treatments</div><h2 id="svcH">Results you can see.<br><span class="serif">Care you can feel.</span></h2></div><p id="svcP">Every visit starts with a consult, so the plan is yours, not a menu.</p></div>
+    <div class="bento" id="bento"></div>
+  </section>
+
+  <section class="wrap">
+    <div class="stats rv" id="stats"></div>
+  </section>
+
+  <section id="stories" class="wrap">
+    <div class="sh rv"><div><div class="mono">Stories</div><h2>What people <span class="serif">say after.</span></h2></div></div>
+    <div class="quotes rv" id="quotes"></div>
+  </section>
+
+  <section id="book" class="book wrap">
+    <div class="card rv">
+      <div><div class="mono" id="bookEye">Book a visit</div><h2 id="bookH">Pick a time.<br><span class="serif">We’ll do the rest.</span></h2><p style="color:var(--fg2);font-weight:300;font-size:18px;max-width:40ch" id="bookP">Confirmation by text in under a minute. Change or cancel any time.</p></div>
+      <form class="form" id="form" onsubmit="return false">
+        <div class="fields">
+          <label>Treatment</label><select id="svcSel"></select>
+          <div class="row"><div><label>Name</label><input placeholder="Your name" /></div><div><label>Phone</label><input placeholder="(512) 000-0000" /></div></div>
+          <label>Next open slots</label><div class="slots" id="slots"></div>
+          <button class="btn" type="button" id="submit" style="justify-content:center;margin-top:6px">Confirm booking <span class="arr">→</span></button>
+        </div>
+        <div class="done"><div class="tick">✓</div><h3 style="margin:0 0 6px;font-size:24px;letter-spacing:-.02em">You’re booked.</h3><p style="margin:0;color:var(--fg2)">A text is on its way with the details.</p></div>
+      </form>
+    </div>
+  </section>
+
+  <footer class="wrap"><span id="foot">© 2026 Glow Med Spa · 1811 S Lamar Blvd, Austin</span><span>Built with HighLevel</span></footer>
+</main>
+
+<script>
+  const q = new URLSearchParams(location.search)
+  const brand = ['glow','harbor','peak'].includes(q.get('brand')) ? q.get('brand') : 'glow'
+  const v = q.get('v') === 'funnel' ? 'funnel' : 'site'
+  document.body.dataset.brand = brand; document.body.dataset.v = v
+  if (q.has('static')) document.body.dataset.static = '1'
+  if (q.get('tone')) document.body.dataset.tone = q.get('tone')
+  const B = {
+    glow: { name: 'Glow Med Spa', title: 'Glow Med Spa', eye: 'Open Saturdays · Now booking March', h: ['Glow,', 'on your', 'schedule.'], serif: 'schedule.', lede: 'Medical-grade skin care in a space that feels like a day off. Consults are free, results are not subtle.', trust: '4.9 ★ from 412 reviews · loved in Austin', ticker: ['HydraFacial','Botox & fillers','Laser hair removal','Microneedling','Chemical peels','Body contouring','Open Saturdays','Free consults'],
+      svc: [['Signature','HydraFacial Glow','Deep clean, exfoliate, hydrate. The one everyone starts with.','$189','hero'],['Injectables','Botox & fillers','Natural results by nurse injectors.','from $12/unit','m'],['Laser','Hair removal','6 sessions, any area.','$99','m'],['Skin','Microneedling + PRP','Collagen, texture, tone.','$349','w'],['Body','Contouring','Non-invasive, no downtime.','$249','w']],
+      stats: [['412','reviews, 4.9 average'],['92<em>%</em>','come back within 90 days'],['<em>7</em>','treatment rooms'],['12<em>min</em>','average wait']],
+      quotes: [['I booked on a Saturday morning and was glowing by lunch. Best skin of my life.','Priya N.','HydraFacial · 3 visits'],['They talked me out of a treatment I didn’t need. That’s when I trusted them.','Marcus T.','Consult → Microneedling'],['Zero pressure, zero downtime, and the texting reminders are genuinely helpful.','Dana R.','Laser · 6 sessions']],
+      short: ['Skin that', 'glows.'], shortF: ['15% off', 'this week.'], offer: 'Spring Glow · 15% off first visit', funnelH: ['Your first', 'glow,', '15% off.'], funnelLede: 'Book any treatment this week and take 15% off your first visit. Pick a time below; it takes 30 seconds.', foot: '© 2026 Glow Med Spa · 1811 S Lamar Blvd, Austin' },
+    harbor: { name: 'Harbor Dental', title: 'Harbor Dental', eye: 'Same-day appointments · Open until 7', h: ['A calm', 'kind of', 'dentist.'], serif: 'dentist.', lede: 'Gentle, modern dentistry for the whole family. Transparent pricing, and a text the minute your chair is ready.', trust: '4.8 ★ from 1,204 reviews · Harbor District', ticker: ['Cleanings & exams','Invisalign','Whitening','Implants','Kids welcome','Emergency same-day','Sedation available','Insurance accepted'],
+      svc: [['Everyday','Cleaning & exam','45 minutes. X-rays included. No lectures.','$129','hero'],['Smile','Invisalign','Clear aligners, free scan.','from $89/mo','m'],['Brighten','Whitening','One visit, 6 shades.','$299','m'],['Restore','Implants','Lifetime warranty on the crown.','from $1,900','w'],['Kids','First visit','Free under 3, and fun after.','Free','w']],
+      stats: [['1,204','reviews, 4.8 average'],['<em>Same</em> day','emergency visits'],['<em>0</em>','surprise bills in 2025'],['9<em>min</em>','average wait']],
+      quotes: [['First dentist in years that didn’t make me feel bad. They text, they’re on time, they’re kind.','Jordan K.','New patient'],['Invisalign scan took 10 minutes and the plan was clear. Six months later: perfect.','Elena S.','Invisalign'],['Kid broke a tooth at 5 PM, seen at 5:40. That’s the whole review.','Sam W.','Emergency']],
+      short: ['Calm', 'dentistry.'], shortF: ['New here?', '$79.'], offer: 'New patient special · exam + x-rays $79', funnelH: ['New here?', 'Exam +', 'x-rays, $79.'], funnelLede: 'Book your first visit this week and get the exam, x-rays and a cleaning plan for $79. Pick a time below.', foot: '© 2026 Harbor Dental · 402 Harbor Blvd, Suite 2' },
+    peak: { name: 'Peak Fitness', title: 'Peak Fitness', eye: 'New Eastside location · Opening April 4', h: ['Train', 'like you', 'mean it.'], serif: 'mean it.', lede: 'Coached strength and conditioning in small groups. First week free, and we’ll remember your name by day two.', trust: '4.9 ★ from 688 reviews · two locations', ticker: ['Small-group strength','Conditioning','Olympic lifting','Mobility','Nutrition coaching','Open 5 AM–10 PM','First week free','Childcare on site'],
+      svc: [['Flagship','Small-group strength','Six people, one coach, real programming.','$149/mo','hero'],['Cardio','Conditioning','45 minutes. You’ll know.','Included','m'],['Skill','Olympic lifting','Technique first, PRs after.','$39/session','m'],['Recover','Mobility & sauna','Cold plunge, sauna, stretch.','Included','w'],['Coaching','Nutrition','Monthly check-ins, real food.','$79/mo','w']],
+      stats: [['688','reviews, 4.9 average'],['6<em>:1</em>','members to coach'],['<em>5</em> AM','first class, every day'],['94<em>%</em>','still here after a year']],
+      quotes: [['I’ve joined four gyms. This is the first one I’ve stayed at. The coaches actually coach.','Alex P.','Member · 14 months'],['Childcare on site is the reason I can train at all. Game changer.','Maya L.','Member · 8 months'],['PR’d my deadlift at 51. Didn’t think that was a thing.','Ron D.','Olympic lifting']],
+      short: ['Train', 'harder.'], shortF: ['First week', 'free.'], offer: 'Launch offer · first week free', funnelH: ['First week', 'on us.', 'Start Monday.'], funnelLede: 'The Eastside location opens April 4. Claim a free first week and pick your first class below.', foot: '© 2026 Peak Fitness · Eastside, 2200 E 7th St' },
+  }[brand]
+  document.title = B.title + (v === 'funnel' ? ' · Offer' : '')
+  document.getElementById('brandName').textContent = B.name
+  document.getElementById('eyebrow').textContent = B.eye
+  document.getElementById('trust').textContent = B.trust
+  document.getElementById('foot').textContent = B.foot
+  let words = v === 'funnel' ? B.funnelH : B.h
+  if (q.get('h') === 'short') words = v === 'funnel' ? B.shortF : B.short
+  document.getElementById('h1').innerHTML = words.map((w, i) => `<span class="w"><span style="animation-delay:${.1 + i * .12}s" class="${i === words.length - 1 ? 'serif' : ''}">${w}</span></span>`).join(' ')
+  document.getElementById('lede').textContent = v === 'funnel' ? B.funnelLede : B.lede
+  document.getElementById('offerPill').innerHTML = B.offer.replace(' · ', ' · <span class="mono">') + '</span>'
+  if (v === 'funnel') { document.getElementById('cta1').innerHTML = 'Claim the offer <span class="arr">→</span>'; document.getElementById('cta2').style.display = 'none'; document.getElementById('bookEye').textContent = 'Step 2 of 3 · pick a time'; document.getElementById('bookH').innerHTML = 'Pick a time.<br><span class="serif">That’s the whole form.</span>' }
+  document.getElementById('ticker').innerHTML = [...B.ticker, ...B.ticker].map(t => `<span>${t}</span>`).join('')
+  document.getElementById('bento').innerHTML = B.svc.map(([k, h, p, price, cls]) => `<div class="tile ${cls} rv"><i class="orb"></i><span class="price">${price}</span><div class="k">${k}</div><h3>${h}</h3><p>${p}</p></div>`).join('') + `<div class="tile dark m rv"><div class="k">Not sure?</div><h3>Free consult</h3><p>20 minutes with a provider, zero pressure.</p></div>`
+  document.getElementById('stats').innerHTML = B.stats.map(([b, s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('')
+  document.getElementById('quotes').innerHTML = B.quotes.map(([t, n, w]) => `<div class="quote"><div class="stars">★★★★★</div><q>${t}</q><div class="who"><b>${n}</b>${w}</div></div>`).join('')
+  document.getElementById('svcSel').innerHTML = B.svc.map(([, h]) => `<option>${h}</option>`).join('')
+  const slots = ['Tue 10:30', 'Tue 2:00', 'Wed 9:15', 'Wed 4:45', 'Thu 11:00', 'Sat 10:00']
+  document.getElementById('slots').innerHTML = slots.map((s, i) => `<span class="slot${i === 1 ? ' on' : ''}">${s}</span>`).join('')
+  document.querySelectorAll('.slot').forEach(s => s.onclick = () => { document.querySelectorAll('.slot').forEach(x => x.classList.remove('on')); s.classList.add('on'); document.querySelectorAll('.steps span')[1]?.classList.add('on') })
+  document.getElementById('submit').onclick = () => { document.getElementById('form').classList.add('ok'); document.querySelectorAll('.steps span').forEach(s => s.classList.add('on')); document.getElementById('bookEye').textContent = v === 'funnel' ? 'Step 3 of 3 · done' : 'Booked' }
+  // reveal
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), { threshold: .15 })
+  document.querySelectorAll('.rv').forEach(el => io.observe(el))
+  // cursor + glow
+  const cur = document.getElementById('cur'), glow = document.getElementById('glow')
+  let gx = innerWidth / 2, gy = innerHeight / 2, tx = gx, ty = gy
+  addEventListener('pointermove', e => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; tx = e.clientX; ty = e.clientY })
+  ;(function loop() { gx += (tx - gx) * .08; gy += (ty - gy) * .08; glow.style.left = gx + 'px'; glow.style.top = gy + 'px'; requestAnimationFrame(loop) })()
+  document.querySelectorAll('a, button, .slot, .tile').forEach(el => { el.addEventListener('pointerenter', () => cur.classList.add('big')); el.addEventListener('pointerleave', () => cur.classList.remove('big')) })
+  // tilt tiles
+  document.querySelectorAll('.tile').forEach(t => { t.addEventListener('pointermove', e => { const r = t.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; t.style.transform = `translateY(-4px) rotateX(${-y * 6}deg) rotateY(${x * 8}deg)` }); t.addEventListener('pointerleave', () => t.style.transform = '') })
+  // countdown
+  if (v === 'funnel') { let s = 2 * 86400 + 14 * 3600 + 9 * 60 + 41; const el = document.getElementById('count'); setInterval(() => { s--; const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); el.innerHTML = `<span><b>${String(d).padStart(2,'0')}</b>days</span><span><b>${String(h).padStart(2,'0')}</b>hrs</span><span><b>${String(m).padStart(2,'0')}</b>min</span><span><b>${String(s % 60).padStart(2,'0')}</b>sec</span>` }, 1000) }
+</script>
+</body>
+</html>

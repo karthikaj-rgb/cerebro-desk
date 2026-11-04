@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phone · the voice bar</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--ink:#2f5fe0;--good:#079455;--rim:rgba(21,22,27,.08);--rim2:rgba(21,22,27,.22);--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px}
+.row{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.ph{width:300px}
+.phone{width:300px;height:600px;border-radius:40px;background:#000;border:7px solid #141418;position:relative;overflow:hidden}
+.scr{position:absolute;inset:0;background:radial-gradient(45% 30% at 50% 22%,rgba(91,91,214,.14),transparent 70%),var(--bg);color:var(--fg)}
+.island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:84px;height:24px;border-radius:14px;background:#000}
+.head{position:absolute;top:46px;left:14px;right:14px;display:flex;align-items:center;gap:8px}
+.pill{display:flex;background:#fff;border:1px solid var(--rim);border-radius:20px;padding:3px;font-size:10px}.pill span{padding:4px 9px;border-radius:16px;color:var(--fg3)}.pill span.on{background:#15161b;color:#fff}
+.ic{width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid var(--rim);display:grid;place-items:center;font-size:11px;color:var(--fg2)}.ic.d{background:#15161b;color:#fff;border-color:#15161b}
+.head .sp{flex:1}
+.stage{position:absolute;left:16px;right:16px;top:92px;bottom:120px;display:flex;flex-direction:column;align-items:center;gap:10px;overflow:hidden;mask-image:linear-gradient(to bottom,#000 calc(100% - 40px),transparent)}
+.orb{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6 60%,#2a2a6a);box-shadow:0 0 36px 8px rgba(91,91,214,.25);flex:none}
+.say{font-size:13px;text-align:center;line-height:1.4}
+.live{width:100%;font-size:10px}.live .eb{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin-bottom:4px}.live .st{display:flex;gap:16px;margin-bottom:6px}.live .st b{font-size:15px;display:block;font-weight:500;color:var(--good)}.live .st small{color:var(--fg3)}
+.live .row2{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--rim)}.live .row2 i{font-style:normal;color:var(--good);font-family:var(--mono);font-size:9px}
+.note{color:var(--fg3);font-size:12.5px;margin:10px 2px 0}
+.lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);margin:0 0 8px}.lbl b{color:var(--fg);font-weight:500}
+/* the bars */
+.bar{position:absolute;left:10px;right:10px;bottom:18px;background:#fff;border:1px solid var(--rim);border-radius:26px;box-shadow:0 8px 24px -14px rgba(0,0,0,.3)}
+.cap{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.txt{font-size:11.5px;color:var(--fg);line-height:1.35}
+.b{width:30px;height:30px;border-radius:50%;border:1px solid var(--rim);background:#fff;display:grid;place-items:center;font-size:12px;flex:none}.b.d{background:#15161b;color:#fff;border-color:#15161b}.b.m{background:#15161b;color:#fff;border-color:#15161b;width:40px;height:40px;font-size:15px}
+.spark{width:24px;height:24px;border-radius:50%;background:#eef0ff;color:#5b5bd6;display:grid;place-items:center;font-size:10px;flex:none}
+/* A · two rows */
+.A .bar{padding:10px 12px 10px 14px}.A .t1{display:flex;gap:8px;align-items:flex-start}.A .t1 .txt{flex:1}.A .t2{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}
+/* B · text + mic only, rest in the header */
+.B .bar{padding:8px 8px 8px 14px;display:flex;align-items:center;gap:10px}.B .bar .txt{flex:1}
+/* C · caption under the orb, bar is just a mic */
+.C .stage{bottom:96px}.C .bar{left:50%;right:auto;transform:translateX(-50%);width:auto;padding:6px;border-radius:40px;display:flex;gap:6px;align-items:center}
+.C .cap2{position:absolute;left:16px;right:16px;bottom:78px;text-align:center;font-size:11px;color:var(--fg3)}
+/* D · collapsed controls */
+.D .bar{padding:8px 8px 8px 14px;display:flex;align-items:center;gap:10px}.D .bar .txt{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.D .sheet{position:absolute;left:10px;right:10px;bottom:96px;background:#fff;border:1px solid var(--rim);border-radius:18px;padding:10px;display:flex;justify-content:space-around;box-shadow:0 8px 24px -14px rgba(0,0,0,.3)}
+.D .sheet div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9.5px;color:var(--fg2)}
+</style></head><body>
+<h1>Phone · the voice bar and its controls</h1>
+<p class="sub">The problem: four buttons leave no room for what the AI is saying. Four ways out.</p>
+<div class="row">
+
+<div class="ph A"><p class="lbl"><b>A · Two rows</b> · text on top, controls below</p>
+<div class="phone"><div class="scr"><div class="island"></div>
+<div class="head"><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="sp"></span><span class="ic">×</span></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b>−$1.2k</b></div><div><small>Won back</small><b>+$3.6k/mo</b></div></div><div class="row2">Harbor Dental · ads<i>live ✓</i></div><div class="row2">Peak Fitness · widget<i>fixed ✓</i></div><div class="row2">Lumen Spa · reviews<i>Monday</i></div></div></div>
+<div class="bar"><div class="t1"><span class="spark"><i class="ti ti-sparkles"></i></span><div><div class="cap">HighLevel AI · speaking</div><div class="txt">You’re winning back $3.6k a month, starting today.</div></div></div><div class="t2"><span class="b"><i class="ti ti-microphone"></i></span><span class="b"><i class="ti ti-player-pause"></i></span><span class="b"><i class="ti ti-volume"></i></span><span class="b d">×</span></div></div></div></div>
+<p class="note">Keeps everything in the bar. Two full lines of text. Costs ~30px more height.</p></div>
+
+<div class="ph B"><p class="lbl"><b>B · Text + mic</b> · pause, mute, close move to the header</p>
+<div class="phone"><div class="scr"><div class="island"></div>
+<div class="head"><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="sp"></span><span class="ic"><i class="ti ti-player-pause"></i></span><span class="ic"><i class="ti ti-volume"></i></span><span class="ic d">×</span></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b>−$1.2k</b></div><div><small>Won back</small><b>+$3.6k/mo</b></div></div><div class="row2">Harbor Dental · ads<i>live ✓</i></div><div class="row2">Peak Fitness · widget<i>fixed ✓</i></div><div class="row2">Lumen Spa · reviews<i>Monday</i></div></div></div>
+<div class="bar"><span class="spark"><i class="ti ti-sparkles"></i></span><div class="txt"><div class="cap">Speaking</div>You’re winning back $3.6k a month, starting today.</div><span class="b m"><i class="ti ti-microphone"></i></span></div></div></div>
+<p class="note">The bar is for the conversation only. Pause and mute are rare taps, so they live up top with close. My pick.</p></div>
+
+<div class="ph C"><p class="lbl"><b>C · Just a mic</b> · the words stay under the orb</p>
+<div class="phone"><div class="scr"><div class="island"></div>
+<div class="head"><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="sp"></span><span class="ic"><i class="ti ti-player-pause"></i></span><span class="ic d">×</span></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again. You’re winning back $3.6k a month, starting today.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b>−$1.2k</b></div><div><small>Won back</small><b>+$3.6k/mo</b></div></div><div class="row2">Harbor Dental · ads<i>live ✓</i></div><div class="row2">Peak Fitness · widget<i>fixed ✓</i></div></div></div>
+<div class="cap2">Listening · just talk</div>
+<div class="bar"><span class="b"><i class="ti ti-volume"></i></span><span class="b m"><i class="ti ti-microphone"></i></span><span class="b"><i class="ti ti-keyboard"></i></span></div></div></div>
+<p class="note">Bar voice becomes the Creature layout on phones. Most room for content; the line is read where it's spoken.</p></div>
+
+<div class="ph D"><p class="lbl"><b>D · Collapsed</b> · one "more" button opens a tray</p>
+<div class="phone"><div class="scr"><div class="island"></div>
+<div class="head"><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="sp"></span><span class="ic d">×</span></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b>−$1.2k</b></div><div><small>Won back</small><b>+$3.6k/mo</b></div></div><div class="row2">Harbor Dental · ads<i>live ✓</i></div></div></div>
+<div class="sheet"><div><span class="b"><i class="ti ti-player-pause"></i></span>Pause</div><div><span class="b"><i class="ti ti-volume"></i></span>Mute</div><div><span class="b"><i class="ti ti-keyboard"></i></span>Type</div><div><span class="b"><i class="ti ti-arrow-right"></i></span>Next</div></div>
+<div class="bar"><span class="spark"><i class="ti ti-sparkles"></i></span><div class="txt"><div class="cap">Speaking</div>You’re winning back $3.6k a month, starting today.</div><span class="b m"><i class="ti ti-microphone"></i></span><span class="b"><i class="ti ti-dots"></i></span></div></div></div>
+<p class="note">Shown with the tray open. Hides the rare controls behind "…"; one extra tap when you need them.</p></div>
+
+</div></body></html>

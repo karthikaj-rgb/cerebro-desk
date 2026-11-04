@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Desk · Rich's feedback · mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400&family=Caveat:wght@500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+:root{--bg:#f4f4f6;--paper:#fff;--ink:#141417;--mute:#6b6b74;--line:#e4e4ea;--acc:#5b5bd6;--hot:#e5484d;--warm:#f5b000;--soft:#ededf2;--lilac:#ebe7fb;--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin:0 auto;padding:40px 24px 120px}
+h1{font-weight:500;font-size:28px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 40px}
+.sec{margin:0 0 72px}
+.sec h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-family:var(--mono);font-weight:400;margin:0 0 6px}
+.sec h3{font-size:20px;font-weight:500;margin:0 0 4px}
+.sec .q{font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;color:var(--mute);margin:0 0 20px}
+.row{display:grid;gap:20px}
+.row.three{grid-template-columns:repeat(3,1fr)}
+.row.two{grid-template-columns:1fr 1fr}
+.row.land{grid-template-columns:1fr 1fr}
+.row.phones{grid-template-columns:repeat(3,320px);justify-content:start}
+.shot{background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 40px -24px rgba(0,0,0,.25)}
+.shot .lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.shot .lab b{color:var(--ink);font-weight:500}
+.note{color:var(--mute);font-size:13px;margin:10px 2px 0}
+/* desktop frame */
+.desk{display:grid;grid-template-columns:150px 1fr;height:420px;background:var(--bg)}
+.desk .pan{background:linear-gradient(170deg,#ece8fb,#d9d2f7);padding:14px 12px;font-size:10px}
+.desk .pan .brand{display:flex;align-items:center;gap:5px;font-weight:500;margin-bottom:18px}.desk .pan .brand i{width:9px;height:9px;border-radius:3px;background:var(--acc);display:inline-block}
+.desk .pan .hi{font-size:12px;font-weight:500;line-height:1.3}
+.desk .pan .hi small{display:block;font-weight:400;color:#5b5b6b;margin-top:4px;font-size:9.5px}
+.desk .pan .go{margin-top:12px;background:var(--ink);color:#fff;border-radius:20px;padding:5px 9px;font-size:9px;display:inline-flex;gap:4px;align-items:center}
+.desk .main{padding:22px 28px;position:relative;overflow:hidden}
+.desk .tiny{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.ask{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:62%;background:#fff;border:1px solid var(--line);border-radius:30px;padding:8px 14px;font-size:10px;color:var(--mute);display:flex;gap:8px;align-items:center;box-shadow:0 6px 20px -10px rgba(0,0,0,.2)}
+.ask .mic{margin-left:auto;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:9px}
+/* stacked (light) */
+.stack2{margin-top:18px;max-width:400px}
+.stack2 .it{display:flex;gap:10px;align-items:baseline;padding:9px 0}
+.stack2 .it .dot{width:6px;height:6px;border-radius:50%;background:var(--hot);flex:none;position:relative;top:-1px}
+.stack2 .it .dot.w{background:var(--warm)}
+.stack2 .t{font-size:12.5px;font-weight:400;flex:1;line-height:1.3}
+.stack2 .t small{display:block;font-size:9.5px;color:var(--mute);margin-top:1px}
+.stack2 .act{font-size:9.5px;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:3px 9px;white-space:nowrap;background:#fff}
+.stack2 .it:hover .act{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chipdash{margin-top:22px;display:inline-flex;align-items:center;gap:14px;background:var(--soft);border-radius:20px;padding:6px 12px 6px 12px;font-size:9.5px;color:var(--mute);cursor:pointer}
+.chipdash b{font-weight:500;color:var(--ink);font-size:10.5px;margin-right:3px}
+.chipdash .o{color:var(--acc);font-weight:500;margin-left:2px}
+.empty2 .big{font-size:26px}.empty2 p{font-size:11.5px;margin:6px 0 14px}.empty2 .orb2{width:40px;height:40px;margin-bottom:14px}.empty2 .sug span{font-size:10px;padding:5px 10px;border-color:transparent;background:var(--soft)}
+/* stacked */
+.stack{margin-top:14px}
+.stack .it{display:grid;grid-template-columns:14px 1fr auto;gap:12px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}
+.stack .it .dot{width:8px;height:8px;border-radius:50%;background:var(--hot);margin-top:7px}
+.stack .it .dot.w{background:var(--warm)}
+.stack .t{font-size:15px;font-weight:500;line-height:1.25}
+.stack .w{font-size:10.5px;color:var(--mute);margin-top:3px}
+.stack .w b{color:var(--hot);font-weight:500;font-family:var(--mono);font-size:9.5px;background:#fdecec;padding:1px 5px;border-radius:4px}
+.btn{background:var(--ink);color:#fff;border-radius:20px;padding:6px 11px;font-size:10px;white-space:nowrap;display:inline-block}
+.btn.g{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.dash{margin-top:16px;display:flex;gap:18px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:10px}
+.dash .n{font-size:14px;font-weight:500;letter-spacing:-.02em}.dash .n small{display:block;font-size:8.5px;color:var(--mute);font-weight:400;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.dash .open{margin-left:auto;color:var(--acc);font-weight:500}
+/* scribbled */
+.scrib{margin-top:14px;font-family:Caveat,cursive}
+.scrib .it{position:relative;padding:12px 150px 12px 26px;font-size:21px;line-height:1.1}
+.scrib .it:before{content:'';position:absolute;left:0;top:10px;width:16px;height:16px;border:2px solid var(--acc);border-radius:50% 40% 55% 45%;transform:rotate(-8deg)}
+.scrib .it span{display:block;font-size:14px;color:var(--mute);margin-top:2px}
+.scrib .it em{font-style:normal;background:linear-gradient(transparent 55%,#fde9a6 55%)}
+.scrib .it .btn{font-family:Inter;position:absolute;right:0;top:14px}
+.scrib .rest{font-size:15px;color:var(--mute);padding:10px 26px;border-top:1px dashed var(--line)}
+/* staged */
+.stage{margin-top:26px;position:relative;padding:0 30px}
+.stage .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 26px;box-shadow:0 20px 40px -30px rgba(0,0,0,.35)}
+.stage .card .tiny{margin-bottom:8px}
+.stage .card h4{font-size:22px;font-weight:500;margin:0 0 6px;letter-spacing:-.01em}
+.stage .card p{font-size:11px;color:var(--mute);margin:0 0 14px}
+.stage .ghost{position:absolute;inset:auto 50px -10px 50px;height:30px;background:#fff;border:1px solid var(--line);border-radius:12px;z-index:-1;opacity:.6}
+.stage .ghost.g2{inset:auto 70px -20px 70px;opacity:.3}
+.stage .dots{display:flex;gap:6px;justify-content:center;margin-top:22px}.stage .dots i{width:6px;height:6px;border-radius:50%;background:var(--line)}.stage .dots i.on{background:var(--ink);width:18px;border-radius:4px}
+.stage .cnt{position:absolute;right:30px;top:-18px;font-family:var(--mono);font-size:9px;color:var(--mute)}
+/* dashboard open */
+.dash-open{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.dash-open .k{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.dash-open .k .tiny{margin-bottom:4px}.dash-open .k .n{font-size:20px;font-weight:500;letter-spacing:-.02em}.dash-open .k small{font-size:9.5px;color:var(--mute)}
+.back{font-size:10px;color:var(--mute);display:flex;gap:6px;align-items:center}
+/* voice room */
+.room{height:420px;background:#0f0f13;color:#fff;position:relative;overflow:hidden;display:grid;place-items:center}
+.room .orb{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6 60%,#2a2a6a);box-shadow:0 0 80px 20px rgba(91,91,214,.35);position:relative}
+.room .orb:after{content:'';position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(255,255,255,.15)}
+.room .st{position:absolute;bottom:60px;left:0;right:0;text-align:center;font-size:13px;color:#c8c8d8}
+.room .st b{display:block;font-weight:500;color:#fff;font-size:16px;margin-bottom:4px}
+.room .wave{display:flex;gap:3px;justify-content:center;margin:0 0 10px;height:18px;align-items:center}.room .wave i{width:3px;background:#b9adff;border-radius:2px;height:var(--h)}
+.room .x{position:absolute;top:14px;right:16px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:12px}
+.room .tl{position:absolute;top:16px;left:18px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#8a8aa0}
+.room.pause .orb{background:radial-gradient(circle at 40% 35%,#6d6d80,#3a3a48 60%,#222);box-shadow:none;transform:scale(.8)}
+.room.speak .orb{animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{50%{transform:scale(1.06)}}
+.states{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.states div{padding:12px 14px;border-right:1px solid var(--line);font-size:12px}.states div:last-child{border:0}
+.states b{display:block;font-weight:500;margin-bottom:2px}.states small{color:var(--mute);font-size:11px}
+/* website pop */
+.pop{height:460px;background:#1a1a20;position:relative;padding:18px}
+.pop .win{position:absolute;inset:18px 300px 18px 18px;background:#0b0b10;border-radius:12px;overflow:hidden;border:1px solid #2a2a33}
+.pop .win .chrome{height:26px;background:#15151b;display:flex;align-items:center;gap:6px;padding:0 10px;font-family:var(--mono);font-size:9px;color:#777}
+.pop .win .chrome i{width:8px;height:8px;border-radius:50%;background:#333}
+.pop .site{padding:26px 28px;color:#fff;background:radial-gradient(ellipse at 70% 0%,#2a1d5a,transparent 50%),#0b0b10;height:100%}
+.pop .site .h{font-size:28px;font-weight:300;line-height:1.1;max-width:300px;letter-spacing:-.02em}.pop .site .h b{font-weight:500}
+.pop .site p{font-size:10px;color:#9a9ab0;max-width:260px}
+.pop .site .cta{display:inline-block;margin-top:8px;background:#fff;color:#000;border-radius:20px;padding:6px 12px;font-size:9px}
+.pop .site .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:26px}.pop .site .tiles i{height:54px;border-radius:8px;background:#17172a;border:1px solid #26263a;display:block}
+.pop .site .sel{outline:2px solid #b9adff;outline-offset:3px;border-radius:4px;position:relative}
+.pop .site .sel:after{content:'Change this';position:absolute;top:-22px;left:0;background:#b9adff;color:#1a1a40;font-size:9px;padding:2px 7px;border-radius:10px;font-family:Inter}
+.pop .chat{position:absolute;top:18px;right:18px;bottom:18px;width:266px;background:#fff;border-radius:14px;display:flex;flex-direction:column;overflow:hidden}
+.pop .chat .hd{padding:12px 14px;border-bottom:1px solid var(--line);font-size:11px;display:flex;justify-content:space-between}.pop .chat .hd b{font-weight:500}.pop .chat .hd span{color:var(--mute);font-family:var(--mono);font-size:9px}
+.pop .chat .th{flex:1;padding:12px 14px;font-size:10.5px;display:flex;flex-direction:column;gap:8px}
+.pop .chat .m{max-width:88%;padding:7px 10px;border-radius:12px;background:var(--soft)}.pop .chat .m.me{align-self:flex-end;background:var(--ink);color:#fff}
+.pop .chat .chips{padding:0 14px 8px;display:flex;flex-wrap:wrap;gap:5px}.pop .chat .chips i{font-style:normal;font-size:9.5px;border:1px solid var(--line);border-radius:14px;padding:4px 8px;color:var(--ink)}
+.pop .chat .in{margin:0 10px 10px;border:1px solid var(--line);border-radius:20px;padding:7px 12px;font-size:10px;color:var(--mute);display:flex;gap:6px;align-items:center}.pop .chat .in .mic{margin-left:auto;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:9px}
+.pop .foot{position:absolute;left:18px;bottom:0;right:300px;height:0}
+.pop .bar{position:absolute;left:30px;bottom:28px;display:flex;gap:6px}
+.pop .bar span{background:rgba(255,255,255,.1);color:#fff;font-size:9px;padding:5px 9px;border-radius:14px}
+/* phones */
+.phone{width:320px;height:640px;border-radius:36px;background:#0f0f13;border:6px solid #1c1c22;position:relative;overflow:hidden;color:#fff;margin:16px auto}
+.phone.light{background:var(--bg);color:var(--ink);border-color:#2a2a30}
+.phone .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:90px;height:22px;border-radius:14px;background:#000}
+.phone .body{position:absolute;inset:44px 18px 22px}
+.phone .tiny{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8a8aa0}
+.phone.light .tiny{color:var(--mute)}
+.drive{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center}
+.drive .orb{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6 60%,#2a2a6a);box-shadow:0 0 70px 16px rgba(91,91,214,.35);margin:20px 0 30px}
+.drive .say{font-size:19px;font-weight:300;line-height:1.3;color:#e9e9f4}.drive .say b{font-weight:500;color:#fff}
+.drive .hint{margin-top:14px;font-size:12px;color:#8a8aa0}
+.drive .big{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}.drive .big span{padding:16px;border-radius:16px;background:rgba(255,255,255,.08);font-size:14px;font-weight:500}.drive .big span.y{background:#fff;color:#000}
+.chats h4{font-size:22px;font-weight:500;margin:8px 0 2px;letter-spacing:-.01em}.chats .sub2{font-size:12px;color:var(--mute);margin-bottom:14px}
+.chats .c{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;position:relative}
+.chats .c .who{font-size:13px;font-weight:500}.chats .c .msg{font-size:11.5px;color:var(--mute);margin:2px 0 8px}
+.chats .c .ai{font-size:11px;background:var(--lilac);border-radius:10px;padding:8px 10px;margin-bottom:8px}.chats .c .ai:before{content:'✦ ';color:var(--acc)}
+.chats .c .acts{display:flex;gap:6px}.chats .c .acts span{font-size:10.5px;padding:6px 10px;border-radius:14px;border:1px solid var(--line)}.chats .c .acts span.p{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chats .c.swipe{transform:translateX(-46px)}.chats .c.swipe:after{content:'Send';position:absolute;right:-56px;top:0;bottom:0;width:48px;background:var(--acc);color:#fff;border-radius:12px;display:grid;place-items:center;font-size:11px}
+.pbar{position:absolute;left:10px;right:10px;bottom:8px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:9px 14px;font-size:11px;color:var(--mute);display:flex;align-items:center;gap:8px}.pbar .mic{margin-left:auto;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:10px}
+.tabs{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-around;padding:8px 0 0;font-size:9px;color:var(--mute);border-top:1px solid var(--line)}.tabs span.on{color:var(--ink)}
+/* mobile extra states */
+.row.phones6{grid-template-columns:repeat(3,320px);justify-content:start}
+.mchip{display:flex;flex-wrap:wrap;gap:6px 12px;background:var(--soft);border-radius:16px;padding:8px 12px;font-size:10px;color:var(--mute);margin-top:6px}.mchip b{color:var(--ink);font-weight:500;margin-right:2px}.mchip .o{color:var(--acc);font-weight:500;width:100%}
+.mempty{display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;height:100%;padding-bottom:40px}
+.mempty .orb2{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#d9d0ff,#8f86e8 60%,#5b5bd6);box-shadow:0 10px 30px -10px rgba(91,91,214,.6);margin-bottom:18px}
+.mempty .big{font-family:'Instrument Serif',serif;font-size:26px;line-height:1.1}.mempty .big em{color:var(--acc)}
+.mempty p{color:var(--mute);font-size:12px;margin:8px 0 14px}
+.mempty .sug{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.mempty .sug span{background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px 10px;font-size:10.5px}
+.mdash{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.mdash .k{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px}.mdash .k .n{font-size:18px;font-weight:500;letter-spacing:-.02em}.mdash .k small{font-size:9.5px;color:var(--mute);display:block}
+.mvoice{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.mvoice .orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6 60%,#2a2a6a);box-shadow:0 0 60px 14px rgba(91,91,214,.35);margin:0 0 26px}
+.mvoice .live{width:100%;background:rgba(255,255,255,.06);border-radius:14px;padding:12px;text-align:left;font-size:11px;margin-top:auto}.mvoice .live div{padding:3px 0;color:#9a9ab0}.mvoice .live div.on{color:#fff}.mvoice .live div:before{content:'○ ';color:#6a6a80}.mvoice .live div.on:before{content:'● ';color:#b9adff}
+.msite{height:100%;display:flex;flex-direction:column}
+.msite .pv{flex:1;background:#0b0b10;border-radius:14px;padding:16px;color:#fff;background-image:radial-gradient(ellipse at 70% 0%,#2a1d5a,transparent 50%)}.msite .pv .h{font-size:20px;font-weight:300;line-height:1.1}.msite .pv .h b{font-weight:500}.msite .pv p{font-size:9.5px;color:#9a9ab0}.msite .pv .cta{display:inline-block;background:#fff;color:#000;border-radius:14px;padding:4px 9px;font-size:8.5px}
+.msite .pv .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:16px}.msite .pv .tiles i{height:36px;border-radius:6px;background:#17172a;display:block}
+.msite .sheet{background:#fff;border-radius:16px 16px 0 0;padding:12px 12px 56px;margin:-12px -4px 0;box-shadow:0 -10px 30px -16px rgba(0,0,0,.3)}
+.msite .sheet .hd{font-size:11px;font-weight:500;display:flex;justify-content:space-between}.msite .sheet .hd span{font-weight:400;color:var(--mute);font-family:var(--mono);font-size:9px}
+.msite .sheet .m{font-size:10.5px;background:var(--soft);border-radius:10px;padding:7px 10px;margin-top:8px}
+.msite .sheet .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.msite .sheet .chips i{font-style:normal;font-size:9.5px;border:1px solid var(--line);border-radius:14px;padding:4px 8px}
+/* 06 dashboard full + 07 desktop voice */
+.wide{height:620px}
+.wide .main{padding:20px 26px}
+.dtop{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.dtop .back{font-size:11px}
+.dtop .focus{margin-left:auto;display:inline-flex;gap:10px;align-items:center;background:var(--lilac);border-radius:20px;padding:6px 12px;font-size:10px;color:var(--ink)}.dtop .focus i{width:6px;height:6px;border-radius:50%;background:var(--hot);display:inline-block}.dtop .focus .o{color:var(--acc);font-weight:500}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols2 .tiny{margin-bottom:8px}
+.kc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.kc .n{font-size:20px;font-weight:500;letter-spacing:-.02em}.kc small{font-size:9.5px;color:var(--mute);display:block}
+.kc .spark{width:60px;height:18px;border-radius:3px;background:linear-gradient(90deg,transparent 40%,rgba(91,91,214,.25));border-bottom:1.5px solid var(--acc)}
+.kc .tip{font-size:9px;background:var(--ink);color:#fff;border-radius:12px;padding:3px 8px}
+.wc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.wc .t{font-size:12px;font-weight:500}.wc .w{font-size:10px;color:var(--mute);margin:2px 0 8px}.wc .ai{font-size:10px;background:var(--lilac);border-radius:8px;padding:6px 8px;margin-bottom:8px}.wc .ai:before{content:'✦ ';color:var(--acc)}
+.wc .acts span{font-size:9.5px;border:1px solid var(--line);border-radius:14px;padding:4px 9px;margin-right:4px}.wc .acts span.p{background:var(--ink);color:#fff;border-color:var(--ink)}
+.droom{height:520px;background:#0f0f13;color:#fff;position:relative;display:grid;grid-template-columns:64px 1fr 300px}
+.droom .rail{background:#17171f;display:flex;flex-direction:column;align-items:center;padding-top:16px;gap:12px}.droom .rail i{width:12px;height:12px;border-radius:4px;background:var(--acc);display:block}.droom .rail .c{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6)}
+.droom .mid{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+.droom .mid .tl{position:absolute;top:16px;left:22px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#8a8aa0}
+.droom .mid .x{position:absolute;top:12px;right:16px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:12px}
+.droom .orb{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6 60%,#2a2a6a);box-shadow:0 0 90px 24px rgba(91,91,214,.35);margin-bottom:26px}
+.droom .say{font-size:20px;font-weight:300;max-width:420px;line-height:1.3;color:#e9e9f4}.droom .say b{font-weight:500;color:#fff}
+.droom .hint{margin-top:12px;font-size:11px;color:#8a8aa0}
+.droom .wave{display:flex;gap:3px;justify-content:center;margin:0 0 14px;height:18px;align-items:center}.droom .wave i{width:3px;background:#b9adff;border-radius:2px;height:var(--h)}
+.droom .side{border-left:1px solid #22222c;padding:18px 18px;font-size:11px}
+.droom .side .tiny{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#8a8aa0;margin-bottom:10px}
+.droom .side .st div{padding:5px 0;color:#9a9ab0}.droom .side .st div.on{color:#fff}.droom .side .st div:before{content:'○ ';color:#6a6a80}.droom .side .st div.on:before{content:'● ';color:#b9adff}
+.droom .side .num{margin-top:18px;background:rgba(255,255,255,.06);border-radius:12px;padding:10px 12px}.droom .side .num b{font-size:16px;font-weight:500;display:block}.droom .side .num small{color:#9a9ab0;font-size:9.5px}.droom .side .num em{font-style:normal;color:#7ee2a8}
+.droom .side .th{margin-top:18px}.droom .side .th div{font-size:10px;padding:6px 9px;border-radius:10px;background:rgba(255,255,255,.06);margin-bottom:6px;color:#d8d8e6}.droom .side .th div.me{background:#fff;color:#000}
+.droom .seg{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;background:rgba(255,255,255,.08);border-radius:20px;padding:3px;font-size:10px}
+.droom .seg span{padding:4px 12px;border-radius:16px;color:#9a9ab0}.droom .seg span.on{background:#fff;color:#000}
+.droom.chatm .mid{justify-content:flex-start;align-items:stretch;text-align:left;padding:60px 40px 70px}
+.droom.chatm .orb{width:28px;height:28px;box-shadow:0 0 20px 4px rgba(91,91,214,.35);margin:0}
+.droom.chatm .msgs{display:flex;flex-direction:column;gap:10px;max-width:560px;margin:0 auto;width:100%}
+.droom.chatm .msgs div{font-size:12px;padding:9px 13px;border-radius:14px;background:rgba(255,255,255,.07);color:#e4e4f0;max-width:80%}
+.droom.chatm .msgs div.me{background:#fff;color:#000;align-self:flex-end}
+.droom.chatm .msgs .ai{display:flex;gap:10px;align-items:flex-start;background:none;padding:0;max-width:100%}.droom.chatm .msgs .ai p{margin:0;background:rgba(255,255,255,.07);padding:9px 13px;border-radius:14px;max-width:80%}
+.droom.chatm .in{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:560px;background:#fff;color:#000;border-radius:24px;padding:9px 14px;font-size:11px;display:flex;align-items:center;gap:8px}.droom.chatm .in .mic{margin-left:auto;width:22px;height:22px;border-radius:50%;background:#000;color:#fff;display:grid;place-items:center;font-size:10px}
+.droom.chatm .in .mic.off{background:#eee;color:#555}
+/* empty */
+.empty{height:420px;background:var(--bg);display:grid;grid-template-columns:150px 1fr}
+.empty .main{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;position:relative}
+.empty .big{font-family:'Instrument Serif',serif;font-size:30px;line-height:1.15;max-width:380px;font-weight:400}
+.empty .big em{color:var(--acc)}
+.empty p{color:var(--mute);font-size:12px;margin:10px 0 18px;max-width:340px}
+.empty .sug{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:460px}.empty .sug span{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 12px;font-size:10.5px}
+.empty .tick{position:absolute;top:22px;right:28px;font-size:10px;color:var(--mute);display:flex;gap:6px;align-items:center}.empty .tick i{width:7px;height:7px;border-radius:50%;background:#3bb273}
+.empty .orb2{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#d9d0ff,#8f86e8 60%,#5b5bd6);margin-bottom:18px;box-shadow:0 10px 30px -10px rgba(91,91,214,.6)}
+@media (max-width:1000px){.row.three,.row.two,.row.land{grid-template-columns:1fr}.row.phones,.row.phones6{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Desk · Rich's feedback</h1>
+<p class="sub">Five directions, mocked before anything is built. Say per item: prototype option, build, or drop.</p>
+
+<!-- 1 LANDING -->
+<section class="sec">
+  <h2>01 · Landing</h2>
+  <h3>Only what needs you. No cards.</h3>
+  <p class="q">"When I land I don't want so many cards. Just what needs my attention, as the actions I take. Stacked, scribbled or staged."</p>
+  <div class="row land">
+    <div class="shot"><div class="lab"><b>A · Stacked · light</b><span>quiet list, dashboard as a chip</span></div>
+      <div class="desk"><div class="pan"><div class="brand"><i></i>Cerebro</div><div class="hi">Three things need you.<small>Everything else is running.</small></div><div class="go"><i class="ti ti-microphone"></i> Get started</div></div>
+      <div class="main"><div class="tiny">Needs you · 3</div>
+        <div class="stack2">
+          <div class="it"><i class="dot"></i><div class="t">Three accounts dipped<small>Ads paused · booking widget broke · −$4.8k/mo</small></div><span class="act">Run the 2 fixes</span></div>
+          <div class="it"><i class="dot"></i><div class="t">Harbor Dental's ads paused<small>Card expired · −$2.4k/mo</small></div><span class="act">Switch the card</span></div>
+          <div class="it"><i class="dot w"></i><div class="t">41 reviews waiting<small>Drafted in your voice · oldest 6 days</small></div><span class="act">Send all 41</span></div>
+        </div>
+        <div class="chipdash"><span><b>$412.8k</b>MRR</span><span><b>23</b>bookings</span><span><b>27</b>agents</span><span><b>77%</b>AI spend</span><span class="o">Dashboard →</span></div>
+        <div class="ask">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+      </div></div></div>
+    <div class="shot"><div class="lab"><b>B · Scribbled</b><span>handwritten, circled</span></div>
+      <div class="desk"><div class="pan"><div class="brand"><i></i>Cerebro</div><div class="hi">Three things need you.<small>I circled them. The rest can wait.</small></div><div class="go"><i class="ti ti-microphone"></i> Get started</div></div>
+      <div class="main"><div class="tiny">Mon · Nov 2</div>
+        <div class="scrib">
+          <div class="it"><em>Three accounts dipped</em> <span>−$4.8k a month. Two fixes are safe to run.</span><span class="btn">Run the 2 fixes</span></div>
+          <div class="it"><em>Harbor Dental's ads are off</em> <span>Expired card. I can switch it.</span><span class="btn">Switch the card</span></div>
+          <div class="it"><em>41 reviews waiting</em> <span>Replies drafted, your voice.</span><span class="btn">Send all 41</span></div>
+          <div class="rest">everything else is running — numbers are here ↗</div>
+        </div>
+        <div class="ask">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+      </div></div></div>
+    <div class="shot"><div class="lab"><b>C · Staged</b><span>one at a time</span></div>
+      <div class="desk"><div class="pan"><div class="brand"><i></i>Cerebro</div><div class="hi">Three things need you.<small>Let's take them one by one.</small></div><div class="go"><i class="ti ti-microphone"></i> Get started</div></div>
+      <div class="main"><div class="tiny">Needs you</div>
+        <div class="stage"><span class="cnt">1 / 3</span>
+          <div class="card"><div class="tiny">Revenue · 3 accounts</div><h4>Three accounts dipped</h4><p>Ads paused, booking widget broke, review requests stopped. Two fixes are safe to run now and win back $3.6k a month.</p><span class="btn">Run the 2 fixes</span> &nbsp;<span class="btn g">Later</span></div>
+          <div class="ghost"></div><div class="ghost g2"></div>
+          <div class="dots"><i class="on"></i><i></i><i></i></div>
+        </div>
+        <div style="text-align:center"><div class="chipdash" style="margin-top:26px"><span><b>$412.8k</b>MRR</span><span><b>23</b>bookings</span><span class="o">Dashboard →</span></div></div>
+        <div class="ask">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+      </div></div></div>
+    <div class="shot"><div class="lab"><b>D · Dashboard, opened from the strip</b><span>same AI on click</span></div>
+      <div class="desk"><div class="pan"><div class="brand"><i></i>Cerebro</div><div class="hi">Three things need you.<small>Everything else is running.</small></div></div>
+      <div class="main"><div class="back"><i class="ti ti-arrow-left"></i> Back to what needs you</div>
+        <div class="dash-open">
+          <div class="k"><div class="tiny">Agency MRR</div><div class="n">$412.8k</div><small>+6.2% on September</small></div>
+          <div class="k"><div class="tiny">AI spend · Oct</div><div class="n">$1,920</div><small>of $2,500 · 77%</small></div>
+          <div class="k"><div class="tiny">Bookings today</div><div class="n">23</div><small>3 gaps this afternoon</small></div>
+          <div class="k"><div class="tiny">AI team</div><div class="n">27</div><small>4 working right now</small></div>
+          <div class="k"><div class="tiny">Social</div><div class="n">4 PM</div><small>next post scheduled</small></div>
+          <div class="k" style="border-color:var(--acc);background:var(--lilac)"><div class="tiny">✦ click any number</div><div class="n" style="font-size:12px;font-weight:400">"Why is AI spend at 77%?"</div><small>opens the room, like today</small></div>
+        </div>
+        <div class="ask">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+      </div></div></div>
+  </div>
+  <p class="note">All three keep the left panel and the ask bar as they are. The "Running for you" numbers collapse into one strip; "Open dashboard" shows the dashboard we already built, in place, with the same AI behaviour on every number.</p>
+  <div class="row two" style="margin-top:20px">
+    <div style="padding:8px 4px;color:var(--mute);font-size:14px;line-height:1.6">
+      <b style="color:var(--ink);font-weight:500">How it could ship</b><br>
+      Easiest as a new <b style="font-weight:500;color:var(--ink)">Front page</b> option next to Columns / One column / Spotlight: "Focus", with Stacked, Scribbled or Staged following the current Look (Modern → stacked, Scribbles → scribbled). The dashboard becomes a strip under the actions, expanding in place. Nothing else moves.
+    </div>
+  </div>
+</section>
+
+<!-- 2 VOICE -->
+<section class="sec">
+  <h2>02 · Voice</h2>
+  <h3>Hands-free from the first second.</h3>
+  <p class="q">"When you land in voice chat you don't click anything. You talk, it listens, it pauses when you stop, it answers when you start again."</p>
+  <div class="row three">
+    <div class="shot"><div class="lab"><b>Landing</b><span>already listening</span></div>
+      <div class="room"><span class="tl">Voice · listening</span><span class="x">×</span><div class="orb"></div>
+        <div class="st"><div class="wave"><i style="--h:6px"></i><i style="--h:14px"></i><i style="--h:18px"></i><i style="--h:10px"></i><i style="--h:16px"></i><i style="--h:7px"></i><i style="--h:12px"></i></div><b>I'm listening.</b>Just talk. No button.</div></div></div>
+    <div class="shot"><div class="lab"><b>You go quiet</b><span>after ~4 s of silence</span></div>
+      <div class="room pause"><span class="tl">Voice · waiting</span><span class="x">×</span><div class="orb"></div>
+        <div class="st"><b>Take your time.</b>I'll pick up the moment you speak.</div></div></div>
+    <div class="shot"><div class="lab"><b>You speak again</b><span>answers at once</span></div>
+      <div class="room speak"><span class="tl">Voice · speaking</span><span class="x">×</span><div class="orb"></div>
+        <div class="st"><b>"Harbor's ads are back on."</b>Card switched. $2.4k a month safe.</div></div></div>
+  </div>
+  <div class="states">
+    <div><b>Listening</b><small>Mic opens on entry. Orb glows, waveform follows your voice.</small></div>
+    <div><b>Thinking</b><small>Short beat after you pause. Orb tightens.</small></div>
+    <div><b>Speaking</b><small>Reads the answer; live work ticks on screen as today.</small></div>
+    <div><b>Waiting</b><small>After silence it dims and waits. Any word wakes it. × closes.</small></div>
+  </div>
+  <p class="note">Interrupting while it speaks stops it and it listens. The Creature / Bar choice stays; this is about the first second, not the shape.</p>
+</section>
+
+<!-- 3 WEBSITE -->
+<section class="sec">
+  <h2>03 · Website pop-up</h2>
+  <h3>Tell it what to change, from inside the preview.</h3>
+  <p class="q">"When the website is expanded there should be a chat and an option to tell the AI what to change."</p>
+  <div class="shot"><div class="lab"><b>Expanded draft · Glow Studio</b><span>chat docked right · click any part to point</span></div>
+    <div class="pop">
+      <div class="win"><div class="chrome"><i></i><i></i><i></i>&nbsp; glow.studio · draft 1</div>
+        <div class="site"><div class="h sel">Skin that <b>glows</b>, booked in a tap.</div><p>Facials, peels and glow treatments in Austin. Book in under a minute.</p><span class="cta">Book a glow →</span>
+          <div class="tiles"><i></i><i></i><i></i></div></div></div>
+      <div class="bar"><span><i class="ti ti-arrows-maximize"></i> Expand</span><span><i class="ti ti-external-link"></i> Open in browser</span><span><i class="ti ti-upload"></i> Publish</span></div>
+      <div class="chat"><div class="hd"><b>Change something</b><span>draft 1 · 6 steps</span></div>
+        <div class="th"><div class="m">Here's Glow Studio. Click any part of the page, or just tell me.</div><div class="m me">Make the headline shorter and warmer.</div><div class="m">Done: "Skin that glows." Want the photo warmer too?</div></div>
+        <div class="chips"><i>Darker hero</i><i>Swap the photo</i><i>Add pricing</i><i>Fewer sections</i><i>Try a bolder font</i></div>
+        <div class="in">✦ Tell me what to change… <span class="mic"><i class="ti ti-microphone"></i></span></div></div>
+    </div></div>
+  <p class="note">The chat is the same thread as the room, so what you said while building is still there. Clicking a part of the page pins it ("Change this") and the next message applies to that part. Publish stays in the pop-up.</p>
+</section>
+
+<!-- 4 MOBILE -->
+<section class="sec">
+  <h2>04 · Mobile</h2>
+  <h3>Talk while driving. Reply to what needs you.</h3>
+  <p class="q">"A mobile version where the user can talk to the AI while driving and respond to the chats that actually need them."</p>
+  <div class="row phones6">
+    <div><div class="phone light"><div class="notch"></div><div class="body"><div class="chats"><div class="tiny">Desk · needs you · 3</div><h4>Three things need you.</h4><div class="sub2">Everything else is running.</div>
+      <div class="c"><div class="who" style="color:var(--hot)">● Three accounts dipped</div><div class="msg">−$4.8k/mo · two fixes safe to run</div><div class="acts"><span class="p">Run the 2 fixes</span><span>Later</span></div></div>
+      <div class="c"><div class="who" style="color:var(--hot)">● Harbor Dental's ads paused</div><div class="msg">Card expired · −$2.4k/mo</div><div class="acts"><span class="p">Switch the card</span><span>Later</span></div></div>
+      <div class="c"><div class="who" style="color:var(--warm)">● 41 reviews waiting</div><div class="msg">Drafted in your voice</div><div class="acts"><span class="p">Send all 41</span><span>Read first</span></div></div>
+      <div class="mchip"><span><b>$412.8k</b>MRR</span><span><b>23</b>bookings</span><span><b>27</b>agents</span><span class="o">Dashboard →</span></div>
+      </div><div class="pbar">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div></div></div><p class="note" style="text-align:center">1 · Desk: the stacked landing, dashboard as a chip.</p></div>
+    <div><div class="phone light"><div class="notch"></div><div class="body"><div class="mempty"><div class="tiny" style="position:absolute;top:0;right:0">● 4 working now</div><div class="orb2"></div><div class="big">Hi Maya. <em>Nothing needs you</em> today.</div><p>Want a hand with something?</p><div class="sug"><span>Find new leads</span><span>Draft posts</span><span>Just talk</span></div><div class="mchip" style="margin-top:22px;text-align:left"><span><b>$412.8k</b>MRR</span><span><b>23</b>bookings</span><span><b>2</b>worth a look</span><span class="o">Dashboard →</span></div></div><div class="pbar">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div></div></div><p class="note" style="text-align:center">2 · Empty: same chip, so the data is still one tap away.</p></div>
+    <div><div class="phone light"><div class="notch"></div><div class="body"><div class="chats"><div class="back" style="margin-bottom:6px"><i class="ti ti-arrow-left"></i> Back to desk</div><h4>Running for you</h4><div class="sub2">4 agents working right now.</div>
+      <div class="mdash"><div class="k"><div class="tiny">MRR</div><div class="n">$412.8k</div><small>+6.2% on Sept</small></div><div class="k"><div class="tiny">AI spend</div><div class="n">$1,920</div><small>of $2,500 · 77%</small></div><div class="k"><div class="tiny">Bookings</div><div class="n">23</div><small>3 gaps this pm</small></div><div class="k"><div class="tiny">Social</div><div class="n">4 PM</div><small>next post</small></div></div>
+      <div class="c" style="margin-top:10px;background:var(--lilac);border:0"><div class="tiny">Worth a look · 2</div><div class="who" style="margin-top:4px">Jen at Lumen Spa is upset</div><div class="msg">0:48 voicemail · reply drafted</div></div>
+      </div><div class="pbar">✦ Tap any number to ask about it <span class="mic"><i class="ti ti-microphone"></i></span></div></div></div><p class="note" style="text-align:center">3 · Dashboard: numbers stacked two-up; tap one and the AI answers.</p></div>
+    <div><div class="phone"><div class="notch"></div><div class="body"><div class="mvoice"><div class="tiny" style="align-self:flex-start">Voice · listening</div><div class="orb" style="margin-top:30px"></div><div class="say" style="font-size:17px;font-weight:300;color:#e9e9f4"><b style="font-weight:500;color:#fff">I'm listening.</b><br>Just talk.</div><div class="live"><div class="on">Switching Harbor's card</div><div class="on">Turning ads back on</div><div>Checking the booking widget</div></div></div></div></div><p class="note" style="text-align:center">4 · Voice: hands-free, live work ticks below. Driving mode is this with bigger targets.</p></div>
+    <div><div class="phone light"><div class="notch"></div><div class="body"><div class="chats"><div class="tiny">Needs a reply · 3</div><h4>Three chats need you.</h4><div class="sub2">The rest I've handled.</div>
+      <div class="c"><div class="who">Jen · Lumen Spa</div><div class="msg">"Nobody called me back."</div><div class="ai">Drafted: apology + a 2 PM call.</div><div class="acts"><span class="p">Send</span><span>Edit</span><span>Call</span></div></div>
+      <div class="c swipe"><div class="who">Dr. Priya Nair · new lead</div><div class="msg">Call at 11:00.</div><div class="ai">One-page brief ready.</div><div class="acts"><span class="p">Send brief</span><span>Later</span></div></div>
+      </div><div class="pbar">✦ Ask or tell me anything… <span class="mic"><i class="ti ti-microphone"></i></span></div></div></div><p class="note" style="text-align:center">5 · Chats: AI draft inside each, swipe right to send.</p></div>
+    <div><div class="phone light"><div class="notch"></div><div class="body"><div class="msite"><div class="pv"><div class="tiny" style="color:#777;margin-bottom:10px">glow.studio · draft 1</div><div class="h">Skin that <b>glows</b>.</div><p>Facials and glow treatments in Austin.</p><span class="cta">Book a glow →</span><div class="tiles"><i></i><i></i><i></i></div></div>
+      <div class="sheet"><div class="hd">Change something <span>draft 1</span></div><div class="m">Here's Glow Studio. Tell me what to change, or tap a part of the page.</div><div class="chips"><i>Darker hero</i><i>Swap the photo</i><i>Add pricing</i><i>Publish</i></div></div></div><div class="pbar">✦ Tell me what to change… <span class="mic"><i class="ti ti-microphone"></i></span></div></div></div><p class="note" style="text-align:center">6 · Website draft: preview on top, change-sheet below.</p></div>
+  </div>
+</section>
+
+<!-- 06 DASHBOARD -->
+<section class="sec">
+  <h2>06 · Where "Dashboard →" goes</h2>
+  <h3>The desk we already built, with a Back link.</h3>
+  <p class="q">"Why not show the same dashboard with the three things here as well, with a back?"</p>
+  <div class="shot"><div class="lab"><b>Dashboard · opened from the chip</b><span>all three columns, exactly as today · Back returns to Focus</span></div>
+    <div class="desk wide"><div class="pan"><div class="brand"><i></i>Cerebro</div><div class="hi">Three things need you.<small>Everything else is running.</small></div><div class="go"><i class="ti ti-microphone"></i> Get started</div></div>
+    <div class="main">
+      <div class="dtop"><div class="back"><i class="ti ti-arrow-left"></i> Back</div></div>
+      <div class="cols2" style="grid-template-columns:1fr 1fr 1fr">
+        <div><div class="tiny">Needs you</div>
+          <div class="wc"><div class="tiny" style="color:var(--hot)">● Revenue · 3 accounts</div><div class="t">Three accounts dipped</div><div class="w">Ads paused · booking widget broke · −$4.8k/mo</div><div class="ai">Two fixes are safe to run now.</div><div class="acts"><span class="p">Run the 2 fixes</span><span>Later</span></div></div>
+          <div class="wc"><div class="tiny" style="color:var(--hot)">● Harbor Dental · ads</div><div class="t">Ads paused since Tuesday</div><div class="w">Card on file expired · −$2.4k/mo</div><div class="ai">I can switch the card and turn them on.</div><div class="acts"><span class="p">Turn them back on</span><span>Later</span></div></div>
+          <div class="wc"><div class="tiny" style="color:var(--hot)">● Missed calls · 14 clinics</div><div class="t">Missing calls after 5 PM</div><div class="w">+18% this month</div><div class="acts"><span class="p">Set up text-back</span><span>Later</span></div></div>
+        </div>
+        <div><div class="tiny">Running for you</div>
+          <div class="kc"><div><div class="tiny">AI team</div><div class="n">27 <span style="font-size:10px;font-weight:400;color:var(--mute)">agents</span></div><small>4 working right now</small></div><span class="spark"></span></div>
+          <div class="kc"><div><div class="tiny">Agency MRR</div><div class="n">$412.8k</div><small>+6.2% on September</small></div><span class="tip">→ explain the dip</span></div>
+          <div class="kc"><div><div class="tiny">AI spend · Oct</div><div class="n">$1,920</div><small>of $2,500 · 77%</small></div><span class="spark"></span></div>
+          <div class="kc"><div><div class="tiny">Bookings today</div><div class="n">23</div><small>3 gaps this afternoon</small></div><span class="spark"></span></div>
+          <div class="kc"><div><div class="tiny">Social</div><div class="n">4 PM</div><small>next post scheduled</small></div><span class="spark"></span></div>
+        </div>
+        <div><div class="tiny">Worth a look</div>
+          <div class="wc"><div class="tiny" style="color:var(--warm)">● Reviews</div><div class="t">41 reviews waiting for a reply</div><div class="w">oldest is 6 days</div><div class="ai">Warm reply drafted to each, in your voice.</div><div class="acts"><span class="p">Send all 41</span><span>Later</span></div></div>
+          <div class="wc"><div class="tiny" style="color:var(--warm)">● Voicemail · Lumen Spa</div><div class="t">Jen at Lumen Spa is upset</div><div class="w">0:48 voicemail</div><div class="ai">Reply drafted; I can book a call at 2 PM.</div><div class="acts"><span class="p">Send the reply</span><span>Later</span></div></div>
+          <div class="wc"><div class="tiny" style="color:var(--warm)">● New lead · 2:14 AM</div><div class="t">New lead booked a call at 11:00</div><div class="w">Dr. Priya Nair</div><div class="acts"><span class="p">Prep me</span><span>Later</span></div></div>
+        </div>
+      </div>
+      <div class="ask">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+    </div></div></div>
+  <p class="note">Nothing new to build here: the chip opens the current Columns desk (Make something strip included), and a Back link at the top returns to Focus. The Front page options (Columns / One column / Spotlight) keep deciding how this dashboard lays out.</p>
+</section>
+
+<!-- 07 DESKTOP VOICE -->
+<section class="sec">
+  <h2>07 · Voice on desktop</h2>
+  <h3>The mobile voice room, at desk size.</h3>
+  <p class="q">"Do the voice thing you did for mobile on desktop too."</p>
+  <div class="shot"><div class="lab"><b>Voice room · desktop</b><span>listening on entry · live work on the right · rail = back to desk</span></div>
+    <div class="droom">
+      <div class="rail"><i></i><span class="c"></span></div>
+      <div class="mid"><span class="tl">Voice · listening</span><div class="seg"><span class="on">Voice</span><span>Chat</span></div><span class="x">×</span><div class="orb"></div>
+        <div class="wave"><i style="--h:6px"></i><i style="--h:14px"></i><i style="--h:18px"></i><i style="--h:10px"></i><i style="--h:16px"></i><i style="--h:7px"></i><i style="--h:12px"></i></div>
+        <div class="say"><b>"Harbor's ads are off since Tuesday."</b><br>Card expired. Want me to switch it and turn them back on?</div>
+        <div class="hint">Just answer. I pause when you're quiet and pick up when you speak.</div></div>
+      <div class="side"><div class="tiny">Live work</div><div class="st"><div class="on">Switching Harbor's card</div><div class="on">Turning ads back on</div><div>Checking the booking widget</div><div>Restarting review requests</div></div>
+        <div class="num"><b>−$2.4k/mo <em>→ safe</em></b><small>Harbor Dental · ads</small></div>
+        <div class="th"><div class="tiny" style="margin-bottom:6px">Thread</div><div class="me">What needs me today?</div><div>Three things. Starting with Harbor…</div></div></div>
+    </div></div>
+  <div class="shot" style="margin-top:20px"><div class="lab"><b>Same room · Chat</b><span>flip the switch: orb shrinks, thread takes the middle, mic stays one tap away</span></div>
+    <div class="droom chatm">
+      <div class="rail"><i></i><span class="c"></span></div>
+      <div class="mid"><span class="tl">Chat · typing</span><div class="seg"><span>Voice</span><span class="on">Chat</span></div><span class="x">×</span>
+        <div class="msgs">
+          <div class="me">What needs me today?</div>
+          <div class="ai"><span class="orb"></span><p>Three things. Starting with Harbor: their ads have been off since Tuesday, the card expired. Want me to switch it and turn them back on?</p></div>
+          <div class="me">Yes, and check the booking widget too.</div>
+          <div class="ai"><span class="orb"></span><p>On it. Card switched, ads back on. Checking the widget now…</p></div>
+        </div>
+        <div class="in">✦ Type, or tap the mic to talk… <span class="mic"><i class="ti ti-microphone"></i></span></div></div>
+      <div class="side"><div class="tiny">Live work</div><div class="st"><div class="on">Switching Harbor's card</div><div class="on">Turning ads back on</div><div class="on">Checking the booking widget</div><div>Restarting review requests</div></div>
+        <div class="num"><b>−$2.4k/mo <em>→ safe</em></b><small>Harbor Dental · ads</small></div></div>
+    </div></div>
+  <p class="note"><b style="color:var(--ink);font-weight:500">Switching:</b> the Voice / Chat pill at the top, or just start typing in voice mode (switches to chat), or tap the mic in chat mode (switches to voice). The thread is one and the same, so nothing is lost either way. Live work stays on the right in both.</p>
+  <p class="note">Full-bleed room, no button to start. Orb in the middle, what it's doing on the right (the live work we have today), thread underneath. Interrupt any time. Works with the Creature or the Bar voice: this is the Creature version.</p>
+</section>
+
+<!-- 5 EMPTY -->
+<section class="sec">
+  <h2>05 · Empty state</h2>
+  <h3>Nothing needs you. Open space.</h3>
+  <p class="q">"When there's nothing, an open space: hi, you don't have anything today, would you like help with something?"</p>
+  <div class="row two">
+    <div class="shot"><div class="lab"><b>Desk · nothing today · light</b><span>one line, chips, the same dashboard chip</span></div>
+      <div class="empty empty2"><div class="pan" style="background:linear-gradient(170deg,#ece8fb,#d9d2f7);padding:14px 12px;font-size:10px"><div class="brand" style="display:flex;gap:5px;align-items:center;font-weight:500"><i style="width:9px;height:9px;border-radius:3px;background:var(--acc);display:inline-block"></i>Cerebro</div></div>
+        <div class="main"><div class="tick"><i></i>27 agents · 4 working now</div><div class="orb2"></div>
+          <div class="big">Hi Maya. <em>Nothing needs you</em> today.</div>
+          <p>Want a hand with something?</p>
+          <div class="sug"><span>Find new leads</span><span>Draft next week's posts</span><span>Just talk</span></div>
+          <div class="chipdash" style="margin-top:26px"><span><b>$412.8k</b>MRR</span><span><b>23</b>bookings</span><span><b>4</b>agents working</span><span><b>2</b>worth a look</span><span class="o">Dashboard →</span></div>
+          <div class="ask">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+        </div></div></div>
+    <div style="padding:8px 4px;color:var(--mute);font-size:14px;line-height:1.6">
+      <b style="color:var(--ink);font-weight:500">Notes</b><br>
+      Even with nothing to action, the dashboard chip stays, so the numbers and what the agents are doing are one click away, and "worth a look" items live there too. Suggestions come from what the agents learnt this week, not a fixed list. The panel greeting changes too ("All quiet. Nothing circled.").<br><br>
+      <b style="color:var(--ink);font-weight:500">Possible prototype option:</b> a "Day" switch (Busy / Quiet) so you can show both in a demo.
+    </div>
+  </div>
+</section>
+</div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Room · the results block</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--good:#079455;--goodbg:#e7f6ee;--hot:#d92d20;--hotbg:#fdecec;--warm:#b54708;--warmbg:#fdf3e4;--rim:rgba(21,22,27,.08);--rim2:rgba(21,22,27,.18);--mono:'Geist Mono',monospace;--L:#5b5bd6}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px;max-width:900px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.shot{background:var(--bg);border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25)}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:11px 16px;border-bottom:1px solid var(--rim);background:#fff;display:flex;justify-content:space-between}.lab b{color:var(--fg);font-weight:500}
+.body{padding:24px 28px 26px}
+.note{color:var(--fg3);font-size:12.5px;padding:10px 16px 14px;background:#fff;border-top:1px solid var(--rim)}.note b{color:var(--fg);font-weight:500}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.p-ok{background:var(--goodbg);color:var(--good)}.p-you{background:var(--warmbg);color:var(--warm)}.p-wait{background:#eef0ff;color:var(--L)}
+.btn{font-size:12px;border-radius:999px;padding:6px 12px;background:#15161b;color:#fff;white-space:nowrap;flex:none;display:inline-block}.btn.g{background:#fff;color:var(--fg);border:1px solid var(--rim2)}
+.muted{color:var(--fg3)}
+/* A · one list per account */
+.A .head{font-size:17px;font-weight:500;letter-spacing:-.01em;margin-bottom:2px}.A .head em{font-style:normal;color:var(--good)}
+.A .sub2{color:var(--fg3);font-size:12.5px;margin-bottom:14px}
+.A .row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-top:1px solid var(--rim)}
+.A .row b{font-weight:500;font-size:14px}.A .row .what{grid-column:1;font-size:12.5px;color:var(--fg2)}.A .row .pill{grid-row:1/3;grid-column:2;align-self:center}
+.A .row.you{background:var(--warmbg);margin:0 -12px;padding:12px;border-radius:12px;border-top:0}
+.A .row.you .acts{grid-column:1/3;margin-top:6px;display:flex;gap:6px}
+/* B · before → after cards */
+.B .top{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}.B .top b{font-size:26px;font-weight:500;color:var(--good);letter-spacing:-.02em}.B .top span{color:var(--fg2)}
+.B .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.B .c{background:#fff;border:1px solid var(--rim);border-radius:14px;padding:12px}
+.B .c .n{font-weight:500;font-size:13px}.B .c .k{font-size:11px;color:var(--fg3);margin-bottom:8px}
+.B .c .ba{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:8px}.B .c .ba s{color:var(--hot);text-decoration:none}.B .c .ba i{color:var(--fg3);font-style:normal}.B .c .ba b{color:var(--good);font-weight:500}
+.B .c .d{font-size:11.5px;color:var(--fg2);min-height:34px}
+.B .c.you{border-color:#f3d2a4;background:#fffaf2}.B .c.you .ba b{color:var(--warm)}
+/* C · timeline */
+.C .tl{position:relative;padding-left:22px}.C .tl::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--rim)}
+.C .s{position:relative;padding:0 0 14px}.C .s::before{content:'';position:absolute;left:-21px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px var(--bg)}
+.C .s.you::before{background:var(--warm)}.C .s.later::before{background:#fff;border:2px solid var(--L)}
+.C .s .t{font-family:var(--mono);font-size:10.5px;color:var(--fg3)}.C .s b{display:block;font-weight:500;font-size:13.5px}.C .s .m{font-size:12px;color:var(--fg2)}.C .s .m em{font-style:normal;color:var(--good);font-weight:500}
+.C .sum{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--rim);border-radius:12px;padding:10px 14px;margin-bottom:16px}.C .sum b{font-weight:500;color:var(--good);font-size:15px}
+/* D · scoreboard */
+.D .big{font-size:30px;font-weight:500;letter-spacing:-.02em}.D .big em{font-style:normal;color:var(--good)}
+.D .bar{height:10px;border-radius:6px;background:var(--hotbg);margin:10px 0 4px;overflow:hidden;display:flex}.D .bar i{display:block;background:var(--good)}.D .bar i.w{background:#f0b867}
+.D .legend{display:flex;gap:14px;font-size:11.5px;color:var(--fg2);margin-bottom:16px}.D .legend span::before{content:'';display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:0}.D .legend .a::before{background:var(--good)}.D .legend .b::before{background:#f0b867}.D .legend .c::before{background:var(--hotbg);border:1px solid #f3b4b0}
+.D .ck{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--rim);font-size:13.5px}.D .ck .ti{font-size:16px}.D .ck .ok{color:var(--good)}.D .ck .wt{color:var(--warm)}.D .ck span{flex:1}.D .ck small{color:var(--fg3);font-size:12px}
+/* E · plain sentences */
+.E p{font-size:16px;line-height:1.55;margin:0 0 12px;font-weight:300}.E p b{font-weight:500}.E p .g{color:var(--good);font-weight:500}.E p .w{color:var(--warm);font-weight:500}
+.E .ask{display:flex;gap:8px;align-items:center;background:var(--warmbg);border-radius:12px;padding:10px 12px;margin:4px 0 12px}.E .ask span{flex:1;font-size:13px}
+.E .more{font-size:12px;color:var(--L);display:inline-flex;gap:4px;align-items:center}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Room · the results block, made readable</h1>
+<p class="sub">Same moment in all five: the two safe fixes just ran. Today this block has two lists that repeat each other, a “lost” number shown in green, and “Monday, needs Jen” without saying what you need to do. Each option fixes that differently.</p>
+<div class="grid">
+
+<div><div class="shot"><div class="lab"><b>A · One row per account</b><span>what was wrong, what I did, where it stands</span></div><div class="body A">
+<div class="head"><em>2 of 3 fixed</em> · $3.6k a month back</div><div class="sub2">$1.2k still at risk, until Lumen restarts on Monday.</div>
+<div class="row"><b>Harbor Dental · ads</b><span class="pill p-ok"><i class="ti ti-check"></i>Fixed</span><span class="what">Card had expired. Switched to the new one; 3 campaigns live.</span></div>
+<div class="row"><b>Peak Fitness · booking widget</b><span class="pill p-ok"><i class="ti ti-check"></i>Fixed</span><span class="what">Widget was broken. Repaired and tested; 1 booking already in.</span></div>
+<div class="row you"><b>Lumen Spa · review requests</b><span class="pill p-you"><i class="ti ti-phone"></i>Needs you</span><span class="what">Paused on purpose. Jen is upset; call her first, then I restart them Monday.</span><span class="acts"><span class="btn">Call Jen</span><span class="btn g">Restart now anyway</span></span></div>
+</div></div><div class="note"><b>My pick.</b> One list instead of two. Each row reads as a sentence, and the one that needs you stands out with its button right there.</div></div>
+
+<div><div class="shot"><div class="lab"><b>B · Before → after</b><span>a small card per account</span></div><div class="body B">
+<div class="top"><b>+$3.6k/mo</b><span>won back today · $1.2k still at risk</span></div>
+<div class="cards">
+<div class="c"><div class="n">Harbor Dental</div><div class="k">Google Ads</div><div class="ba"><s>Paused</s><i>→</i><b>Live</b></div><div class="d">Switched to the new card.</div><span class="pill p-ok">+$2.4k/mo</span></div>
+<div class="c"><div class="n">Peak Fitness</div><div class="k">Booking widget</div><div class="ba"><s>Broken</s><i>→</i><b>Working</b></div><div class="d">Repaired, 1 booking in.</div><span class="pill p-ok">+$1.2k/mo</span></div>
+<div class="c you"><div class="n">Lumen Spa</div><div class="k">Review requests</div><div class="ba"><s>Stopped</s><i>→</i><b>Monday</b></div><div class="d">Call Jen first.</div><span class="btn">Call Jen</span></div>
+</div></div></div><div class="note">Very scannable: <b>red → green</b> per account. Works best for 2–4 things; gets tight on the phone (cards stack).</div></div>
+
+<div><div class="shot"><div class="lab"><b>C · Timeline</b><span>what happened, in order, with the money</span></div><div class="body C">
+<div class="sum"><span>Won back so far</span><b>+$3.6k/mo</b></div>
+<div class="tl">
+<div class="s"><span class="t">9:41</span><b>Harbor's ads are live again</b><span class="m">Switched the expired card · 3 campaigns · <em>+$2.4k/mo</em></span></div>
+<div class="s"><span class="t">9:42</span><b>Peak's booking widget works</b><span class="m">Repaired and tested · 1 booking in · <em>+$1.2k/mo</em></span></div>
+<div class="s you"><span class="t">Now</span><b>Lumen needs you</b><span class="m">Call Jen first; she's upset about the missed call.</span></div>
+<div class="s later"><span class="t">Monday 9:00</span><b>I restart Lumen's review requests</b><span class="m">and tell you how it went</span></div>
+</div></div></div><div class="note">Reads like a <b>story</b> of what the AI did, and shows what happens next. Longer, but the clearest about timing.</div></div>
+
+<div><div class="shot"><div class="lab"><b>D · Scoreboard + checklist</b><span>one number, one bar, three ticks</span></div><div class="body D">
+<div class="big"><em>$3.6k</em> of $4.8k a month back</div>
+<div class="bar"><i style="width:50%"></i><i style="width:25%"></i><i class="w" style="width:0"></i></div>
+<div class="legend"><span class="a">Back today</span><span class="c">Still at risk · $1.2k</span></div>
+<div class="ck"><i class="ti ti-circle-check-filled ok"></i><span>Harbor's ads are live</span><small>+$2.4k</small></div>
+<div class="ck"><i class="ti ti-circle-check-filled ok"></i><span>Peak's widget works</span><small>+$1.2k</small></div>
+<div class="ck"><i class="ti ti-alert-circle wt"></i><span>Lumen: call Jen, then I restart Monday</span><span class="btn">Call Jen</span></div>
+</div></div><div class="note">The <b>money is the headline</b>, the bar shows how far along you are. Good for revenue-type rooms; less fitting for reviews or leads.</div></div>
+
+<div><div class="shot"><div class="lab"><b>E · Just say it</b><span>two sentences, details on tap</span></div><div class="body E">
+<p><span class="g">Fixed two of three.</span> Harbor's ads are live again and Peak's booking widget works, so <b>$3.6k a month</b> is coming back from today.</p>
+<div class="ask"><i class="ti ti-phone" style="color:var(--warm)"></i><span><b>Lumen needs you:</b> call Jen first, then I'll restart their review requests on Monday.</span><span class="btn">Call Jen</span></div>
+<span class="more"><i class="ti ti-chevron-down"></i>Show exactly what I did</span>
+</div></div><div class="note">Matches how the AI <b>talks</b>. Least to read; the step-by-step list is one tap away for people who want it.</div></div>
+
+</div></body></html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desk · listening states</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--ink:#2f5fe0;--lil:#5b5bd6;--hot:#d92d20;--good:#079455;--rim:rgba(21,22,27,.08);--rim2:rgba(21,22,27,.22);--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 26px;max-width:880px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.st{background:var(--bg);border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25)}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:11px 16px;border-bottom:1px solid var(--rim);background:#fff;display:flex;justify-content:space-between}.lab b{color:var(--fg);font-weight:500}
+.stage{height:250px;position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:0 24px 26px;background:radial-gradient(60% 50% at 50% 100%,rgba(91,91,214,.08),transparent 70%)}
+.hint{font-size:12px;color:var(--fg3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.hint b{font-weight:500;color:var(--fg)}
+.bar{width:100%;max-width:520px;background:#fff;border:1px solid var(--rim);border-radius:30px;padding:9px 9px 9px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px -14px rgba(0,0,0,.25);position:relative}
+.bar .sp{color:var(--ink)}
+.bar .t{flex:1;font-size:14px;color:var(--fg3);min-width:0}
+.bar .t .heard{color:var(--fg)}.bar .t .live{color:var(--fg3)}
+.mic{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:17px;background:#15161b;color:#fff;flex:none;position:relative}
+.wave{display:flex;gap:3px;align-items:center;height:20px}.wave i{width:3px;border-radius:2px;background:var(--lil);animation:w 1s ease-in-out infinite}
+.wave i:nth-child(2){animation-delay:.1s}.wave i:nth-child(3){animation-delay:.2s}.wave i:nth-child(4){animation-delay:.3s}.wave i:nth-child(5){animation-delay:.4s}
+@keyframes w{0%,100%{height:4px}50%{height:18px}}
+.wave.idle i{animation:wi 2.4s ease-in-out infinite}@keyframes wi{0%,100%{height:3px}50%{height:6px}}
+/* 1 · on, waiting */
+.s1 .bar{border-color:var(--lil);box-shadow:0 0 0 5px rgba(91,91,214,.12),0 8px 24px -14px rgba(0,0,0,.25)}
+.s1 .mic{background:var(--lil)}
+.s1 .mic::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(91,91,214,.35);animation:ring 1.8s ease-out infinite}
+@keyframes ring{from{transform:scale(.85);opacity:1}to{transform:scale(1.35);opacity:0}}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--hot);box-shadow:0 0 0 3px rgba(217,45,32,.15);animation:blink 1.4s ease-in-out infinite}@keyframes blink{50%{opacity:.35}}
+.chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center}.chips span{font-size:11.5px;border:1px solid var(--rim2);border-radius:16px;padding:5px 11px;background:#fff;color:var(--fg2)}
+/* 2 · hearing */
+.s2 .bar{border-color:var(--lil)}.s2 .mic{background:var(--lil)}
+/* 3 · grace */
+.s3 .bar{border-color:var(--lil)}.s3 .mic{background:var(--lil)}
+.s3 .mic svg{position:absolute;inset:-5px;width:52px;height:52px;transform:rotate(-90deg)}.s3 .mic circle{fill:none;stroke:var(--lil);stroke-width:2.5;stroke-dasharray:151;stroke-dashoffset:60;stroke-linecap:round}
+/* 4 · got it */
+.s4 .bar .t{color:var(--fg)}.s4 .mic{background:var(--good)}
+.toast{position:absolute;top:22px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--rim);border-radius:14px;padding:9px 14px;font-size:12.5px;box-shadow:0 8px 24px -14px rgba(0,0,0,.25);display:flex;gap:10px;align-items:center;white-space:nowrap}
+.orb{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6 60%,#2a2a6a);flex:none}
+/* 5 · didn't catch */
+.s5 .bar{border-color:var(--rim2)}
+.s5 .card{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:min(440px,90%);background:#fff;border:1px solid var(--rim);border-radius:14px;padding:12px 14px;box-shadow:0 8px 24px -14px rgba(0,0,0,.25)}
+.s5 .card .q{font-size:12.5px;color:var(--fg2)}.s5 .card .q i{font-style:normal;color:var(--fg);background:#fff4d6;padding:0 4px;border-radius:4px}
+.s5 .card .opts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.s5 .card .opts span{font-size:11.5px;border-radius:16px;padding:5px 11px;border:1px solid var(--rim2)}.s5 .card .opts span.p{background:#15161b;color:#fff;border-color:#15161b}
+/* 6 · off */
+.s6 .bar{border-style:dashed;border-color:var(--rim2)}.s6 .mic{background:#fff;color:var(--fg3);border:1px solid var(--rim2)}
+.s6 .mic::before{content:'';position:absolute;width:24px;height:2px;background:var(--fg3);transform:rotate(-45deg)}
+.btn{font-size:12px;background:#15161b;color:#fff;border-radius:16px;padding:6px 12px;white-space:nowrap}
+.note{color:var(--fg3);font-size:12.5px;padding:10px 16px 14px;background:#fff;border-top:1px solid var(--rim)}
+.note b{color:var(--fg);font-weight:500}
+.how{background:#fff;border:1px solid var(--rim);border-radius:18px;padding:18px 22px;margin-top:26px;max-width:1100px}
+.how h2{font-size:14px;font-weight:500;margin:0 0 8px}.how li{margin:4px 0;color:var(--fg2)}.how code{font-family:var(--mono);font-size:11.5px;background:#f2f2f5;padding:1px 5px;border-radius:4px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Desk · listening, so you know it's your turn</h1>
+<p class="sub">Six states for the ask bar after the brief ends. The aim: it's obvious the mic is on, you can see what it heard while you speak, it waits for you to finish, and when it mishears it shows what it heard instead of saying “I didn't catch that”.</p>
+<div class="grid">
+
+<div class="st s1"><div class="lab"><b>1 · Your turn</b><span>right after the brief</span></div>
+<div class="stage"><div class="hint"><span class="dot"></span><b>Mic is on.</b> Ask me anything, or say “fix them”.</div>
+<div class="bar"><span class="sp">✦</span><span class="t">Listening… go ahead</span><span class="wave idle"><i></i><i></i><i></i><i></i><i></i></span><span class="mic"><i class="ti ti-microphone"></i></span></div>
+<div class="chips"><span>“Fix them”</span><span>“What needs me?”</span><span>“Build me a website”</span></div></div>
+<div class="note"><b>Mic is on</b> in words, a red recording dot, a pulsing ring on the mic and three spoken examples, so it reads as "talk now", not "type here". Plays a soft two-note chime as it opens.</div></div>
+
+<div class="st s2"><div class="lab"><b>2 · Hearing you</b><span>live words as you speak</span></div>
+<div class="stage"><div class="hint"><span class="dot"></span>Listening</div>
+<div class="bar"><span class="sp">✦</span><span class="t"><span class="heard">okay that's fine, can you build me a </span><span class="live">website for…</span></span><span class="wave"><i></i><i></i><i></i><i></i><i></i></span><span class="mic"><i class="ti ti-microphone"></i></span></div></div>
+<div class="note">Your words appear in the bar <b>as you say them</b> (grey while it's still guessing, dark once it's sure). The waveform follows your voice, so you can see it's actually hearing you.</div></div>
+
+<div class="st s3"><div class="lab"><b>3 · You paused</b><span>it waits instead of cutting you off</span></div>
+<div class="stage"><div class="hint">Still listening… keep going, or I'll go in a second</div>
+<div class="bar"><span class="sp">✦</span><span class="t"><span class="heard">okay that's fine, can you build me a website for Glow</span></span><span class="mic"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/></svg><i class="ti ti-microphone"></i></span></div></div>
+<div class="note">A short pause no longer ends your turn. A ring drains around the mic for <b>~1.6 s</b>; speak again and it keeps adding to the same sentence. Tap the mic to send right away.</div></div>
+
+<div class="st s4"><div class="lab"><b>4 · Got it</b><span>it says what it's doing</span></div>
+<div class="stage"><div class="toast"><span class="orb"></span>Building a website for Glow Med Spa…</div>
+<div class="bar"><span class="sp">✦</span><span class="t">okay that's fine, can you build me a website for Glow</span><span class="mic"><i class="ti ti-check"></i></span></div></div>
+<div class="note">Your sentence stays in the bar for a beat with a green tick, then the room opens. You always see <b>what it understood</b> before it acts.</div></div>
+
+<div class="st s5"><div class="lab"><b>5 · Not sure</b><span>shows what it heard, offers the closest</span></div>
+<div class="stage"><div class="card"><div class="q">I heard <i>“fix the mall”</i>. Did you mean:</div><div class="opts"><span class="p">Fix them all</span><span>Fix the missed calls</span><span>Say it again</span></div></div>
+<div class="bar"><span class="sp">✦</span><span class="t">Listening… or tap one above</span><span class="wave idle"><i></i><i></i><i></i><i></i><i></i></span><span class="mic"><i class="ti ti-microphone"></i></span></div></div>
+<div class="note">No dead-end “I didn't catch that”. It shows the words it got and its two best guesses; say “yes”, tap one, or just repeat. The mic stays open.</div></div>
+
+<div class="st s6"><div class="lab"><b>6 · Mic is off</b><span>blocked, or you turned it off</span></div>
+<div class="stage"><div class="hint">Mic is off. <b>Type below</b>, or turn it on to talk.</div>
+<div class="bar"><span class="sp">✦</span><span class="t">Ask your desk anything…</span><span class="btn">Turn on mic</span><span class="mic"><i class="ti ti-microphone"></i></span></div></div>
+<div class="note">If the browser blocked the mic, it says so plainly and gives one button. Never a silent mic that looks on.</div></div>
+
+</div>
+<div class="how"><h2>What changes under the hood</h2><ul>
+<li>Listen <b>continuously with live results</b> instead of one short take. Today it stops at the first pause and only returns the final guess, which is why it cuts you off and you can't see what it heard.</li>
+<li>Decide you're done after <b>~1.6 s of silence</b>, not the browser's default (~0.5–0.8 s). Speaking again within that window joins the same sentence.</li>
+<li>Pass the browser's <b>alternative guesses</b> to the matcher, so “fix the mall” still lands on “fix them all”.</li>
+<li>Same states in the room and on the phone (the bar there becomes option B of the phone-bar mockup).</li>
+</ul></div>
+</body></html>

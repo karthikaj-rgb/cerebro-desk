@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Focus landing · two layouts</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--ink:#2f5fe0;--hot:#d92d20;--rim:rgba(21,22,27,.08);--rim2:rgba(21,22,27,.22);--card:#fff;--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 28px}
+.shot{background:var(--bg);border:1px solid var(--rim);border-radius:18px;overflow:hidden;margin-bottom:36px;box-shadow:0 12px 40px -24px rgba(0,0,0,.25)}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:12px 18px;border-bottom:1px solid var(--rim);background:#fff;display:flex;justify-content:space-between}.lab b{color:var(--fg);font-weight:500}
+.desk{display:grid;grid-template-columns:300px 1fr;height:720px}
+.pan{background:linear-gradient(170deg,#ece8fb,#e6def9 60%,#f6d9ea);padding:22px 20px;position:relative}
+.pan .brand{display:inline-flex;align-items:center;gap:7px;background:#fff;border-radius:20px;padding:6px 12px;font-weight:500;font-size:12px}.pan .brand i{width:12px;height:12px;border-radius:4px;background:#5b5bd6;display:inline-block}.pan .brand em{font-style:normal;font-family:var(--mono);font-size:10px;color:var(--fg3)}
+.pan .hello{background:#fff;border-radius:16px;padding:18px 18px 16px;margin-top:22px}.pan .when{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--fg3)}.pan h2{font-weight:400;font-size:22px;margin:8px 0 4px}.pan p{margin:0 0 14px;font-size:12px;color:var(--fg2)}.pan p b{color:var(--fg);font-weight:500}.pan .go{display:inline-flex;gap:6px;align-items:center;background:#15161b;color:#fff;border-radius:20px;padding:8px 14px;font-size:12px}
+.pan .marks{display:flex;gap:5px;margin-top:14px}.pan .marks i{flex:1;height:3px;border-radius:2px;background:#e5e5ea}.pan .marks i.h{background:#e5756b}
+.main{position:relative;padding:40px 48px}
+.tools{position:absolute;top:16px;right:20px;display:flex;gap:8px;align-items:center}.seg{display:flex;background:#fff;border:1px solid var(--rim);border-radius:20px;padding:3px;font-size:11px}.seg span{padding:4px 10px;border-radius:16px;color:var(--fg3)}.seg span.on{background:#15161b;color:#fff}.tools .ic{width:28px;height:28px;border-radius:50%;background:#fff;border:1px solid var(--rim);display:grid;place-items:center;font-size:13px}
+.bar{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:520px;background:#fff;border:1px solid var(--rim);border-radius:30px;padding:10px 16px;font-size:12.5px;color:var(--fg3);display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px -14px rgba(0,0,0,.25)}.bar .mic{margin-left:auto;width:26px;height:26px;border-radius:50%;background:#15161b;color:#fff;display:grid;place-items:center;font-size:11px}
+.eb{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.cta{flex:none;background:#15161b;color:#fff;border-radius:999px;padding:8px 15px;font-size:12.5px;white-space:nowrap;transition:transform .16s,box-shadow .16s}
+.later{flex:none;color:var(--fg3);font-size:12px;padding:0 4px;opacity:0;transition:opacity .16s}
+.chip{display:inline-flex;align-items:center;gap:16px;border:1px solid var(--rim);background:#fff;border-radius:999px;padding:9px 16px;font-size:12px;color:var(--fg3)}.chip b{font-weight:500;color:var(--fg);font-size:13.5px;margin-right:4px}.chip .o{color:var(--ink);font-weight:500}
+.mk{font-size:13px;color:var(--fg3)}.mk b{font-weight:500;color:var(--fg2);margin-right:6px}.mk u{color:var(--fg2);text-decoration-color:var(--rim2);text-underline-offset:3px;margin:0 2px}
+/* A · centred list */
+.A{max-width:640px;margin:52px auto 0;display:flex;flex-direction:column;gap:14px}
+.A .eb{text-align:center}
+.A .row{display:flex;align-items:center;gap:16px;padding:16px 18px;margin:0 -18px;border-radius:14px;border-bottom:1px solid var(--rim);transition:background .16s,box-shadow .16s,transform .16s}
+.A .row:hover{background:#fff;border-color:transparent;box-shadow:0 10px 30px -18px rgba(21,22,27,.25);transform:translateY(-1px)}
+.A .row:hover .later{opacity:1}.A .row:hover .cta{box-shadow:0 0 0 4px rgba(21,22,27,.08)}
+.A .dot{width:9px;height:9px;border-radius:50%;background:var(--hot);box-shadow:0 0 0 4px rgba(217,45,32,.12);flex:none}
+.A .t{flex:1;min-width:0}.A .t span{display:block;font-size:17px;letter-spacing:-.01em}.A .t small{display:block;font-size:12.5px;color:var(--fg3);margin-top:3px}.A .t small b{font-weight:400;color:var(--hot);font-family:var(--mono);font-size:11.5px}
+.A .foot{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:10px}
+/* B · centred cards, headline first */
+.B{max-width:560px;margin:36px auto 0;display:flex;flex-direction:column;gap:12px;align-items:center}
+.B .hl{font-family:'Instrument Serif',serif;font-size:30px;line-height:1.1;text-align:center;margin:0 0 6px}.B .hl em{color:var(--ink)}
+.B .card{width:100%;background:#fff;border:1px solid var(--rim);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:16px;transition:border-color .16s,box-shadow .16s,transform .16s}
+.B .card:hover{border-color:var(--rim2);box-shadow:0 14px 36px -20px rgba(21,22,27,.3);transform:translateY(-2px)}.B .card:hover .later{opacity:1}
+.B .n{font-family:var(--mono);font-size:11px;color:var(--hot);width:22px;flex:none}
+.B .t{flex:1;min-width:0}.B .t span{display:block;font-size:16px;letter-spacing:-.01em}.B .t small{display:block;font-size:12px;color:var(--fg3);margin-top:3px}.B .t small b{font-weight:400;color:var(--hot);font-family:var(--mono);font-size:11px}
+.B .foot{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:12px}
+.note{color:var(--fg3);font-size:13px;margin:-24px 2px 36px}
+</style></head><body>
+<h1>Focus landing · two centred layouts</h1>
+<p class="sub">Both bigger and centred, black CTAs, hover lifts the row instead of inverting the button. Pick one, or mix.</p>
+
+<div class="shot"><div class="lab"><b>A · Centred list</b><span>same stack, 640px wide, 17px titles, hover = soft card</span></div>
+<div class="desk"><div class="pan"><span class="brand"><i></i>Cerebro <em>Acme Agency</em></span><div class="hello"><div class="when">MON · NOV 2 · 9:38 AM</div><h2>Good morning, Maya.</h2><p><b>Three things need you.</b> Everything else is running.</p><span class="go"><i class="ti ti-microphone"></i> Get started</span><div class="marks"><i class="h"></i><i class="h"></i><i class="h"></i><i></i><i></i><i></i></div></div></div>
+<div class="main"><div class="tools"><div class="seg"><span class="on">Stage</span><span>Scribble</span></div><span class="ic"><i class="ti ti-sun"></i></span><span class="ic"><i class="ti ti-adjustments-horizontal"></i></span></div>
+  <div class="A"><div class="eb">Needs you · 3</div>
+    <div class="row"><i class="dot"></i><div class="t"><span>Three accounts dipped</span><small>Ads paused · booking widget broke · <b>−$4.8k/mo</b></small></div><span class="cta">Run the 2 fixes</span><span class="later">Later</span></div>
+    <div class="row" style="background:#fff;border-color:transparent;box-shadow:0 10px 30px -18px rgba(21,22,27,.25);transform:translateY(-1px)"><i class="dot"></i><div class="t"><span>Ads paused since Tuesday</span><small>The card on file expired · <b>−$2.4k/mo at risk</b></small></div><span class="cta" style="box-shadow:0 0 0 4px rgba(21,22,27,.08)">Turn them back on</span><span class="later" style="opacity:1">Later</span></div>
+    <div class="row"><i class="dot"></i><div class="t"><span>Missing calls after 5 PM</span><small>The front desk has gone home by then · <b>+18% this month</b></small></div><span class="cta">Set up text-back</span><span class="later">Later</span></div>
+    <div class="foot"><span class="chip"><span><b>$412.8k</b>MRR</span><span><b>23</b>bookings</span><span><b>27</b>agents</span><span><b>77%</b>AI spend</span><span class="o">Dashboard →</span></span>
+      <span class="mk"><b>Make something</b><u>Website</u> · <u>Funnel</u> · <u>Campaign</u> · <u>Agent</u></span></div></div>
+  <div class="bar">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+</div></div></div>
+<p class="note">Second row shows the hover: the row becomes a white card with a soft shadow, the button gets a faint ring, "Later" appears. The button stays black, no colour flip.</p>
+
+<div class="shot"><div class="lab"><b>B · Headline + cards</b><span>the AI's line on top, each thing its own card, numbered</span></div>
+<div class="desk"><div class="pan"><span class="brand"><i></i>Cerebro <em>Acme Agency</em></span><div class="hello"><div class="when">MON · NOV 2 · 9:38 AM</div><h2>Good morning, Maya.</h2><p><b>Three things need you.</b> Everything else is running.</p><span class="go"><i class="ti ti-microphone"></i> Get started</span><div class="marks"><i class="h"></i><i class="h"></i><i class="h"></i><i></i><i></i><i></i></div></div></div>
+<div class="main"><div class="tools"><div class="seg"><span class="on">Stage</span><span>Scribble</span></div><span class="ic"><i class="ti ti-sun"></i></span><span class="ic"><i class="ti ti-adjustments-horizontal"></i></span></div>
+  <div class="B"><div class="eb">Needs you · 3</div><h2 class="hl">Three things, <em>then you’re clear.</em></h2>
+    <div class="card"><span class="n">01</span><div class="t"><span>Three accounts dipped</span><small>Ads paused · booking widget broke · <b>−$4.8k/mo</b></small></div><span class="cta">Run the 2 fixes</span><span class="later">Later</span></div>
+    <div class="card" style="border-color:var(--rim2);box-shadow:0 14px 36px -20px rgba(21,22,27,.3);transform:translateY(-2px)"><span class="n">02</span><div class="t"><span>Ads paused since Tuesday</span><small>The card on file expired · <b>−$2.4k/mo at risk</b></small></div><span class="cta">Turn them back on</span><span class="later" style="opacity:1">Later</span></div>
+    <div class="card"><span class="n">03</span><div class="t"><span>Missing calls after 5 PM</span><small>The front desk has gone home by then · <b>+18% this month</b></small></div><span class="cta">Set up text-back</span><span class="later">Later</span></div>
+    <div class="foot"><span class="chip"><span><b>$412.8k</b>MRR</span><span><b>23</b>bookings</span><span><b>27</b>agents</span><span><b>77%</b>AI spend</span><span class="o">Dashboard →</span></span>
+      <span class="mk"><b>Make something</b><u>Website</u> · <u>Funnel</u> · <u>Campaign</u> · <u>Agent</u></span></div></div>
+  <div class="bar">✦ Ask your desk anything… <span class="mic"><i class="ti ti-microphone"></i></span></div>
+</div></div></div>
+<p class="note">Second card shows the hover: the card lifts with a darker rim. The serif headline is the AI's one line; it changes as things get done ("One left." → "You're clear.").</p>
+</body></html>

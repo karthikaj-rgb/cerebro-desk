@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desk · AI presence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--rim:rgba(21,22,27,.08);--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 18px;max-width:900px}
+.ctl{display:flex;gap:6px;margin:0 0 22px;align-items:center}.ctl span{font-size:12px;color:var(--fg3);margin-right:6px}
+.ctl button{font:inherit;font-size:12px;border:1px solid var(--rim);background:#fff;border-radius:16px;padding:6px 13px;cursor:pointer;color:var(--fg2)}.ctl button.on{background:#15161b;color:#fff;border-color:#15161b}
+.ctl .th{margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.c{border-radius:18px;overflow:hidden;border:1px solid var(--rim);box-shadow:0 12px 40px -24px rgba(0,0,0,.25);background:#fff}
+.v{height:300px;position:relative;display:grid;place-items:center;background:var(--bg);transition:background .4s}
+body.dark .v{background:#0e0f12}
+.v canvas{width:260px;height:260px}
+.v .cap{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:13px;color:var(--fg2);transition:color .4s}
+body.dark .v .cap{color:#a4a6b1}
+.lab{padding:12px 16px 14px;border-top:1px solid var(--rim)}.lab b{font-weight:500;font-size:13.5px}.lab p{margin:3px 0 0;color:var(--fg3);font-size:12.5px}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);float:right;margin-top:2px}
+@media(max-width:1100px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Desk · what the AI looks like while it talks</h1>
+<p class="sub">Six live alternatives to the orb. Each one is drawn in the browser and reacts to a simulated voice. Flip the state to see idle, listening and speaking, and the theme to check light and dark.</p>
+<div class="ctl"><span>State</span><button data-s="idle">Idle</button><button data-s="listen" class="on">Listening</button><button data-s="speak">Speaking</button><button data-s="think">Thinking</button>
+<button class="th" id="th">Dark</button></div>
+<div class="grid">
+<div class="c"><div class="v"><canvas id="c1"></canvas><div class="cap"></div></div><div class="lab"><span class="tag">canvas · 3D points</span><b>1 · Particle sphere</b><p>A globe of dots slowly turning. Listening, it breathes in; speaking, the surface ripples with your words; thinking, the dots swirl.</p></div></div>
+<div class="c"><div class="v"><canvas id="c2"></canvas><div class="cap"></div></div><div class="lab"><span class="tag">canvas · halo</span><b>2 · Light ring</b><p>Just a thin ring of light. Its edge waves with the voice, like a sound trace bent into a circle. Very quiet when idle.</p></div></div>
+<div class="c"><div class="v"><canvas id="c3"></canvas><div class="cap"></div></div><div class="lab"><span class="tag">canvas · grid</span><b>3 · Stitch field</b><p>The panel's dot grid, gathered into a circle. Dots light up from the centre as the voice gets louder. Ties the AI to the lilac panel.</p></div></div>
+<div class="c"><div class="v"><canvas id="c4"></canvas><div class="cap"></div></div><div class="lab"><span class="tag">canvas · ribbons</span><b>4 · Aurora</b><p>Three soft ribbons of colour drifting across each other. They flatten to a line when idle and bloom when it speaks. Fits the Bar voice too.</p></div></div>
+<div class="c"><div class="v"><canvas id="c5"></canvas><div class="cap"></div></div><div class="lab"><span class="tag">canvas · rings</span><b>5 · Iris</b><p>Concentric rings like a lens. They tighten when it listens to you and open out when it answers. Feels like attention.</p></div></div>
+<div class="c"><div class="v"><canvas id="c6"></canvas><div class="cap"></div></div><div class="lab"><span class="tag">canvas · liquid</span><b>6 · Liquid drop</b><p>A soft glass drop with a moving highlight. Its outline wobbles with the voice; thinking, it slowly rotates inside itself.</p></div></div>
+</div>
+<script>
+let S = 'listen', dark = false
+const CAP = { idle: 'Here when you need me', listen: 'I’m listening. Just talk.', speak: 'Harbor’s ads are back on.', think: 'Working on it…' }
+document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { S = b.dataset.s; document.querySelectorAll('[data-s]').forEach(x => x.classList.toggle('on', x === b)); caps() })
+document.getElementById('th').onclick = (e) => { dark = !dark; document.body.classList.toggle('dark', dark); e.target.textContent = dark ? 'Light' : 'Dark' }
+const caps = () => document.querySelectorAll('.cap').forEach(c => c.textContent = CAP[S])
+caps()
+// simulated voice: syllable-ish bursts
+let amp = 0, tgt = 0, t0 = performance.now()
+function voice(t) {
+  if (S === 'speak') tgt = Math.max(0, Math.sin(t * 9.1) * 0.5 + Math.sin(t * 3.3) * 0.35 + 0.35) * (Math.sin(t * 0.9) > -0.6 ? 1 : 0.15)
+  else if (S === 'listen') tgt = Math.max(0, Math.sin(t * 7) * 0.3 + Math.sin(t * 2.1) * 0.25 + 0.15) * (Math.sin(t * 0.6) > 0 ? 1 : 0.2)
+  else tgt = 0
+  amp += (tgt - amp) * 0.18
+}
+const setup = (id) => { const c = document.getElementById(id), d = Math.min(2, devicePixelRatio || 1); c.width = 260 * d; c.height = 260 * d; const g = c.getContext('2d'); g.scale(d, d); return g }
+const L = '#5b5bd6', L2 = '#9d8cff', L3 = '#c9b8ff'
+const ink = () => dark ? '#ececf1' : '#15161b'
+// 1 particle sphere
+const g1 = setup('c1'), P = []
+for (let i = 0; i < 520; i++) { const y = 1 - (i / 519) * 2, r = Math.sqrt(1 - y * y), th = i * 2.399963; P.push([Math.cos(th) * r, y, Math.sin(th) * r]) }
+function d1(t) {
+  g1.clearRect(0, 0, 260, 260)
+  const rot = t * (S === 'think' ? 1.4 : 0.35), R = 78 * (S === 'listen' ? 1 + amp * 0.12 : 1)
+  for (const [x, y, z] of P) {
+    const cx = x * Math.cos(rot) - z * Math.sin(rot), cz = x * Math.sin(rot) + z * Math.cos(rot)
+    const lat = Math.asin(y), ripple = S === 'speak' ? Math.sin(lat * 8 - t * 8) * amp * 0.16 : 0
+    const sw = S === 'think' ? Math.sin(t * 3 + y * 6) * 0.08 : 0
+    const k = 1 + ripple + sw, px = 130 + cx * R * k, py = 130 + y * R * k, depth = (cz + 1) / 2
+    g1.globalAlpha = 0.15 + depth * 0.85; g1.fillStyle = depth > 0.6 ? L3 : depth > 0.3 ? L2 : L
+    g1.beginPath(); g1.arc(px, py, 0.7 + depth * 1.5, 0, 7); g1.fill()
+  }
+  g1.globalAlpha = 1
+}
+// 2 light ring
+const g2 = setup('c2')
+function d2(t) {
+  g2.clearRect(0, 0, 260, 260)
+  for (let k = 0; k < 3; k++) {
+    g2.beginPath()
+    for (let i = 0; i <= 240; i++) {
+      const a = (i / 240) * Math.PI * 2
+      const w = (S === 'idle' ? 0.6 : 2) * Math.sin(a * 3 + t * 1.2 + k) + amp * 22 * Math.sin(a * (5 + k * 2) - t * (4 + k)) * (0.5 + 0.5 * Math.sin(a * 2 + t))
+      const sp = S === 'think' ? Math.sin(a + t * 4) * 6 : 0
+      const r = 84 + w + sp, x = 130 + Math.cos(a) * r, y = 130 + Math.sin(a) * r
+      i ? g2.lineTo(x, y) : g2.moveTo(x, y)
+    }
+    g2.strokeStyle = [L, L2, L3][k]; g2.globalAlpha = [0.9, 0.5, 0.35][k]; g2.lineWidth = [2, 1.4, 1][k]
+    g2.shadowColor = L2; g2.shadowBlur = 14 + amp * 20; g2.stroke()
+  }
+  g2.globalAlpha = 1; g2.shadowBlur = 0
+}
+// 3 stitch field
+const g3 = setup('c3')
+function d3(t) {
+  g3.clearRect(0, 0, 260, 260)
+  const step = 9, R = 104
+  for (let y = -R; y <= R; y += step) for (let x = -R; x <= R; x += step) {
+    const d = Math.hypot(x, y); if (d > R) continue
+    const n = d / R
+    let lit = S === 'idle' ? 0.12 + 0.08 * Math.sin(t * 1.5 - n * 4) : 0
+    if (S === 'listen') lit = Math.max(0, 1 - n / (0.25 + amp * 0.9)) + 0.1
+    if (S === 'speak') lit = Math.max(0, 1 - Math.abs(n - (t * 0.9 % 1)) * 5) * 0.6 + Math.max(0, 1 - n / (0.2 + amp)) * 0.8 + 0.08
+    if (S === 'think') lit = 0.12 + 0.6 * Math.max(0, Math.sin(Math.atan2(y, x) * 3 - t * 4 + n * 6))
+    lit = Math.min(1, lit)
+    g3.fillStyle = lit > 0.55 ? L3 : lit > 0.3 ? L2 : L; g3.globalAlpha = 0.12 + lit * 0.88
+    const s = 2 + lit * 3.4; g3.fillRect(130 + x - s / 2, 130 + y - s / 2, s, s)
+  }
+  g3.globalAlpha = 1
+}
+// 4 aurora
+const g4 = setup('c4')
+function d4(t) {
+  g4.clearRect(0, 0, 260, 260)
+  g4.globalCompositeOperation = dark ? 'lighter' : 'multiply'
+  const cols = dark ? ['rgba(91,91,214,.55)', 'rgba(255,138,122,.45)', 'rgba(94,224,212,.45)'] : ['rgba(91,91,214,.45)', 'rgba(255,154,139,.4)', 'rgba(111,227,214,.4)']
+  for (let k = 0; k < 3; k++) {
+    const h = (S === 'idle' ? 3 : S === 'think' ? 18 : 10) + amp * 60
+    g4.beginPath()
+    for (let i = 0; i <= 120; i++) { const x = 10 + i * 2, y = 130 + Math.sin(i * 0.06 + t * (1 + k * 0.4) + k * 2) * (10 + amp * 18) - h * Math.sin((i / 120) * Math.PI) * (0.6 + 0.4 * Math.sin(t * 2 + k)); i ? g4.lineTo(x, y) : g4.moveTo(x, y) }
+    for (let i = 120; i >= 0; i--) { const x = 10 + i * 2, y = 130 + Math.sin(i * 0.06 + t * (1 + k * 0.4) + k * 2) * (10 + amp * 18) + h * Math.sin((i / 120) * Math.PI) * (0.6 + 0.4 * Math.cos(t * 1.7 + k)); g4.lineTo(x, y) }
+    g4.fillStyle = cols[k]; g4.filter = 'blur(6px)'; g4.fill()
+  }
+  g4.filter = 'none'; g4.globalCompositeOperation = 'source-over'
+}
+// 5 iris
+const g5 = setup('c5'); let open = 1
+function d5(t) {
+  g5.clearRect(0, 0, 260, 260)
+  const want = S === 'listen' ? 0.55 - amp * 0.15 : S === 'speak' ? 1 + amp * 0.25 : S === 'think' ? 0.8 : 0.9
+  open += (want - open) * 0.08
+  for (let k = 0; k < 9; k++) {
+    const r = (18 + k * 11) * open, rot = t * (k % 2 ? 0.4 : -0.3) * (S === 'think' ? 4 : 1)
+    g5.beginPath(); g5.ellipse(130, 130, r, r, rot, 0.15 + k * 0.1, Math.PI * 2 - 0.15)
+    g5.strokeStyle = k < 3 ? L3 : k < 6 ? L2 : L; g5.globalAlpha = 0.25 + (1 - k / 9) * 0.7; g5.lineWidth = 1.2 + (k === 0 ? amp * 4 : 0); g5.stroke()
+  }
+  g5.globalAlpha = 1; g5.beginPath(); g5.arc(130, 130, 8 * open + amp * 6, 0, 7); g5.fillStyle = L; g5.fill()
+}
+// 6 liquid drop
+const g6 = setup('c6')
+function d6(t) {
+  g6.clearRect(0, 0, 260, 260)
+  g6.beginPath()
+  for (let i = 0; i <= 120; i++) {
+    const a = (i / 120) * Math.PI * 2
+    const r = 74 + Math.sin(a * 3 + t * 1.3) * 4 + Math.sin(a * 5 - t * 1.7) * 3 + amp * 14 * Math.sin(a * 7 + t * 6) + (S === 'listen' ? amp * 6 : 0)
+    const x = 130 + Math.cos(a) * r, y = 130 + Math.sin(a) * r; i ? g6.lineTo(x, y) : g6.moveTo(x, y)
+  }
+  const hx = 130 + Math.cos(t * (S === 'think' ? 2 : 0.6)) * 26, hy = 112 + Math.sin(t * (S === 'think' ? 2 : 0.6)) * 18
+  const gr = g6.createRadialGradient(hx, hy, 4, 130, 136, 96)
+  gr.addColorStop(0, '#efe9ff'); gr.addColorStop(0.35, L3); gr.addColorStop(0.75, L); gr.addColorStop(1, '#2a2a6a')
+  g6.fillStyle = gr; g6.shadowColor = 'rgba(91,91,214,.45)'; g6.shadowBlur = 40 + amp * 30; g6.fill(); g6.shadowBlur = 0
+  g6.beginPath(); g6.ellipse(hx - 6, hy - 10, 16, 7, -0.5, 0, 7); g6.fillStyle = 'rgba(255,255,255,.55)'; g6.fill()
+}
+function loop(now) { const t = (now - t0) / 1000; voice(t); d1(t); d2(t); d3(t); d4(t); d5(t); d6(t); requestAnimationFrame(loop) }
+requestAnimationFrame(loop)
+</script>
+</body></html>

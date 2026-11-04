@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desk · mic styles</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--card:#fff;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--rim:rgba(21,22,27,.1);--L:#5b5bd6;--L2:#9d8cff;--L3:#c9b8ff;--mono:'Geist Mono',monospace}
+body.dark{--bg:#0e0f12;--card:#17181d;--fg:#ececf1;--fg2:#a4a6b1;--fg3:#6e717d;--rim:rgba(255,255,255,.1)}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px;transition:background .3s}
+body.dark{background:#08080a}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 18px;max-width:900px}
+.ctl{display:flex;gap:6px;margin:0 0 22px;align-items:center}.ctl span{font-size:12px;color:var(--fg3);margin-right:6px}
+.ctl button{font:inherit;font-size:12px;border:1px solid var(--rim);background:var(--card);color:var(--fg2);border-radius:16px;padding:6px 13px;cursor:pointer}.ctl button.on{background:#15161b;color:#fff;border-color:#15161b}
+.ctl .th{margin-left:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.c{border-radius:18px;overflow:hidden;border:1px solid var(--rim);background:var(--card);box-shadow:0 12px 40px -24px rgba(0,0,0,.25)}
+.v{height:190px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:0 28px 34px;background:var(--bg);position:relative;transition:background .3s}
+.hint{font-size:12px;color:var(--fg2);margin-bottom:10px;display:flex;gap:8px;align-items:center}.hint b{font-weight:500;color:var(--fg)}
+.dot{width:7px;height:7px;border-radius:50%;background:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.15);animation:bl 1.4s ease-in-out infinite}@keyframes bl{50%{opacity:.35}}
+.pill{position:relative;width:100%;max-width:470px;height:54px;border-radius:999px;background:var(--card);border:1px solid var(--rim);display:flex;align-items:center;gap:10px;padding:0 7px 0 18px;box-shadow:0 10px 26px -16px rgba(0,0,0,.3)}
+.pill .sp{color:var(--L)}.pill .ph{flex:1;font-size:13.5px;color:var(--fg3);white-space:nowrap;overflow:hidden;position:relative;z-index:2}
+.pill .ph b{font-weight:400;color:var(--fg)}
+.mic{position:relative;width:40px;height:40px;flex:none;display:grid;place-items:center;color:#fff;font-size:17px;z-index:3}
+.mic canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.mic i{position:relative;z-index:2}
+.lab{padding:12px 16px 14px;border-top:1px solid var(--rim)}.lab b{font-weight:500;font-size:13.5px}.lab p{margin:3px 0 0;color:var(--fg3);font-size:12.5px}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);float:right;margin-top:2px}
+/* 5 · glow border */
+.s5 .pill{border:0;background:transparent;box-shadow:none;isolation:isolate}
+.s5 .pill::before{content:'';position:absolute;inset:-2px;border-radius:999px;background:conic-gradient(from var(--a,0deg),#5b5bd6,#ff9a8b,#6fe3d6,#c9b8ff,#5b5bd6);filter:blur(calc(2px + var(--amp,0) * 10px));opacity:calc(.35 + var(--amp,0) * .65);z-index:-2}
+.s5 .pill::after{content:'';position:absolute;inset:1px;border-radius:999px;background:var(--card);z-index:-1}
+.s5 .mic{background:#15161b;border-radius:50%}body.dark .s5 .mic{background:#ececf1;color:#15161b}
+/* 6 · ink line */
+.s6 .pill canvas.full{position:absolute;inset:0;width:100%;height:100%;border-radius:999px;pointer-events:none;z-index:1}
+.s6 .mic{background:#15161b;border-radius:50%}body.dark .s6 .mic{background:#ececf1;color:#15161b}
+/* 7 · equaliser */
+.s7 .mic{background:var(--L);border-radius:50%}
+.s7 .eq{display:flex;gap:3px;align-items:center;height:28px;flex:none;margin-right:2px}.s7 .eq i{width:3px;border-radius:2px;background:var(--L);height:4px;transition:height .08s linear}
+/* 8 · morph to sphere */
+.s8 .mic{border-radius:50%;background:radial-gradient(circle at 38% 32%,#efe9ff,#9d8cff 40%,#5b5bd6 75%,#2a2a6a);transition:width .5s cubic-bezier(.34,1.4,.64,1),height .5s cubic-bezier(.34,1.4,.64,1),margin .5s}
+.s8.on .mic{box-shadow:0 6px 16px -6px rgba(91,91,214,.7)}
+.s8 .mic i{transition:opacity .3s}.s8.on .mic i{opacity:0}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Desk · the mic, while it listens</h1>
+<p class="sub">Eight ways the ask bar can show it's listening, each reacting to a simulated voice. Switch between Resting, Listening (mic on, no one talking) and Hearing you, and check light and dark.</p>
+<div class="ctl"><span>State</span><button data-s="rest">Resting</button><button data-s="listen">Listening</button><button data-s="hear" class="on">Hearing you</button><button class="th" id="th">Dark</button></div>
+<div class="grid">
+<div class="c s1"><div class="v"><div class="hint"></div><div class="pill"><span class="sp">✦</span><span class="ph"></span><span class="mic"><canvas id="m1"></canvas><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">canvas · blob</span><b>1 · Liquid mic</b><p>The button is a soft lilac blob. Listening, it wobbles gently; when you talk, it swells and ripples with your voice.</p></div></div>
+<div class="c s2"><div class="v"><div class="hint"></div><div class="pill"><span class="sp">✦</span><span class="ph"></span><span class="mic"><canvas id="m2"></canvas><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">canvas · ripples</span><b>2 · Sonar</b><p>Thin rings leave the mic like ripples on water. Slow and faint while it waits, faster and bolder the louder you are.</p></div></div>
+<div class="c s3"><div class="v"><div class="hint"></div><div class="pill"><span class="sp">✦</span><span class="ph"></span><span class="mic"><canvas id="m3"></canvas><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">canvas · orbit</span><b>3 · Orbit</b><p>A few dots orbit the mic. They drift slowly while listening and fling outwards when you speak.</p></div></div>
+<div class="c s4"><div class="v"><div class="hint"></div><div class="pill"><span class="sp">✦</span><span class="ph"></span><span class="mic"><canvas id="m4"></canvas><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">canvas · dot halo</span><b>4 · Stitch halo</b><p>A ring of tiny squares from the lilac panel's grid. They light up around the mic in step with your voice.</p></div></div>
+<div class="c s5"><div class="v"><div class="hint"></div><div class="pill"><span class="sp">✦</span><span class="ph"></span><span class="mic"><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">css · conic border</span><b>5 · Aurora edge</b><p>The whole bar's edge becomes a slowly turning band of colour. It glows brighter and spreads as you talk. No extra shapes.</p></div></div>
+<div class="c s6"><div class="v"><div class="hint"></div><div class="pill"><canvas class="full" id="m6"></canvas><span class="sp">✦</span><span class="ph"></span><span class="mic"><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">canvas · line</span><b>6 · Ink line</b><p>A single line in the empty part of the bar, like a pen trace of your voice. Flat when quiet, alive when you speak. Steps aside as your words fill in.</p></div></div>
+<div class="c s7"><div class="v"><div class="hint"></div><div class="pill"><span class="sp">✦</span><span class="ph"></span><span class="eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="mic"><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">dom · bars</span><b>7 · Equaliser</b><p>Eight bars next to the mic, driven by your voice. The most literal, and the easiest to read at a glance.</p></div></div>
+<div class="c s8"><div class="v"><div class="hint"></div><div class="pill"><span class="sp">✦</span><span class="ph"></span><span class="mic"><canvas id="m8"></canvas><i class="ti ti-microphone"></i></span></div></div><div class="lab"><span class="tag">css + canvas</span><b>8 · Mic becomes the orb</b><p>When the mic opens, the button turns into the room's orb at the same size, and breathes with your voice. Ties the bar to the room without crowding it.</p></div></div>
+</div>
+<script>
+let S = 'hear', dark = false
+const HINT = { rest: '<i class="ti ti-microphone-off" style="color:var(--fg3)"></i> Mic is resting. <b>Tap the mic</b> to talk.', listen: '<span class="dot"></span><b>Mic is on.</b> Ask me anything, or say “fix them”.', hear: '<span class="dot"></span>Listening' }
+const PH = { rest: 'Ask your desk anything…', listen: 'Listening… go ahead', hear: '<b>okay, can you build me a</b> website for…' }
+const paint = () => { document.querySelectorAll('.hint').forEach((h) => (h.innerHTML = HINT[S])); document.querySelectorAll('.ph').forEach((p) => (p.innerHTML = PH[S])); document.querySelector('.s8').classList.toggle('on', S !== 'rest') }
+document.querySelectorAll('[data-s]').forEach((b) => (b.onclick = () => { S = b.dataset.s; document.querySelectorAll('[data-s]').forEach((x) => x.classList.toggle('on', x === b)); paint() }))
+document.getElementById('th').onclick = (e) => { dark = !dark; document.body.classList.toggle('dark', dark); e.target.textContent = dark ? 'Light' : 'Dark' }
+paint()
+let amp = 0, t0 = performance.now()
+function voice(t) {
+  let tgt = 0
+  if (S === 'hear') tgt = Math.max(0, Math.sin(t * 9.1) * 0.5 + Math.sin(t * 3.3) * 0.35 + 0.35) * (Math.sin(t * 0.9) > -0.6 ? 1 : 0.15)
+  else if (S === 'listen') tgt = 0.06 + Math.sin(t * 1.5) * 0.03
+  amp += (Math.min(1, tgt) - amp) * 0.2
+}
+const mk = (id, w, h) => { const c = document.getElementById(id), d = Math.min(2, devicePixelRatio || 1); c.width = w * d; c.height = h * d; c.style.width = w + 'px'; c.style.height = h + 'px'; const g = c.getContext('2d'); g.scale(d, d); return g }
+const L = '#5b5bd6', L2 = '#9d8cff', L3 = '#c9b8ff'
+const on = () => S !== 'rest'
+// 1 liquid mic
+const g1 = mk('m1', 90, 90)
+function d1(t) {
+  g1.clearRect(0, 0, 90, 90); g1.beginPath()
+  for (let i = 0; i <= 60; i++) { const a = (i / 60) * Math.PI * 2; const r = 20 + (on() ? 2 * Math.sin(a * 3 + t * 2) + 1.5 * Math.sin(a * 5 - t * 2.6) : 0) + amp * (6 + 5 * Math.sin(a * 6 + t * 9)); const x = 45 + Math.cos(a) * r, y = 45 + Math.sin(a) * r; i ? g1.lineTo(x, y) : g1.moveTo(x, y) }
+  const gr = g1.createRadialGradient(39, 37, 2, 45, 45, 30); gr.addColorStop(0, on() ? '#efe9ff' : '#3a3b44'); gr.addColorStop(.45, on() ? L2 : '#24252c'); gr.addColorStop(1, on() ? L : '#15161b')
+  g1.fillStyle = gr; g1.shadowColor = 'rgba(91,91,214,.5)'; g1.shadowBlur = on() ? 14 + amp * 18 : 0; g1.fill(); g1.shadowBlur = 0
+}
+// 2 sonar
+const g2 = mk('m2', 120, 120); const rings = []; let last = 0
+function d2(t) {
+  g2.clearRect(0, 0, 120, 120)
+  const every = S === 'hear' ? 0.28 - amp * 0.15 : 1.2
+  if (on() && t - last > every) { rings.push({ b: t, s: 0.6 + amp }); last = t }
+  for (let i = rings.length - 1; i >= 0; i--) { const k = (t - rings[i].b) / 1.4; if (k > 1) { rings.splice(i, 1); continue } g2.beginPath(); g2.arc(60, 60, 20 + k * 38 * rings[i].s, 0, 7); g2.strokeStyle = L; g2.globalAlpha = (1 - k) * 0.7; g2.lineWidth = 1.5 + rings[i].s; g2.stroke() }
+  g2.globalAlpha = 1; g2.beginPath(); g2.arc(60, 60, 20, 0, 7); g2.fillStyle = on() ? L : '#15161b'; g2.fill()
+}
+// 3 orbit
+const g3 = mk('m3', 110, 110)
+function d3(t) {
+  g3.clearRect(0, 0, 110, 110)
+  g3.beginPath(); g3.arc(55, 55, 20, 0, 7); g3.fillStyle = on() ? L : '#15161b'; g3.fill()
+  if (!on()) return
+  for (let i = 0; i < 7; i++) { const sp = 0.8 + i * 0.13, a = t * sp * (S === 'hear' ? 2.2 : 1) + i * 0.9, r = 26 + amp * (14 + (i % 3) * 7) + Math.sin(t * 2 + i) * 2; g3.beginPath(); g3.arc(55 + Math.cos(a) * r, 55 + Math.sin(a) * r, 1.6 + (i % 3) * 0.7 + amp * 1.2, 0, 7); g3.fillStyle = [L, L2, L3][i % 3]; g3.globalAlpha = 0.5 + amp * 0.5; g3.fill() }
+  g3.globalAlpha = 1
+}
+// 4 stitch halo
+const g4 = mk('m4', 110, 110)
+function d4(t) {
+  g4.clearRect(0, 0, 110, 110)
+  for (let ring = 0; ring < 3; ring++) { const n = 18 + ring * 8, R = 27 + ring * 6; for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2 + ring * 0.2, lit = on() ? Math.max(0, Math.min(1, amp * 1.6 - ring * 0.35 + 0.25 * Math.sin(a * 3 - t * 5))) + (S === 'listen' ? 0.15 * (0.5 + 0.5 * Math.sin(a - t * 2)) : 0) : 0.05; const s = 1.6 + lit * 2.2; g4.globalAlpha = 0.1 + lit * 0.9; g4.fillStyle = lit > 0.5 ? L3 : L; g4.fillRect(55 + Math.cos(a) * R - s / 2, 55 + Math.sin(a) * R - s / 2, s, s) } }
+  g4.globalAlpha = 1; g4.beginPath(); g4.arc(55, 55, 20, 0, 7); g4.fillStyle = on() ? L : '#15161b'; g4.fill()
+}
+// 5 aurora edge
+let ang = 0
+function d5() { ang += on() ? 0.6 + amp * 3 : 0.15; const p = document.querySelector('.s5 .pill'); p.style.setProperty('--a', ang + 'deg'); p.style.setProperty('--amp', on() ? (S === 'listen' ? 0.15 : amp).toFixed(3) : 0) }
+// 6 ink line
+const c6 = document.getElementById('m6'); let g6, W6 = 0, H6 = 0
+function d6(t) {
+  const r = c6.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1)
+  if (r.width !== W6) { W6 = r.width; H6 = r.height; c6.width = W6 * d; c6.height = H6 * d; g6 = c6.getContext('2d'); g6.scale(d, d) }
+  g6.clearRect(0, 0, W6, H6); if (!on()) return
+  for (let k = 0; k < 2; k++) { g6.beginPath(); const x0 = S === 'hear' ? W6 * 0.58 : W6 * 0.42, x1 = W6 - 58; for (let x = x0; x <= x1; x += 2) { const env = Math.sin(((x - x0) / (x1 - x0)) * Math.PI), y = H6 / 2 + env * (S === 'listen' ? 1.5 : 14 * amp) * Math.sin(x * 0.06 - t * (6 + k * 2) + k) * (k ? 0.6 : 1); x === x0 ? g6.moveTo(x, y) : g6.lineTo(x, y) } g6.strokeStyle = k ? L3 : L; g6.globalAlpha = k ? 0.6 : 0.35; g6.lineWidth = k ? 1 : 2; g6.stroke() }
+  g6.globalAlpha = 1
+}
+// 7 equaliser
+const bars = [...document.querySelectorAll('.s7 .eq i')]
+function d7(t) { bars.forEach((b, i) => { const h = !on() ? 4 : S === 'listen' ? 4 + 3 * (0.5 + 0.5 * Math.sin(t * 2 + i)) : 4 + amp * 22 * (0.4 + 0.6 * Math.abs(Math.sin(t * (6 + i) + i * 1.7))); b.style.height = h + 'px'; b.style.opacity = on() ? 1 : 0.3 }) ; document.querySelector('.s7 .mic').style.background = on() ? '#5b5bd6' : '#15161b' }
+// 8 mic becomes the orb
+const g8 = mk('m8', 100, 100)
+function d8(t) { g8.clearRect(0, 0, 100, 100); if (!on()) return; for (let k = 0; k < 2; k++) { g8.beginPath(); g8.arc(50, 50, 23 + k * 4 + amp * 5 + Math.sin(t * 2 + k) * 1, 0, 7); g8.strokeStyle = L2; g8.globalAlpha = (0.35 - k * 0.15) * (0.5 + amp); g8.lineWidth = 1; g8.stroke() } g8.globalAlpha = 1; const m = document.querySelector('.s8 .mic'); m.style.transform = `scale(${1 + amp * 0.05})` }
+function loop(now) { const t = (now - t0) / 1000; voice(t); d1(t); d2(t); d3(t); d4(t); d5(); d6(t); d7(t); d8(t); requestAnimationFrame(loop) }
+requestAnimationFrame(loop)
+</script>
+</body></html>

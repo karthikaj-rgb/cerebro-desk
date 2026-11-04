@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Room · where "Next" goes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--ink:#2f5fe0;--hot:#d92d20;--good:#079455;--rim:rgba(21,22,27,.08);--rim2:rgba(21,22,27,.22);--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.shot{background:var(--bg);border:1px solid var(--rim);border-radius:18px;overflow:hidden;box-shadow:0 12px 40px -24px rgba(0,0,0,.25)}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:12px 18px;border-bottom:1px solid var(--rim);background:#fff;display:flex;justify-content:space-between}.lab b{color:var(--fg);font-weight:500}
+.room{position:relative;height:520px;background:radial-gradient(45% 40% at 50% 30%,rgba(91,91,214,.12),transparent 70%),var(--bg);overflow:hidden}
+.head{position:absolute;top:14px;left:20px;right:20px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.eb{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.pill{justify-self:center;display:flex;background:#fff;border:1px solid var(--rim);border-radius:20px;padding:3px;font-size:10px}.pill span{padding:4px 10px;border-radius:16px;color:var(--fg3)}.pill span.on{background:#15161b;color:#fff}
+.x{justify-self:end;width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid var(--rim);display:grid;place-items:center;font-size:11px}
+.stage{position:absolute;inset:56px 0 76px;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 60px;mask-image:linear-gradient(to bottom,transparent 0,#000 30px,#000 calc(100% - 10px),transparent)}
+.orb{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#c9b8ff,#5b5bd6 60%,#2a2a6a);box-shadow:0 0 40px 10px rgba(91,91,214,.25);flex:none;margin-top:-30px}
+.say{font-size:13px;text-align:center;max-width:380px;line-height:1.4}
+.live{width:100%;max-width:400px;font-size:10.5px}.live .eb{margin-bottom:4px}.live .st{display:flex;gap:16px;margin-bottom:6px}.live .st b{font-size:16px;display:block;font-weight:500}.live .st b.r{color:var(--hot)}.live .st b.g{color:var(--good)}.live .st small{color:var(--fg3)}
+.live .row{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--rim)}.live .row i{font-style:normal;color:var(--good);font-family:var(--mono);font-size:9.5px}
+.doing{width:100%;max-width:400px;font-size:10.5px}.doing .eb{margin:6px 0 4px}.doing div{padding:4px 0;border-top:1px solid var(--rim);color:var(--fg2)}.doing div::before{content:'✓ ';color:var(--good)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.chips span{font-size:10px;border:1px solid var(--rim2);border-radius:14px;padding:4px 9px;background:#fff}.chips span.used{opacity:.4}
+.bar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:72%;background:#fff;border:1px solid var(--rim);border-radius:30px;padding:8px 10px 8px 14px;font-size:10px;color:var(--fg3);display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px -14px rgba(0,0,0,.25)}
+.bar .wave{display:flex;gap:2px}.bar .wave i{width:2px;height:8px;border-radius:1px;background:#5b5bd6}.bar .t{flex:1;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bar .b{width:24px;height:24px;border-radius:50%;border:1px solid var(--rim);display:grid;place-items:center;font-size:10px;background:#fff;flex:none}.bar .b.d{background:#15161b;color:#fff;border-color:#15161b}
+.next{background:#fff;border:1px solid var(--rim);border-radius:14px;padding:10px 12px;box-shadow:0 14px 30px -18px rgba(0,0,0,.3)}
+.next .eb{color:var(--hot)}.next b{display:block;font-size:12px;font-weight:500;margin:2px 0}.next small{font-family:var(--mono);font-size:9px;color:var(--hot);display:block;margin-bottom:6px}
+.next .acts span{font-size:10px;border-radius:14px;padding:5px 9px;border:1px solid var(--rim);margin-right:4px}.next .acts span.p{background:#15161b;color:#fff;border-color:#15161b}
+.note{color:var(--fg3);font-size:12.5px;margin:10px 2px 0}
+/* A · corner */
+.A .next{position:absolute;right:20px;bottom:76px;width:210px;animation:in .5s both}
+@keyframes in{from{opacity:0;transform:translateX(16px)}}
+/* B · in the bar */
+.B .bar .t{display:none}.B .bar .nx{flex:1;display:flex;align-items:center;gap:8px;color:var(--fg);min-width:0}.B .bar .nx .eb{color:var(--hot)}.B .bar .nx b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.B .bar .nx span{background:#15161b;color:#fff;border-radius:12px;padding:4px 9px;font-size:9.5px;white-space:nowrap}.B .bar .nx em{font-style:normal;color:var(--fg3);font-size:9.5px}
+/* C · under the header */
+.C .next{position:absolute;top:50px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:6px 8px 6px 14px;border-radius:30px;width:auto;white-space:nowrap;z-index:3}.C .next .acts{display:flex;gap:4px}.C .next .acts span{white-space:nowrap}.C .next b{margin:0;display:inline}.C .next small{display:inline;margin:0 0 0 6px}.C .next .eb{display:inline;margin-right:4px}.C .stage{inset:96px 0 76px}.C .orb{margin-top:0}
+/* D · queue on the right */
+.D .queue{position:absolute;right:16px;top:56px;bottom:76px;width:190px;display:flex;flex-direction:column;gap:8px}.D .queue .eb{margin-bottom:2px}.D .q{background:#fff;border:1px solid var(--rim);border-radius:12px;padding:9px 11px;font-size:10.5px}.D .q.done{opacity:.5}.D .q.done::before{content:'✓ ';color:var(--good)}.D .q.now{border-color:var(--hot)}.D .q .acts{margin-top:6px}.D .q .acts span{font-size:9.5px;border-radius:12px;padding:4px 8px;border:1px solid var(--rim)}.D .q .acts span.p{background:#15161b;color:#fff;border-color:#15161b}.D .q small{display:block;color:var(--fg3);font-size:9.5px}.D .stage{padding-right:230px;padding-left:40px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Room · where the "Next · needs you" card goes</h1>
+<p class="sub">Same moment in all four: the Revenue fix just finished, Ads paused is next. The stage no longer grows; earlier blocks scroll under the header.</p>
+<div class="grid">
+
+<div><div class="shot"><div class="lab"><b>A · Corner card</b><span>slides in bottom-right, over nothing</span></div>
+<div class="room A"><div class="head"><span class="eb">● Revenue · 3 accounts</span><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="x">×</span></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again. You’re winning back $3.6k a month.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b class="r">−$1.2k</b></div><div><small>Won back</small><b class="g">+$3.6k/mo</b></div></div><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div><div class="row">Lumen Spa · reviews<i>Monday</i></div></div>
+<div class="doing"><div class="eb">Doing it now · 4 of 4</div><div>Switched Harbor’s ads to the new card</div><div>Fixed Peak’s booking widget</div><div>Left Lumen for Jen</div><div>Set a check for Monday</div></div>
+<div class="chips"><span class="used">Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span><span>Hold Lumen until Monday</span></div></div>
+<div class="next"><span class="eb">Next · needs you</span><b>Ads paused since Tuesday</b><small>−$2.4k/mo at risk</small><div class="acts"><span class="p">Take me there</span><span>Later</span></div></div>
+<div class="bar"><span class="wave"><i></i><i style="height:12px"></i><i style="height:6px"></i><i style="height:10px"></i></span><span class="t">You’re winning back $3.6k a month, starting today.</span><span class="b"><i class="ti ti-microphone"></i></span><span class="b"><i class="ti ti-player-pause"></i></span><span class="b d">×</span></div></div></div>
+<p class="note">Never in the content flow, so nothing shifts. Reads as "a nudge", easy to ignore with Later.</p></div>
+
+<div><div class="shot"><div class="lab"><b>B · In the voice bar</b><span>the bar's text becomes the next step</span></div>
+<div class="room B"><div class="head"><span class="eb">● Revenue · 3 accounts</span><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="x">×</span></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again. You’re winning back $3.6k a month.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b class="r">−$1.2k</b></div><div><small>Won back</small><b class="g">+$3.6k/mo</b></div></div><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div><div class="row">Lumen Spa · reviews<i>Monday</i></div></div>
+<div class="doing"><div class="eb">Doing it now · 4 of 4</div><div>Switched Harbor’s ads to the new card</div><div>Fixed Peak’s booking widget</div><div>Left Lumen for Jen</div><div>Set a check for Monday</div></div>
+<div class="chips"><span class="used">Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span><span>Hold Lumen until Monday</span></div></div>
+<div class="bar"><span class="wave"><i></i><i style="height:12px"></i><i style="height:6px"></i><i style="height:10px"></i></span><div class="nx"><span class="eb">Next</span><b>Ads paused since Tuesday</b><em>−$2.4k/mo</em><span>Take me there</span></div><span class="b"><i class="ti ti-microphone"></i></span><span class="b d">×</span></div></div></div>
+<p class="note">Lightest. The AI already said it; the bar just holds the handle. Say "next" or tap. Works in Bar voice only; Creature needs A or C.</p></div>
+
+<div><div class="shot"><div class="lab"><b>C · Under the header</b><span>a slim strip at the top, stage starts below it</span></div>
+<div class="room C"><div class="head"><span class="eb">● Revenue · 3 accounts</span><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="x">×</span></div>
+<div class="next"><span class="eb">Next</span><b>Ads paused since Tuesday</b><small>−$2.4k/mo</small><div class="acts"><span class="p">Take me there</span><span>Later</span></div></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again. You’re winning back $3.6k a month.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b class="r">−$1.2k</b></div><div><small>Won back</small><b class="g">+$3.6k/mo</b></div></div><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div><div class="row">Lumen Spa · reviews<i>Monday</i></div></div>
+<div class="doing"><div class="eb">Doing it now · 4 of 4</div><div>Switched Harbor’s ads to the new card</div><div>Fixed Peak’s booking widget</div><div>Left Lumen for Jen</div><div>Set a check for Monday</div></div>
+<div class="chips"><span class="used">Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span><span>Hold Lumen until Monday</span></div></div>
+<div class="bar"><span class="wave"><i></i><i style="height:12px"></i><i style="height:6px"></i><i style="height:10px"></i></span><span class="t">You’re winning back $3.6k a month, starting today.</span><span class="b"><i class="ti ti-microphone"></i></span><span class="b"><i class="ti ti-player-pause"></i></span><span class="b d">×</span></div></div></div>
+<p class="note">Always visible, like a breadcrumb for the queue. Costs 36px of stage height; reads a bit like a notification bar.</p></div>
+
+<div><div class="shot"><div class="lab"><b>D · Queue on the right</b><span>done, now, next, as a column</span></div>
+<div class="room D"><div class="head"><span class="eb">● Revenue · 3 accounts</span><div class="pill"><span class="on">Voice</span><span>Chat</span></div><span class="x">×</span></div>
+<div class="stage"><div class="orb"></div><div class="say">Done. Harbor’s ads are back on and Peak’s booking widget works again. You’re winning back $3.6k a month.</div>
+<div class="live"><div class="eb">What I’m working from · live</div><div class="st"><div><small>Lost this month</small><b class="r">−$1.2k</b></div><div><small>Won back</small><b class="g">+$3.6k/mo</b></div></div><div class="row">Harbor Dental · ads<i>live ✓</i></div><div class="row">Peak Fitness · widget<i>fixed ✓</i></div><div class="row">Lumen Spa · reviews<i>Monday</i></div></div>
+<div class="chips"><span class="used">Run the 2 safe fixes</span><span>Why did Harbor’s ads stop?</span></div></div>
+<div class="queue"><span class="eb">Today · 1 of 3 done</span><div class="q done">Three accounts dipped<small>+$3.6k/mo won back</small></div><div class="q now">Ads paused since Tuesday<small>−$2.4k/mo at risk</small><div class="acts"><span class="p">Take me there</span><span>Later</span></div></div><div class="q">Missing calls after 5 PM<small>+18% this month</small></div></div>
+<div class="bar"><span class="wave"><i></i><i style="height:12px"></i><i style="height:6px"></i><i style="height:10px"></i></span><span class="t">You’re winning back $3.6k a month, starting today.</span><span class="b"><i class="ti ti-microphone"></i></span><span class="b"><i class="ti ti-player-pause"></i></span><span class="b d">×</span></div></div></div>
+<p class="note">Shows the whole morning, not just the next one, and ticks as it goes. Needs the width; on the phone it would collapse to A.</p></div>
+
+</div></body></html>
