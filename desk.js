@@ -2,12 +2,12 @@
 // Stage: your platform laid out as aligned cards. Scribble: the same cards, placed by hand, with pencil
 // notes; tidy them back any time. Circle things to talk about them together. Click anything to open
 // a room: a call with the AI, centred on its voice; switch to chat whenever you'd rather type.
-import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261105u'
-import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261105u'
+import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261106a'
+import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261106a'
 // Everything that can be on the desk, including the One AI option's extras (ONE_ITEMS).
 const ALL = [...ITEMS, ...ONE_ITEMS]
 const CARDED = ALL.filter((it) => !it.nocard)
-import { createStitch } from './stitch.js?v=20261105u'
+import { createStitch } from './stitch.js?v=20261106a'
 
 const $ = (s, r = document) => r.querySelector(s)
 const root = document.documentElement
@@ -2307,7 +2307,8 @@ function placeV2() {
   focusEl.hidden = !on || v2view !== 'focus'
   $('#dashtop').hidden = !on || v2view !== 'dash'
   const alt = on && v2view === 'dash' && dstyle !== 'columns'
-  desk.dataset.dstyle = alt ? dstyle : ''
+  if (alt) desk.dataset.dstyle = dstyle
+  else delete desk.dataset.dstyle
   $('#dalt').hidden = !alt
   if (alt) renderDalt(); else clearInterval(tlTimer)
   if (on && v2view === 'focus') renderFocus()
@@ -2339,6 +2340,7 @@ function setDay(v) {
 document.querySelectorAll('[data-version]').forEach((b) => (b.onclick = () => setVersion(b.dataset.version)))
 document.querySelectorAll('[data-day]').forEach((b) => (b.onclick = () => setDay(b.dataset.day)))
 function setBrief(v) {
+  if (!V2()) setVersion('2')
   landing = v
   store.set('desk-brief', v)
   briefSig = ''
@@ -2347,6 +2349,7 @@ function setBrief(v) {
 }
 document.querySelectorAll('[data-brief]').forEach((b) => (b.onclick = () => setBrief(b.dataset.brief)))
 function setDstyle(v) {
+  if (!V2()) setVersion('2')
   dstyle = v
   store.set('desk-dstyle', v)
   document.querySelectorAll('[data-dstyle]').forEach((b) => b.setAttribute('aria-selected', b.dataset.dstyle === v))
@@ -2407,9 +2410,9 @@ function renderTimeline() {
   for (let h = 8; h <= 18; h += 2) if (Math.abs(h - TL.now) > 0.7) track += `<span class="tl-hr" style="left:${pct(h)}%">${h === 12 ? '12 PM' : h > 12 ? `${h - 12} PM` : `${h} AM`}</span>`
   TL_EVS.forEach((e, i) => {
     const past = e.h < TL.now, above = i % 2 === 0, hi = (i >> 1) % 2 === 0
-    const top = above ? (hi ? 4 : 52) : (hi ? 150 : 118)
-    const st = above ? `top:${top}px;height:${104 - top}px` : `top:106px;height:${top - 106 + 34}px`
-    track += `<span class="tl-mk ${past ? 'dn' : 'pl'}" style="left:${pct(e.h)}%"></span><div class="tl-ev ${past ? 'dn' : 'pl'}${above ? '' : ' b'}${pct(e.h) > 84 ? ' r' : ''}" data-ev="${i}" style="left:${pct(e.h)}%;${st}"><div class="l">${e.t}<small>${tlFmt(e.h)} · ${e.s}</small></div></div>`
+    const AX = 140, lt = above ? (hi ? 0 : 70) : (hi ? AX + 92 : AX + 24)
+    const st = above ? `top:${lt}px;height:${AX - lt}px` : `top:${AX + 2}px;height:${lt - AX + 38}px`
+    track += `<span class="tl-mk ${past ? 'dn' : 'pl'}" style="left:${pct(e.h)}%"></span><div class="tl-ev ${past ? 'dn' : 'pl'}${above ? '' : ' b'}${pct(e.h) > 72 ? ' r' : ''}" data-ev="${i}" style="left:${pct(e.h)}%;${st}"><div class="l">${e.t}<small>${tlFmt(e.h)} · ${e.s}</small></div></div>`
   })
   track += `<div class="tl-now" style="left:${pct(TL.now)}%"></div><div class="tl-nowo" style="left:${pct(TL.now)}%"></div><span class="tl-nowt" style="left:${pct(TL.now)}%">Now</span><div class="tl-scrub"></div>`
   daltEl.innerHTML = `<div class="tl-top"><div><span class="eb">Today, as the AI sees it</span><div class="tl-clock"><b>${tlFmt(TL.now)}</b><span>Drag the line. Left of now is done, right is planned.</span></div></div>

@@ -4848,7 +4848,7 @@ body[data-inphone][data-v='2']::before { content: ''; position: fixed; left: 0; 
 body[data-v='2'] .room .creature.small::before, [data-theme='light'] body[data-v='2'] .room .creature.small::before, [data-theme='light'] body[data-v='2'] .room:not([data-build]) .creature.small::before { box-shadow: none !important; filter: none !important; transform: none !important }
 body[data-v='2'] .room .creature.small { width: 26px; height: 26px }
 /* chat: the data card sits under the AI message it belongs to */
-.ai-attach { margin: -6px 0 2px 38px; padding: 12px 14px; border-radius: 14px; background: var(--card-solid); border: 1px solid var(--rim); animation: rise 0.35s var(--ease) }
+.ai-attach { margin: 2px 0 6px 38px; padding: 0; border-radius: 0; background: none; border: 0; box-shadow: none; animation: rise 0.35s var(--ease) }
 .ai-attach .r-live { padding: 0 !important; background: transparent !important; box-shadow: none !important }
 .ai-attach .rs2-row:last-child { padding-bottom: 2px }
 @media (max-width: 760px) { .ai-attach { margin-left: 0 } }
@@ -4916,7 +4916,6 @@ body[data-inphone] .fsent { font-size: 20px; line-height: 1.6 }
 .desk[data-v2][data-v2view='dash'][data-dstyle] .front,
 .desk[data-v2][data-v2view='dash'][data-dstyle] .threads,
 .desk[data-v2][data-v2view='dash'][data-dstyle] .tidy { display: none !important }
-.desk[data-dstyle=''] .dalt { display: none }
 .dalt { width: 100%; max-width: 1120px; margin: 0 auto 120px; animation: fade-in var(--slow) var(--ease) both }
 .dalt .eb { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-3) }
 .dalt button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left }
@@ -4949,33 +4948,33 @@ body[data-inphone] .fsent { font-size: 20px; line-height: 1.6 }
 .dalt .tl-clock { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 8px }
 .dalt .tl-clock b { font-size: 46px; font-weight: 300; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1 }
 .dalt .tl-clock span { color: var(--fg-3); font-size: 14px }
-.dalt .tl-strip { display: flex; gap: 26px; flex-wrap: wrap }
-.dalt .tl-strip button { font-size: 12px; color: var(--fg-3) !important; display: flex; flex-direction: column }
-.dalt .tl-strip b { font-family: var(--mono); font-size: 17px; font-weight: 500; color: var(--fg); letter-spacing: -0.02em }
+.dalt .tl-strip { display: flex; gap: 16px 32px; flex-wrap: wrap }
+.dalt .tl-strip button { font-size: 13px; color: var(--fg-3) !important; display: flex; flex-direction: column; gap: 4px }
+.dalt .tl-strip b { font-family: var(--mono); font-size: 26px; font-weight: 500; color: var(--fg); letter-spacing: -0.02em }
 .dalt .tl-strip em { font-style: normal; color: var(--good) }
-.dalt .tl-wrap { position: relative; margin: 26px -24px 14px; padding: 0 24px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none }
+.dalt .tl-wrap { position: relative; margin: 68px -24px 56px; padding: 0 24px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none }
 .dalt .tl-wrap::-webkit-scrollbar { display: none }
-.dalt .tl-track { position: relative; min-width: 980px; height: 214px; cursor: ew-resize; touch-action: pan-y; user-select: none }
-.dalt .tl-axis { position: absolute; left: 0; right: 0; top: 104px; height: 2px; background: repeating-linear-gradient(90deg, var(--rim-2) 0 4px, transparent 4px 8px) }
-.dalt .tl-past { position: absolute; left: 0; top: 104px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(157, 140, 255, 0.2), #5b5bd6) }
-.dalt .tl-hr { position: absolute; top: 196px; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--fg-3) }
+.dalt .tl-track { position: relative; min-width: 1040px; height: 306px; cursor: ew-resize; touch-action: pan-y; user-select: none }
+.dalt .tl-axis { position: absolute; left: 0; right: 0; top: 140px; height: 2px; background: repeating-linear-gradient(90deg, var(--rim-2) 0 4px, transparent 4px 8px) }
+.dalt .tl-past { position: absolute; left: 0; top: 140px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(157, 140, 255, 0.2), #5b5bd6) }
+.dalt .tl-hr { position: absolute; top: 288px; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--fg-3) }
 .dalt .tl-ev { position: absolute; z-index: 2; border-left: 1px dashed var(--rim-2); display: flex; flex-direction: column; justify-content: flex-start }
 .dalt .tl-ev.b { justify-content: flex-end }
-.dalt .tl-ev .l { margin-left: -1px; padding: 3px 8px; border-radius: 8px; white-space: nowrap; font-size: 12.5px; background: var(--bg); transition: background 0.3s, box-shadow 0.3s }
-.dalt .tl-ev .l small { display: block; font-family: var(--mono); font-size: 10px; color: var(--fg-3) }
+.dalt .tl-ev .l { margin-left: -1px; padding: 4px 10px; border-radius: 8px; white-space: nowrap; font-size: 12.5px; background: var(--bg); transition: background 0.3s, box-shadow 0.3s }
+.dalt .tl-ev .l small { display: block; margin-top: 2px; font-family: var(--mono); font-size: 10px; color: var(--fg-3) }
 .dalt .tl-ev.pl .l { color: var(--fg-2) }
 .dalt .tl-ev.on .l { background: color-mix(in srgb, #5b5bd6 10%, var(--bg)); box-shadow: 0 0 0 1px color-mix(in srgb, #5b5bd6 22%, transparent) }
-.dalt .tl-mk { position: absolute; top: 105px; width: 11px; height: 11px; border-radius: 50%; transform: translate(-50%, -50%); z-index: 2 }
+.dalt .tl-mk { position: absolute; top: 141px; width: 11px; height: 11px; border-radius: 50%; transform: translate(-50%, -50%); z-index: 2 }
 .dalt .tl-mk.dn { background: #5b5bd6; box-shadow: 0 0 0 3px var(--bg) }
 .dalt .tl-mk.pl { background: var(--bg); border: 2px solid #9d8cff }
 .dalt .tl-now { position: absolute; top: 8px; bottom: 26px; width: 2px; margin-left: -1px; background: linear-gradient(transparent, color-mix(in srgb, var(--hot) 50%, transparent) 30%, color-mix(in srgb, var(--hot) 50%, transparent) 70%, transparent) }
-.dalt .tl-nowo { position: absolute; top: 105px; width: 26px; height: 26px; border-radius: 50%; transform: translate(-50%, -50%); z-index: 3; background: radial-gradient(circle at 38% 32%, #efe9ff, #9d8cff 40%, #5b5bd6 75%, #2a2a6a); box-shadow: 0 0 0 4px var(--bg), 0 0 20px 4px rgba(157, 140, 255, 0.35); animation: tl-breathe 3s ease-in-out infinite }
+.dalt .tl-nowo { position: absolute; top: 141px; width: 26px; height: 26px; border-radius: 50%; transform: translate(-50%, -50%); z-index: 3; background: radial-gradient(circle at 38% 32%, #efe9ff, #9d8cff 40%, #5b5bd6 75%, #2a2a6a); box-shadow: 0 0 0 4px var(--bg), 0 0 20px 4px rgba(157, 140, 255, 0.35); animation: tl-breathe 3s ease-in-out infinite }
 @keyframes tl-breathe { 50% { transform: translate(-50%, -50%) scale(1.08) } }
-.dalt .tl-nowt { position: absolute; top: 194px; transform: translateX(-50%); background: color-mix(in srgb, var(--hot) 10%, var(--bg)); color: var(--hot); border-radius: 8px; padding: 1px 7px; z-index: 3; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase }
+.dalt .tl-nowt { position: absolute; top: 286px; transform: translateX(-50%); background: color-mix(in srgb, var(--hot) 10%, var(--bg)); color: var(--hot); border-radius: 8px; padding: 1px 7px; z-index: 3; font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase }
 .dalt .tl-scrub { position: absolute; top: 0; bottom: 26px; width: 1px; background: color-mix(in srgb, #5b5bd6 35%, transparent); transition: left 0.9s cubic-bezier(0.3, 0.8, 0.2, 1); z-index: 1; pointer-events: none }
-.dalt .tl-scrub::after { content: ''; position: absolute; left: 50%; top: 105px; width: 16px; height: 16px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--bg); border: 2px solid #5b5bd6; box-shadow: 0 4px 12px -4px rgba(91, 91, 214, 0.6) }
-.dalt .tl-bot { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; align-items: start }
-.dalt .tl-det { border: 1px solid var(--rim); border-radius: 16px; background: color-mix(in srgb, var(--bg) 70%, transparent); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; min-height: 150px }
+.dalt .tl-scrub::after { content: ''; position: absolute; left: 50%; top: 141px; width: 16px; height: 16px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--bg); border: 2px solid #5b5bd6; box-shadow: 0 4px 12px -4px rgba(91, 91, 214, 0.6) }
+.dalt .tl-bot { display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; align-items: stretch }
+.dalt .tl-det { border: 1px solid var(--rim); border-radius: 16px; background: color-mix(in srgb, var(--bg) 70%, transparent); padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; min-height: 170px }
 .dalt .tl-det.swap { animation: fade-in 0.45s var(--ease) both }
 .dalt .tl-det .tg { display: flex; align-items: center; gap: 8px }
 .dalt .tl-det .tg i { width: 9px; height: 9px; border-radius: 50%; background: #5b5bd6 }
@@ -4984,8 +4983,8 @@ body[data-inphone] .fsent { font-size: 20px; line-height: 1.6 }
 .dalt .tl-det p { margin: 0; color: var(--fg-3); font-size: 13.5px }
 .dalt .tl-det .f { margin-top: auto; padding-top: 10px }
 .dalt .tl-ok { color: var(--good); font-size: 13px }
-.dalt .tl-wait > .eb { color: var(--hot); display: block; margin-bottom: 2px }
-.dalt .tl-wait .rr { padding: 10px 0 }
+.dalt .tl-wait > .eb { color: var(--hot); display: block; margin-bottom: 6px }
+.dalt .tl-wait .rr { padding: 14px 0 }
 .dalt .tl-wait .rr:last-child { border-bottom: 0 }
 .dalt .tl-wait .rt b { font-size: 14px }
 .dalt .tl-wait .rt small { font-family: var(--mono); font-size: 11px; color: var(--hot) }
@@ -5007,3 +5006,5 @@ body[data-inphone] .dalt .tl-bot { grid-template-columns: 1fr }
 
 .dalt .tl-ev.r { border-left: 0; border-right: 1px dashed var(--rim-2); transform: translateX(-100%); align-items: flex-end }
 .dalt .tl-ev.r .l { margin-left: 0; margin-right: -1px; text-align: right }
+.pb-row[hidden], .pb-hint[hidden] { display: none !important }
+@media (max-width: 760px) { .dalt .tl-strip { gap: 16px 28px } .dalt .tl-strip b { font-size: 20px } }
