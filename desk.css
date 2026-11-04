@@ -5198,3 +5198,22 @@ body[data-v='2'][data-presence='v1'] .fsheet-orb .fsv1 { display: block }
 .dalt .rgroup.warm .rdot { background: #5b5bd6 }
 [data-theme='dark'] .dalt .rgroup.warm .rdot { background: #9d8cff }
 .dalt .rgroup.warm .rr .rtag { color: var(--fg-3) }
+
+/* Room preview: once built, the site scrolls; only the "Click to expand" pill is a button */
+.r-site[data-done] .rs-view iframe { pointer-events: auto }
+.r-site[data-done] .rs-click { pointer-events: none; opacity: 1 }
+.r-site[data-done] .rs-click span { pointer-events: auto; cursor: zoom-in; transform: none }
+
+/* Draft editor: what's selected, and suggestions for it */
+.rc-chips { flex-wrap: wrap }
+.rc-sel { flex: 1 0 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 8px 7px 12px; margin-bottom: 4px; border-radius: 12px; background: color-mix(in srgb, #5b5bd6 9%, var(--card-solid)); color: var(--fg-2); font-size: 12.5px }
+.rc-sel b { color: var(--fg); font-weight: 500 }
+.rc-sel .ti-pointer { color: #5b5bd6; margin-right: 2px }
+.rc-x { width: 26px; height: 26px; border-radius: 50%; border: 0; background: transparent; color: var(--fg-3); display: grid; place-items: center; cursor: pointer }
+.rc-x:hover { background: color-mix(in srgb, var(--fg) 6%, transparent); color: var(--fg) }
+.pchip.sugg { text-align: left; white-space: normal; max-width: 100% }
+
+/* Draft editor never wider than the window: the site frame shrinks next to the chat panel */
+.r-pop .rp-card { max-width: 100%; min-width: 0 }
+.rp-body { min-width: 0 }
+.rp-body iframe { width: auto !important; min-width: 0; flex: 1 1 0 }

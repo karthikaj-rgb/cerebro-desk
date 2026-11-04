@@ -9,7 +9,7 @@
 <style>
   :root {
     --bg: #0b0b10; --fg: #f4f2ff; --fg2: rgba(244,242,255,.68); --fg3: rgba(244,242,255,.42);
-    --a: #c9b8ff; --b: #ffb8d9; --c: #8fd3ff; --glass: rgba(255,255,255,.06); --rim: rgba(255,255,255,.1);
+    --a: #c9b8ff; --b: #ffb8d9; --c: #8fd3ff; --glass: rgba(255,255,255,.06); --rim: rgba(255,255,255,.1); --surface: rgba(12,12,18,.55); --on: #0b0b10;
     --ease: cubic-bezier(.2,.8,.2,1);
   }
   [data-brand='harbor'] { --a: #7fe0c9; --b: #8fd3ff; --c: #e6fff7; }
@@ -53,7 +53,7 @@
   .btn .arr { transition: transform .3s var(--ease) } .btn:hover .arr { transform: translateX(4px) }
 
   /* hero */
-  .hero { min-height: 92vh; display: grid; align-content: center; padding: 120px 0 80px }
+  header.hero { min-height: 92vh; display: grid; align-content: center; justify-items: start; padding: 120px 32px 80px }
   .hero .eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 7px 12px 7px 8px; border-radius: 999px; border: 1px solid var(--rim); background: var(--glass); backdrop-filter: blur(10px); font-size: 13px; color: var(--fg2); margin-bottom: 30px }
   .hero .eyebrow b { width: 8px; height: 8px; border-radius: 50%; background: var(--a); box-shadow: 0 0 0 0 var(--a); animation: pulse 2s infinite }
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--a) 50%, transparent) } 100% { box-shadow: 0 0 0 12px transparent } }
@@ -61,7 +61,7 @@
   h1 .serif { background: linear-gradient(90deg, var(--a), var(--b)); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em }
   h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom } h1 .w span { display: inline-block; transform: translateY(110%); animation: up 1s var(--ease) forwards }
   @keyframes up { to { transform: translateY(0) } }
-  .hero p { font-size: clamp(17px, 1.6vw, 22px); color: var(--fg2); max-width: 46ch; margin: 0 0 36px; font-weight: 300 }
+  header.hero p { font-size: clamp(17px, 1.6vw, 22px); color: var(--fg2); max-width: 46ch; margin: 0 0 36px; font-weight: 300 }
   .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center }
   .hero .trust { display: flex; align-items: center; gap: 12px; margin-top: 44px; color: var(--fg3); font-size: 13px }
   .hero .trust .av { display: flex } .hero .trust .av i { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -8px; background: linear-gradient(135deg, var(--a), var(--b)) } .hero .trust .av i:nth-child(2) { background: linear-gradient(135deg, var(--b), var(--c)) } .hero .trust .av i:nth-child(3) { background: linear-gradient(135deg, var(--c), var(--a)) }
@@ -118,17 +118,37 @@
   [data-static] .rv { opacity: 1 !important; transform: none !important }
   [data-static] h1 .w span { transform: none !important }
   [data-static] .cursor, [data-static] .glow { display: none }
+  html:has(body[data-static]) { scroll-behavior: auto }
   .rv { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease) } .rv.in { opacity: 1; transform: none }
 
   /* funnel */
   [data-v='funnel'] .marquee, [data-v='funnel'] #services, [data-v='funnel'] #stories { display: none }
-  [data-v='funnel'] .hero { min-height: 0; padding-top: 90px }
+  [data-v='funnel'] header.hero { min-height: 0; padding-top: 90px }
   .offer { display: none } [data-v='funnel'] .offer { display: block }
   .offer .pill { display: inline-flex; gap: 10px; align-items: center; padding: 8px 14px; border-radius: 999px; background: var(--fg); color: #0b0b10; font-weight: 500; font-size: 14px; margin-bottom: 20px } .offer .pill .mono { color: rgba(0,0,0,.55) }
   .steps { display: flex; gap: 8px; margin-bottom: 22px } .steps span { flex: 1; height: 3px; border-radius: 3px; background: var(--rim); overflow: hidden; position: relative } .steps span::after { content: ''; position: absolute; inset: 0; background: var(--a); transform: scaleX(0); transform-origin: left; transition: transform .6s var(--ease) } .steps span.on::after { transform: scaleX(1) }
   .countdown { font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--fg2); display: flex; gap: 14px; margin-top: 18px } .countdown b { color: var(--fg); font-size: 22px; font-weight: 400; display: block }
 
   @media (max-width: 900px) { nav .links { display: none } .sh { grid-template-columns: 1fr } .sh p { justify-self: start } .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px } .tile.hero, .tile.l, .tile.w, .tile.m, .tile.s { grid-column: span 2 } .stats { grid-template-columns: 1fr 1fr } .book .card { grid-template-columns: 1fr; padding: 32px } .wrap { padding: 0 20px } }
+
+  /* Live editing (from the desk's editor) */
+  [data-tone='light'] { --bg: #f6f5f1; --fg: #16161b; --fg2: rgba(22,22,27,.68); --fg3: rgba(22,22,27,.48); --glass: rgba(255,255,255,.55); --rim: rgba(0,0,0,.09); --surface: rgba(255,255,255,.72); --on: #fff }
+  /* Everything that sits on a glass surface or a filled shape follows the theme (no hard-coded dark) */
+  nav, .form { background: var(--surface) }
+  .btn, .slot:hover, .slot.on, .offer .pill, .tile.dark { color: var(--on) }
+  .tile.dark p, .tile.dark .k { color: color-mix(in srgb, var(--on) 62%, transparent) }
+  [data-tone='light'] .form input, [data-tone='light'] .form select { background: rgba(255,255,255,.8) }
+  [data-tone='light'] .form input::placeholder { color: var(--fg3) }
+  [data-tone='light'] .tile:hover { border-color: rgba(0,0,0,.16) }
+  [data-tone='light'] .grain { opacity: .03 } [data-tone='light'] .aurora { opacity: .45 }
+  [data-hf='serif'] h1, [data-hf='serif'] h2, [data-hf='serif'] h3 { font-family: 'Instrument Serif', serif; font-weight: 400; letter-spacing: -.02em }
+  [data-hf='mono'] h1, [data-hf='mono'] h2, [data-hf='mono'] h3 { font-family: 'Geist Mono', monospace; font-weight: 400; letter-spacing: -.04em }
+  [data-btn='square'] .btn { border-radius: 8px } [data-btn='soft'] .btn { border-radius: 14px }
+  [data-edit] { cursor: auto } [data-edit] .cursor { display: none }
+  [data-edit] .ed-able { outline: 1.5px dashed transparent; outline-offset: 6px; border-radius: 6px; transition: outline-color .15s; cursor: pointer }
+  [data-edit] .ed-able:hover { outline-color: color-mix(in srgb, var(--a) 70%, transparent) }
+  [data-edit] .ed-sel, [data-edit] .ed-sel:hover { outline: 2px solid var(--a) !important }
+  .ed-gone { display: none !important }
 </style>
     <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -249,6 +269,55 @@
   document.querySelectorAll('.tile').forEach(t => { t.addEventListener('pointermove', e => { const r = t.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; t.style.transform = `translateY(-4px) rotateX(${-y * 6}deg) rotateY(${x * 8}deg)` }); t.addEventListener('pointerleave', () => t.style.transform = '') })
   // countdown
   if (v === 'funnel') { let s = 2 * 86400 + 14 * 3600 + 9 * 60 + 41; const el = document.getElementById('count'); setInterval(() => { s--; const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); el.innerHTML = `<span><b>${String(d).padStart(2,'0')}</b>days</span><span><b>${String(h).padStart(2,'0')}</b>hrs</span><span><b>${String(m).padStart(2,'0')}</b>min</span><span><b>${String(s % 60).padStart(2,'0')}</b>sec</span>` }, 1000) }
+
+  // ── Live editing: the desk sends the full list of edits; they apply instantly, no reload. ──
+  // In edit mode, clicking text selects it and tells the desk, which offers suggestions for it.
+  const ED = [['h1','Headline'],['#lede','Intro'],['#eyebrow','Top line'],['#offerPill','Offer'],['#cta1','Main button'],['#cta2','Second button'],['#svcH','Services heading'],['#svcP','Services text'],['#bookH','Booking heading'],['#trust','Reviews line'],['#brandName','Name'],['.tile h3','Service'],['.tile p','Service text'],['.quote q','Review'],['h2','Heading']]
+  const SECT = { services:'#services', stats:'.stats', stories:'#stories', reviews:'#stories', testimonials:'#stories', booking:'#book', book:'#book', ticker:'.marquee', marquee:'.marquee', countdown:'#count', offer:'.hero .offer', trust:'.trust' }
+  const snap = new Map(), bodySnap = { tone: document.body.dataset.tone || '' }
+  const tag = () => ED.forEach(([s, label]) => document.querySelectorAll(s).forEach((el, i) => { if (el.dataset.ed) return; el.dataset.ed = s + '|' + i; el.dataset.edLabel = label; el.classList.add('ed-able'); snap.set(el, el.innerHTML) }))
+  tag()
+  const find = (key) => { const [s, i] = key.split('|'); return document.querySelectorAll(s)[+i || 0] }
+  const hsl = (hex) => { const n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b); let h = 0, s = 0; const l = (mx + mn) / 2; if (mx !== mn) { const d = mx - mn; s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn); h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60 } return [h, s * 100, l * 100] }
+  const pal = (hex) => { const [hh, s] = hsl(hex); const light = document.body.dataset.tone === 'light'; const L = light ? 52 : 72; return [`hsl(${hh} ${Math.max(55, s)}% ${L}%)`, `hsl(${(hh + 32) % 360} ${Math.max(50, s)}% ${L + 6}%)`, `hsl(${(hh + 330) % 360} ${Math.max(45, s - 10)}% ${L + 12}%)`] }
+  const setWords = (el, text) => { const w = text.trim().split(/\s+/); el.innerHTML = w.map((x, i) => `<span class="w"><span style="animation:none;transform:none" class="${i === w.length - 1 ? 'serif' : ''}">${x.replace(/[<>]/g, '')}</span></span>`).join(' ') }
+  function reset() {
+    snap.forEach((html, el) => { el.innerHTML = html; el.style.fontSize = '' })
+    document.querySelectorAll('.ed-gone').forEach((el) => el.classList.remove('ed-gone'))
+    const b = document.body; b.style.removeProperty('--a'); b.style.removeProperty('--b'); b.style.removeProperty('--c')
+    if (bodySnap.tone) b.dataset.tone = bodySnap.tone; else delete b.dataset.tone
+    delete b.dataset.hf; delete b.dataset.btn
+  }
+  let lastColor = null
+  function apply(op) {
+    const b = document.body
+    if (op.t === 'tone') { if (op.v === 'default') { if (bodySnap.tone) b.dataset.tone = bodySnap.tone; else delete b.dataset.tone } else b.dataset.tone = op.v; if (lastColor) apply({ t: 'color', hex: lastColor }) }
+    if (op.t === 'color') { if (!op.hex) { lastColor = null; ['--a', '--b', '--c'].forEach((k) => b.style.removeProperty(k)); return } lastColor = op.hex; const [a, c2, c3] = pal(op.hex); b.style.setProperty('--a', a); b.style.setProperty('--b', c2); b.style.setProperty('--c', c3) }
+    if (op.t === 'font') { if (op.v === 'sans') delete b.dataset.hf; else b.dataset.hf = op.v }
+    if (op.t === 'btn') b.dataset.btn = op.v
+    if (op.t === 'hide') { const el = document.querySelector(SECT[op.key] || op.key); if (el) el.classList.toggle('ed-gone', !op.show) }
+    if (op.t === 'text') { const el = find(op.key); if (!el) return; if (el.tagName === 'H1') setWords(el, op.text); else if (el.classList.contains('btn')) el.innerHTML = op.text.replace(/[<>]/g, '') + (el.id === 'cta1' ? ' <span class="arr">→</span>' : ''); else el.textContent = op.text }
+    if (op.t === 'size') { const el = find(op.key); if (!el) return; const f = parseFloat(getComputedStyle(el).fontSize); el.style.fontSize = Math.round(f * (op.v === 'up' ? 1.15 : 0.87)) + 'px' }
+    if (op.t === 'hideEl') { const el = find(op.key); if (el) el.classList.add('ed-gone') }
+  }
+  function replay(ops) { reset(); lastColor = null; (ops || []).forEach(apply) }
+  addEventListener('message', (e) => {
+    const m = e.data || {}
+    if (m.type === 'ops') replay(m.ops)
+    if (m.type === 'editmode') { if (m.on) document.body.dataset.edit = '1'; else delete document.body.dataset.edit }
+    if (m.type === 'deselect') document.querySelectorAll('.ed-sel').forEach((x) => x.classList.remove('ed-sel'))
+  })
+  document.addEventListener('click', (e) => {
+    if (!document.body.dataset.edit) return
+    const el = e.target.closest('.ed-able')
+    if (!el) return
+    e.preventDefault(); e.stopPropagation()
+    document.querySelectorAll('.ed-sel').forEach((x) => x.classList.remove('ed-sel'))
+    el.classList.add('ed-sel')
+    parent.postMessage({ type: 'select', key: el.dataset.ed, label: el.dataset.edLabel, text: el.textContent.replace(/\s*→\s*$/, '').replace(/\s+/g, ' ').trim(), brand }, '*')
+  }, true)
+  if (q.get('ops')) { try { replay(JSON.parse(decodeURIComponent(escape(atob(q.get('ops')))))) } catch {} }
+  parent.postMessage({ type: 'site-ready' }, '*')
 </script>
 </body>
 </html>

@@ -2,13 +2,13 @@
 // Stage: your platform laid out as aligned cards. Scribble: the same cards, placed by hand, with pencil
 // notes; tidy them back any time. Circle things to talk about them together. Click anything to open
 // a room: a call with the AI, centred on its voice; switch to chat whenever you'd rather type.
-import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261107s'
-import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261107s'
+import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261107w'
+import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261107w'
 // Everything that can be on the desk, including the One AI option's extras (ONE_ITEMS).
 const ALL = [...ITEMS, ...ONE_ITEMS]
 const CARDED = ALL.filter((it) => !it.nocard)
-import { createStitch } from './stitch.js?v=20261107s'
-import { initPresence, setPresenceStyle, setPresenceAmp, nextPhrase } from './presence.js?v=20261107s'
+import { createStitch } from './stitch.js?v=20261107w'
+import { initPresence, setPresenceStyle, setPresenceAmp, nextPhrase } from './presence.js?v=20261107w'
 
 const $ = (s, r = document) => r.querySelector(s)
 const root = document.documentElement
@@ -858,7 +858,7 @@ addEventListener('resize', () => drawThreads())
 
 // ── Voice ───────────────────────────────────────────────────────────────────
 let DUR = {}
-fetch('audio/durations.json?v=20261107s')
+fetch('audio/durations.json?v=20261107w')
   .then((r) => (r.ok ? r.json() : {}))
   .then((d) => (DUR = d))
   .catch(() => {})
@@ -1423,19 +1423,20 @@ const previews = {
 const BUILD_ASK = { Website: { id: 'd-ask-site', t: BUILD_LINES['d-ask-site'] }, Funnel: { id: 'd-ask-funnel', t: BUILD_LINES['d-ask-funnel'] } }
 const BUILDS = {
   Website: [
-    { id: 'b-glow', label: 'A booking page for Glow Med Spa', t: BUILD_LINES['b-glow'], url: 'site/?brand=glow', title: 'Glow Med Spa · booking page', steps: [['Pulled Glow’s brand', 'lilac, blush, Instrument Serif'], ['Wrote the hero', '“Glow, on your schedule.”'], ['Laid out five treatments', 'with prices from the catalogue'], ['Added stories', '3 of 412 reviews'], ['Connected the calendar', 'next six open slots'], ['Draft 1 ready', 'nothing is live until you say']] },
-    { id: 'b-harbor', label: 'A new site for Harbor Dental', t: BUILD_LINES['b-harbor'], url: 'site/?brand=harbor', title: 'Harbor Dental · site', steps: [['Pulled Harbor’s brand', 'teal, mint, soft type'], ['Wrote the hero', '“A calm kind of dentist.”'], ['Laid out five services', 'with transparent prices'], ['Added stories', '3 of 1,204 reviews'], ['Connected the calendar', 'next six open slots'], ['Draft 1 ready', 'nothing is live until you say']] },
-    { id: 'b-peak', label: 'A launch page for Peak Fitness Eastside', t: BUILD_LINES['b-peak'], url: 'site/?brand=peak', title: 'Peak Fitness · launch page', steps: [['Pulled Peak’s brand', 'lime, charcoal, big type'], ['Wrote the hero', '“Train like you mean it.”'], ['Laid out the programs', 'strength, conditioning, lifting'], ['Added member stories', '3 of 688 reviews'], ['Connected class sign-up', 'first week free'], ['Draft 1 ready', 'nothing is live until you say']] },
+    { id: 'b-glow', label: 'A booking page for Glow Med Spa', t: BUILD_LINES['b-glow'], url: 'site/?r=8&brand=glow', title: 'Glow Med Spa · booking page', steps: [['Pulled Glow’s brand', 'lilac, blush, Instrument Serif'], ['Wrote the hero', '“Glow, on your schedule.”'], ['Laid out five treatments', 'with prices from the catalogue'], ['Added stories', '3 of 412 reviews'], ['Connected the calendar', 'next six open slots'], ['Draft 1 ready', 'nothing is live until you say']] },
+    { id: 'b-harbor', label: 'A new site for Harbor Dental', t: BUILD_LINES['b-harbor'], url: 'site/?r=8&brand=harbor', title: 'Harbor Dental · site', steps: [['Pulled Harbor’s brand', 'teal, mint, soft type'], ['Wrote the hero', '“A calm kind of dentist.”'], ['Laid out five services', 'with transparent prices'], ['Added stories', '3 of 1,204 reviews'], ['Connected the calendar', 'next six open slots'], ['Draft 1 ready', 'nothing is live until you say']] },
+    { id: 'b-peak', label: 'A launch page for Peak Fitness Eastside', t: BUILD_LINES['b-peak'], url: 'site/?r=8&brand=peak', title: 'Peak Fitness · launch page', steps: [['Pulled Peak’s brand', 'lime, charcoal, big type'], ['Wrote the hero', '“Train like you mean it.”'], ['Laid out the programs', 'strength, conditioning, lifting'], ['Added member stories', '3 of 688 reviews'], ['Connected class sign-up', 'first week free'], ['Draft 1 ready', 'nothing is live until you say']] },
   ],
   Funnel: [
-    { id: 'f-glow', label: 'Spring offer · Glow Med Spa', t: BUILD_LINES['f-glow'], url: 'site/?brand=glow&v=funnel', title: 'Glow Med Spa · spring offer funnel', steps: [['Wrote the offer', '15% off first visit, this week'], ['Built the page', 'one hero, one form'], ['Added a countdown', 'ends Friday'], ['Connected the calendar', 'three-step booking'], ['Hooked up the ad', 'Google Ads → this page'], ['Draft 1 ready', 'nothing is live until you say']] },
-    { id: 'f-harbor', label: 'New patient special · Harbor Dental', t: BUILD_LINES['f-harbor'], url: 'site/?brand=harbor&v=funnel', title: 'Harbor Dental · new patient funnel', steps: [['Wrote the offer', 'exam + x-rays, $79'], ['Built the page', 'one hero, one form'], ['Added a countdown', 'ends Friday'], ['Connected the calendar', 'three-step booking'], ['Hooked up the ad', 'Google Ads → this page'], ['Draft 1 ready', 'nothing is live until you say']] },
-    { id: 'f-peak', label: 'First week free · Peak Fitness', t: BUILD_LINES['f-peak'], url: 'site/?brand=peak&v=funnel', title: 'Peak Fitness · launch funnel', steps: [['Wrote the offer', 'first week free, opens April 4'], ['Built the page', 'one hero, one form'], ['Added a countdown', 'to opening day'], ['Connected class sign-up', 'three steps'], ['Hooked up the ad', 'Instagram → this page'], ['Draft 1 ready', 'nothing is live until you say']] },
+    { id: 'f-glow', label: 'Spring offer · Glow Med Spa', t: BUILD_LINES['f-glow'], url: 'site/?r=8&brand=glow&v=funnel', title: 'Glow Med Spa · spring offer funnel', steps: [['Wrote the offer', '15% off first visit, this week'], ['Built the page', 'one hero, one form'], ['Added a countdown', 'ends Friday'], ['Connected the calendar', 'three-step booking'], ['Hooked up the ad', 'Google Ads → this page'], ['Draft 1 ready', 'nothing is live until you say']] },
+    { id: 'f-harbor', label: 'New patient special · Harbor Dental', t: BUILD_LINES['f-harbor'], url: 'site/?r=8&brand=harbor&v=funnel', title: 'Harbor Dental · new patient funnel', steps: [['Wrote the offer', 'exam + x-rays, $79'], ['Built the page', 'one hero, one form'], ['Added a countdown', 'ends Friday'], ['Connected the calendar', 'three-step booking'], ['Hooked up the ad', 'Google Ads → this page'], ['Draft 1 ready', 'nothing is live until you say']] },
+    { id: 'f-peak', label: 'First week free · Peak Fitness', t: BUILD_LINES['f-peak'], url: 'site/?r=8&brand=peak&v=funnel', title: 'Peak Fitness · launch funnel', steps: [['Wrote the offer', 'first week free, opens April 4'], ['Built the page', 'one hero, one form'], ['Added a countdown', 'to opening day'], ['Connected class sign-up', 'three steps'], ['Hooked up the ad', 'Instagram → this page'], ['Draft 1 ready', 'nothing is live until you say']] },
   ],
 }
 // The draft, full size, in a pop-up that grows out of wherever it was clicked. Works from the room or the desk.
 function openPop(c, from) {
-  document.body.insertAdjacentHTML('beforeend', `<div class="r-pop" id="rpop"><div class="rp-card"><div class="rp-head"><span class="eb"><b></b>${c.title} · Draft 1</span><div class="rs-acts"><button type="button" class="rs-btn" data-open title="Open in your browser"><i class="ti ti-brand-chrome"></i></button><button type="button" class="rs-btn" data-closepop title="Close"><i class="ti ti-x"></i></button></div></div><div class="rp-body"><iframe src="${c.url}" title="${c.title}"></iframe>${V2() ? `<aside class="rp-chat"><div class="rc-head"><b>Change something</b><span>Draft 1 · tell me, or tap a chip</span></div><div class="rc-thread" id="rcThread"><div class="rc-ai"><span class="creature small"><i></i><i></i><i></i></span><span>Here’s ${c.title.split(' · ')[0]}. Tell me what to change: the headline, the hero, the colours, the sections.</span></div></div><div class="rc-chips" id="rcChips">${POP_CHANGES.map((ch, i) => `<button type="button" class="pchip" data-ch="${i}">${ch[0]}</button>`).join('')}</div><form class="rc-ask" id="rcForm" autocomplete="off"><span class="spark">✦</span><input id="rcAsk" placeholder="Tell me what to change…" /><button type="button" class="mic" id="rcMic" aria-label="Talk"><i class="ti ti-microphone"></i></button></form></aside>` : ''}</div></div></div>`)
+  if ($('#rpop')) return
+  document.body.insertAdjacentHTML('beforeend', `<div class="r-pop" id="rpop"><div class="rp-card"><div class="rp-head"><span class="eb"><b></b>${c.title} · Draft 1</span><div class="rs-acts"><button type="button" class="rs-btn" data-open title="Open in your browser"><i class="ti ti-brand-chrome"></i></button><button type="button" class="rs-btn" data-closepop title="Close"><i class="ti ti-x"></i></button></div></div><div class="rp-body"><iframe src="${c.ops?.length ? `${c.base ?? c.url}&ops=${encodeURIComponent(encOps(c.ops))}` : c.url}" title="${c.title}"></iframe>${V2() ? `<aside class="rp-chat"><div class="rc-head"><b>Change something</b><span>Draft 1 · tell me, or tap a chip</span></div><div class="rc-thread" id="rcThread"><div class="rc-ai"><span class="creature small"><i></i><i></i><i></i></span><span>Here’s ${c.title.split(' · ')[0]}. Tell me what to change: colours, fonts, any text, sections. Or click any text on the page to edit it.</span></div></div><div class="rc-chips" id="rcChips"></div><form class="rc-ask" id="rcForm" autocomplete="off"><span class="spark">✦</span><input id="rcAsk" placeholder="Tell me what to change…" /><button type="button" class="mic" id="rcMic" aria-label="Talk"><i class="ti ti-microphone"></i></button></form></aside>` : ''}</div></div></div>`)
   const pop = $('#rpop'), card = pop.querySelector('.rp-card')
   let cur = c.url
   if (V2()) wirePopChat(pop, c, (u) => (cur = u))
@@ -2898,36 +2899,120 @@ function stopHandsFree() {
 }
 
 // V2 · the draft's chat: tell it what to change; a few changes really change the page.
-const POP_CHANGES = [
-  ['Shorter headline', 'h=short', DYN['p-short']],
-  ['Darker hero', 'tone=dark', DYN['p-dark']],
-  ['Warmer colours', 'tone=warm', DYN['p-warm']],
-  ['Add pricing', null, DYN['p-pricing']],
-  ['Fewer sections', null, DYN['p-fewer']],
-]
+// ── The draft editor: say or type anything; edits apply live inside the site (no reload). ──────
+// Click any text on the page to select it: you get rewrites and actions for that piece, and what you
+// type next applies to it. Edits are kept per draft, so reopening or "Open in browser" keeps them.
+const POP_CHIPS = ['Purple theme', 'Light mode', 'Serif headings', 'Shorter headline', 'Hide reviews', 'Rounded buttons', 'Undo']
+const COLORS = { purple: '#8b5cf6', violet: '#7c6cf0', lavender: '#b4a7ff', lilac: '#c4b5fd', blue: '#4f8cff', navy: '#3b5bdb', sky: '#38bdf8', teal: '#2dd4bf', cyan: '#22d3ee', aqua: '#22d3ee', mint: '#5eead4', green: '#34d399', emerald: '#10b981', lime: '#a3e635', olive: '#a3a35a', yellow: '#facc15', gold: '#eab308', amber: '#f59e0b', orange: '#fb923c', peach: '#fdba74', coral: '#fb7185', red: '#ef4444', crimson: '#dc2626', pink: '#f472b6', rose: '#fb7185', magenta: '#e879f9', fuchsia: '#d946ef', brown: '#b08968', grey: '#9ca3af', gray: '#9ca3af', silver: '#cbd5e1' }
+const SECTION_WORDS = { reviews: 'reviews', review: 'reviews', testimonials: 'reviews', testimonial: 'reviews', stories: 'reviews', stats: 'stats', numbers: 'stats', services: 'services', treatments: 'services', booking: 'booking', form: 'booking', ticker: 'ticker', marquee: 'ticker', countdown: 'countdown', timer: 'countdown', offer: 'offer', 'trust line': 'trust' }
+const TARGETS = { headline: 'h1|0', title: 'h1|0', heading: 'h1|0', hero: 'h1|0', intro: '#lede|0', subtitle: '#lede|0', subheading: '#lede|0', description: '#lede|0', tagline: '#eyebrow|0', 'top line': '#eyebrow|0', button: '#cta1|0', cta: '#cta1|0', offer: '#offerPill|0', name: '#brandName|0' }
+const LABELS = { 'h1|0': 'Headline', '#lede|0': 'Intro', '#eyebrow|0': 'Top line', '#cta1|0': 'Main button', '#offerPill|0': 'Offer', '#brandName|0': 'Name' }
+const REWRITES = { harbor: ['Dentistry, minus the dread.', 'Smile without the stress.', 'Calm care, same day.'], glow: ['Skin that glows.', 'Your glow, on schedule.', 'Real results. Zero fuss.'], peak: ['Train with purpose.', 'Stronger every week.', 'Lift. Learn. Repeat.'] }
+const BTN_REWRITES = ['Book now', 'Book a visit today', 'See open times']
+const shorten = (s) => {
+  // Keep the first sentence; if it's long, cut at a natural break and never end on a dangling word.
+  const first = s.split(/(?<=[.!?])\s/)[0].trim()
+  const w = first.split(/\s+/)
+  if (w.length <= 9) return first
+  const head = w.slice(0, 9).join(' ')
+  const cut = Math.max(head.lastIndexOf(','), head.lastIndexOf(';'), head.lastIndexOf(' and '))
+  let out = (cut > 12 ? head.slice(0, cut) : w.slice(0, 7).join(' ')).split(/\s+/)
+  while (out.length > 3 && /^(in|and|of|the|a|an|to|for|with|on|at|by|or|your|our|that|which|who|like|feels|is|are|it|so)$/i.test(out[out.length - 1])) out.pop()
+  return `${out.join(' ').replace(/[,;:]$/, '')}.`
+}
+const encOps = (ops) => btoa(unescape(encodeURIComponent(JSON.stringify(ops))))
+/** Turn one request into edits. Returns { ops, say[], undo, reset, hideSel } or null when it isn't an edit. */
+function popParse(raw, sel, brandKey) {
+  const out = { ops: [], say: [] }
+  const t = norm(raw)
+  if (/\b(undo|take that back|go back|revert)\b/.test(t)) return { ...out, undo: true }
+  if (/\b(start over|reset|original( design| version)?|as it was)\b/.test(t) && !/colou?r/.test(t)) return { ...out, reset: true }
+  // Text: "headline: X", "change the button to X", "make it say X", or "X" in quotes.
+  const m = raw.match(/(?:change|set|make|update|rename)?\s*(?:the\s+)?(headline|title|heading|hero|intro|subtitle|subheading|description|tagline|top line|button|cta|offer|name)\s*(?:text\s*)?(?:to|:|=|says?|should say|reads?)\s+["“']?(.+?)["”']?\s*$/i)
+  const q = raw.match(/["“]([^"”]{2,})["”]/)
+  const it = raw.match(/^(?:change it to|make it say|it should say|have it say|say|replace (?:it )?with|rewrite (?:it )?as|to)\s+["“']?(.+?)["”']?\s*$/i)
+  if (m) { const key = TARGETS[m[1].toLowerCase()]; out.ops.push({ t: 'text', key, text: m[2] }); out.say.push(`${LABELS[key] ?? m[1]} updated`) ; return out }
+  if (sel && (it || q)) { out.ops.push({ t: 'text', key: sel.key, text: (it?.[1] ?? q[1]) }); out.say.push(`${sel.label} updated`); return out }
+  if (q) { out.ops.push({ t: 'text', key: 'h1|0', text: q[1] }); out.say.push('Headline updated'); return out }
+  const target = sel?.key ?? (/\b(button|cta)\b/.test(t) ? '#cta1|0' : /\b(intro|subtitle|subheading)\b/.test(t) ? '#lede|0' : 'h1|0')
+  const tLabel = sel?.label?.toLowerCase() ?? LABELS[target]?.toLowerCase() ?? 'text'
+  // Colour themes: any colour word or hex.
+  const hex = t.match(/#([0-9a-f]{6}|[0-9a-f]{3})\b/)?.[0]
+  const cw = Object.keys(COLORS).find((c) => new RegExp(`\\b${c}\\b`).test(t))
+  if (/\b(original|default|brand|old) colou?rs?\b/.test(t)) { out.ops.push({ t: 'color', hex: null }); out.say.push('original colours back') }
+  else if (hex || cw) { const h = hex?.length === 4 ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}` : hex ?? COLORS[cw]; out.ops.push({ t: 'color', hex: h }); out.say.push(`${cw ?? h} theme`) }
+  else if (/\bwarm(er)?\b/.test(t)) { out.ops.push({ t: 'color', hex: COLORS.coral }); out.say.push('warmer colours') }
+  else if (/\bcool(er)?\b/.test(t)) { out.ops.push({ t: 'color', hex: COLORS.sky }); out.say.push('cooler colours') }
+  // Light / dark.
+  if (/\b(light (mode|theme|background)|white background|bright(er)?|light)\b/.test(t) && !/\blight(er)? (purple|blue|pink|green)\b/.test(t)) { out.ops.push({ t: 'tone', v: 'light' }); out.say.push('light mode') }
+  else if (/\b(dark(er)?|black|night)\b/.test(t)) { out.ops.push({ t: 'tone', v: 'dark' }); out.say.push('dark mode') }
+  // Fonts.
+  if (/\b(serif|elegant|classic|editorial|fancy)\b/.test(t)) { out.ops.push({ t: 'font', v: 'serif' }); out.say.push('serif headings') }
+  else if (/\b(mono|monospace|techy|tech|code|typewriter)\b/.test(t)) { out.ops.push({ t: 'font', v: 'mono' }); out.say.push('mono headings') }
+  else if (/\b(sans|modern|clean|simple) (font|type|headings?)\b/.test(t)) { out.ops.push({ t: 'font', v: 'sans' }); out.say.push('clean sans headings') }
+  // Size.
+  if (/\b(bigger|larger|huge|bolder|increase)\b/.test(t)) { out.ops.push({ t: 'size', key: target, v: 'up' }); out.say.push(`bigger ${tLabel}`) }
+  else if (/\b(smaller|tiny|decrease|less big)\b/.test(t)) { out.ops.push({ t: 'size', key: target, v: 'down' }); out.say.push(`smaller ${tLabel}`) }
+  // Sections: hide / show.
+  const sw = Object.keys(SECTION_WORDS).find((w) => new RegExp(`\\b${w}\\b`).test(t))
+  if (sw && /\b(hide|remove|drop|delete|get rid of|lose|no)\b/.test(t)) { out.ops.push({ t: 'hide', key: SECTION_WORDS[sw], show: false }); out.say.push(`${SECTION_WORDS[sw]} hidden`) }
+  else if (sw && /\b(show|add back|bring back|put back|restore)\b/.test(t)) { out.ops.push({ t: 'hide', key: SECTION_WORDS[sw], show: true }); out.say.push(`${SECTION_WORDS[sw]} back`) }
+  else if (sel && /\b(hide|remove|delete|get rid of) (this|it)\b/.test(t)) { out.ops.push({ t: 'hideEl', key: sel.key }); out.say.push(`${sel.label} hidden`) }
+  else if (/\bfewer sections\b|\bsimpler page\b|\bless busy\b/.test(t)) { out.ops.push({ t: 'hide', key: 'stats', show: false }, { t: 'hide', key: 'ticker', show: false }); out.say.push('fewer sections') }
+  // Buttons.
+  if (/\b(round(ed)?|pill)\b/.test(t) && /\bbuttons?\b/.test(t)) { out.ops.push({ t: 'btn', v: 'round' }); out.say.push('rounded buttons') }
+  else if (/\b(square|sharp|boxy)\b/.test(t)) { out.ops.push({ t: 'btn', v: 'square' }); out.say.push('square buttons') }
+  else if (/\bsoft(er)? (buttons?|corners?)\b/.test(t)) { out.ops.push({ t: 'btn', v: 'soft' }); out.say.push('softer buttons') }
+  // Shorter / punchier copy.
+  if (/\b(short(er)?|punch(y|ier)|tighter|snappier|catchier|fewer words)\b/.test(t)) {
+    const text = target === 'h1|0' ? REWRITES[brandKey]?.[0] : target === '#cta1|0' ? BTN_REWRITES[0] : shorten(sel?.text ?? '')
+    if (text) { out.ops.push({ t: 'text', key: target, text }); out.say.push(`shorter ${tLabel}`) }
+  }
+  if (/\bpric(e|es|ing)\b/.test(t) && !out.ops.length) return { ...out, info: DYN['p-pricing'] }
+  return out.ops.length ? out : null
+}
 function wirePopChat(pop, c, onUrl) {
-  const th = $('#rcThread'), frame = pop.querySelector('iframe')
-  const params = new URLSearchParams()
-  const say2 = (text) => { th.insertAdjacentHTML('beforeend', `<div class="rc-ai"><span class="creature small"><i></i><i></i><i></i></span><span>${esc(text)}</span></div>`); th.scrollTop = 1e6; pushThread({ who: 'ai', text }); const id = clipFor(text); if (V2()) (id && DUR[id] ? speak({ id, t: text }, {}) : speakDyn(text, {})) }
+  const th = $('#rcThread'), frame = pop.querySelector('iframe'), chipsEl = $('#rcChips')
+  const brandKey = (c.url.match(/brand=(\w+)/) || [])[1] || 'glow'
+  c.base ??= c.url
+  c.ops ??= []
+  let sel = null
+  const say2 = (text) => { th.insertAdjacentHTML('beforeend', `<div class="rc-ai"><span class="creature small"><i></i><i></i><i></i></span><span>${esc(text)}</span></div>`); th.scrollTop = 1e6; pushThread({ who: 'ai', text }); const id = clipFor(text); if (V2()) (id && DUR[id] ? speak({ id, t: text }) : speakDyn(text)) }
   const me = (text) => { th.insertAdjacentHTML('beforeend', `<div class="rc-me">${esc(text)}</div>`); th.scrollTop = 1e6; pushThread({ who: 'me', text }) }
-  const apply = (ch) => {
-    if (ch[1]) {
-      const [k, v] = ch[1].split('=')
-      params.get(k) === v ? params.delete(k) : params.set(k, v)
-      const url = c.url + (params.toString() ? '&' + params.toString() : '')
-      pop.dataset.busy = 'on'
-      setTimeout(() => { frame.src = url; onUrl(url); delete pop.dataset.busy }, 500)
+  const urlNow = () => (c.ops.length ? `${c.base}&ops=${encodeURIComponent(encOps(c.ops))}` : c.base)
+  const send = () => { frame.contentWindow?.postMessage({ type: 'ops', ops: c.ops }, '*'); onUrl(urlNow()) }
+  const showChips = () => {
+    if (!sel) {
+      $('#rcAsk').placeholder = 'Tell me what to change… or click any text on the page'
+      chipsEl.innerHTML = POP_CHIPS.map((l) => `<button type="button" class="pchip" data-chip="${esc(l)}">${l}</button>`).join('')
+    } else {
+      const sugg = sel.key.startsWith('h1') ? REWRITES[brandKey] ?? [] : sel.key.startsWith('#cta') ? BTN_REWRITES : [shorten(sel.text)].filter((x) => x && x !== sel.text)
+      $('#rcAsk').placeholder = `How should the ${sel.label.toLowerCase()} change?`
+      chipsEl.innerHTML = `<div class="rc-sel"><span><i class="ti ti-pointer"></i> Editing · <b>${esc(sel.label)}</b></span><button type="button" class="rc-x" data-desel aria-label="Stop editing this"><i class="ti ti-x"></i></button></div>${sugg.map((s) => `<button type="button" class="pchip sugg" data-set="${esc(s)}">“${esc(s)}”</button>`).join('')}<button type="button" class="pchip" data-chip="Bigger">Bigger</button><button type="button" class="pchip" data-chip="Smaller">Smaller</button><button type="button" class="pchip" data-chip="Hide this">Hide this</button>`
     }
-    setTimeout(() => say2(ch[2]), ch[1] ? 1100 : 600)
+    chipsEl.querySelectorAll('[data-chip]').forEach((b) => (b.onclick = () => handle(b.dataset.chip)))
+    chipsEl.querySelectorAll('[data-set]').forEach((b) => (b.onclick = () => { me(b.dataset.set); c.ops.push({ t: 'text', key: sel.key, text: b.dataset.set }); send(); say2(`Done. ${sel.label} changed.`) }))
+    chipsEl.querySelector('[data-desel]')?.addEventListener('click', () => { sel = null; frame.contentWindow?.postMessage({ type: 'deselect' }, '*'); showChips() })
   }
   const handle = (text) => {
     me(text)
-    const t = norm(text)
-    const ch = POP_CHANGES.find((x) => norm(x[0]).split(' ').some((w) => w.length > 3 && t.includes(w))) ?? (/(dark|night|black)/.test(t) ? POP_CHANGES[1] : /(warm|pink|blush|red)/.test(t) ? POP_CHANGES[2] : /(short|headline|title)/.test(t) ? POP_CHANGES[0] : null)
-    if (ch) return apply(ch)
-    setTimeout(() => say2(DYN['p-catch']), 600)
+    const r = popParse(text, sel, brandKey)
+    if (!r) return setTimeout(() => say2('I can change colours (“make it purple”), light or dark, fonts, sizes, any text (“headline: …”), and hide or show sections. Or click any text on the page.'), 250)
+    if (r.info) return setTimeout(() => say2(r.info), 250)
+    if (r.undo) { if (!c.ops.length) return say2('Nothing to undo yet.'); c.ops.pop(); send(); return say2('Undone.') }
+    if (r.reset) { c.ops = []; send(); return say2('Back to the original draft.') }
+    c.ops.push(...r.ops)
+    send()
+    const list = r.say.join(', ')
+    say2(`Done: ${list.charAt(0).toLowerCase() + list.slice(1)}.`)
   }
-  pop.querySelectorAll('[data-ch]').forEach((b) => (b.onclick = () => handle(POP_CHANGES[+b.dataset.ch][0])))
+  addEventListener('message', function onMsg(e) {
+    if (!pop.isConnected) return removeEventListener('message', onMsg)
+    if (e.source !== frame.contentWindow) return
+    if (e.data?.type === 'site-ready') { frame.contentWindow.postMessage({ type: 'editmode', on: true }, '*'); if (c.ops.length) send() }
+    if (e.data?.type === 'select') { sel = e.data; showChips(); $('#rcAsk').focus() }
+  })
+  showChips()
   $('#rcForm').onsubmit = (e) => { e.preventDefault(); const v = $('#rcAsk').value.trim(); $('#rcAsk').value = ''; if (v) handle(v) }
   $('#rcMic').onclick = () => listen($('#rcMic'), handle)
 }
