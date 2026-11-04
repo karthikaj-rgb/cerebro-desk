@@ -296,6 +296,13 @@ export const DYN = {
   'd-help': 'I watch your desk and act on it. Ask what needs you, tell me to fix things, or say build me a website.',
   'd-who': 'I’m your desk. HighLevel AI, running your agency with you.',
   'd-ok': 'Okay.',
+  'd-hold': 'Okay. I won’t run anything until you say so.',
+  'd-putoff-all': 'Okay. I’ll keep everything running and bring these back tomorrow morning.',
+  'd-undone': 'Undone. It’s back on your list, exactly as it was.',
+  'd-undo-none': 'There’s nothing to undo right now.',
+  'd-home': 'You’re already on your desk.',
+  'd-cant': 'I can’t do that yet. I can tell you what needs you, fix things, or build a website.',
+  'd-best': 'Here’s revenue by client. Harbor Dental is the only one trending down.',
   'd-done-already': 'That one’s already done.',
   'd-make-website': 'Sure. Let’s make a website. Who is it for?',
   'd-make-funnel': 'Sure. Let’s make a funnel. Who is it for?',
@@ -307,6 +314,20 @@ export const DYN = {
   'p-pricing': 'Prices are already on each treatment. Want a pricing table under the hero instead?',
   'p-fewer': 'I can drop Stories or Stats. Which one?',
   'p-catch': 'I can change the headline, the hero, the colours or the sections. Which one?',
+}
+
+// The briefing changes with what's still open, so record every combination: phones then never need a
+// second voice or a big download.
+{
+  const HOT = ITEMS.filter((it) => it.heat === 'hot' && it.problem && !it.only)
+  const WORDS = ['', 'One thing needs', 'Two things need', 'Three things need', 'Four things need']
+  for (let m = 1; m < 1 << HOT.length; m++) {
+    const s = HOT.filter((_, i) => m & (1 << i))
+    const key = s.map((it) => it.id).join('-')
+    const list = s.map((it) => it.problem).join('. ')
+    DYN[`d-brief-${key}`] = `${WORDS[s.length]} you. ${list}. Say “fix them” and I’ll take care of all of it, or name one.`
+    DYN[`d-next-${key}`] = `${list}. Say “fix them” and I’ll handle all of it.`
+  }
 }
 
 export function allLines() {

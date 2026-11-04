@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototype panel options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--card:#fff;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--rim:rgba(21,22,27,.08);--rim2:rgba(21,22,27,.16);--ac:#5b5bd6;--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 24px;max-width:820px}
+.grid{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.opt{width:340px;display:flex;flex-direction:column;gap:10px}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);min-height:30px}.lab b{color:var(--fg);font-weight:500}
+.note{color:var(--fg3);font-size:12.5px;line-height:1.5}.note b{color:var(--fg);font-weight:500}
+.pick{display:inline-block;background:var(--fg);color:#fff;font-size:10px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:2px 8px;margin-right:6px}
+.stage{position:relative;height:560px;border-radius:18px;background:radial-gradient(60% 40% at 70% 10%,rgba(157,140,255,.12),transparent 70%),var(--bg);border:1px solid var(--rim);overflow:hidden}
+.tools{position:absolute;top:12px;right:12px;display:flex;gap:6px}
+.tb{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid var(--rim);display:grid;place-items:center;font-size:14px;color:var(--fg2)}
+.tb.on{box-shadow:0 0 0 2px var(--ac)}
+.panel{position:absolute;top:52px;right:12px;width:300px;background:var(--card);border-radius:18px;box-shadow:0 18px 40px -20px rgba(0,0,0,.28),0 0 0 1px var(--rim);padding:14px}
+.eb{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.seg{display:flex;background:#fff;border:1px solid var(--rim);border-radius:999px;padding:3px}
+.seg button{flex:1;font:inherit;font-size:11.5px;border:0;background:none;border-radius:999px;padding:5px 8px;color:var(--fg3);cursor:pointer;white-space:nowrap}
+.seg button.on{background:var(--fg);color:#fff}
+.mini{font:inherit;font-size:10.5px;border:1px solid var(--rim);background:none;border-radius:999px;padding:3px 9px;color:var(--fg2);display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+/* A · today */
+.A .row{margin-top:10px}.A .row>span{display:block;font-size:11.5px;font-weight:500;margin-bottom:5px}
+.A .more{margin-top:12px;border-top:1px solid var(--rim);padding-top:10px;display:flex;justify-content:space-between;font-size:11.5px;color:var(--fg2);font-weight:500}
+/* B · one line each */
+.B .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--rim)}
+.B .row:first-of-type{border-top:0}
+.B .row>span{font-size:12px;color:var(--fg2);flex:none}
+.B .seg{flex:none}.B .seg button{flex:none;padding:4px 9px;font-size:11px}
+.B .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+/* C · tabs */
+.C .tabs{display:flex;gap:2px;background:#f1f1f4;border-radius:12px;padding:3px;margin:8px 0 6px}
+.C .tabs button{flex:1;font:inherit;font-size:11.5px;font-weight:500;border:0;background:none;border-radius:9px;padding:6px;color:var(--fg3);cursor:pointer}
+.C .tabs button.on{background:#fff;color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.C .pane{display:none}.C .pane.on{display:block}
+.C .row{margin-top:10px}.C .row>span{display:block;font-size:11.5px;font-weight:500;margin-bottom:5px}
+/* D · settings list */
+.D .li{display:flex;align-items:center;gap:10px;padding:9px 4px;border-top:1px solid var(--rim);cursor:pointer;border-radius:8px}
+.D .li:first-of-type{border-top:0}
+.D .li:hover{background:#f7f7f9}
+.D .li i.ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:14px;color:#fff;flex:none}
+.D .li .t{flex:1;font-size:12.5px}
+.D .li .v{font-size:12px;color:var(--fg3);display:flex;align-items:center;gap:2px}
+.D .group{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);margin:10px 4px 2px}
+/* E · dock */
+.E .dock{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:4px;background:rgba(21,22,27,.92);backdrop-filter:blur(10px);border-radius:999px;padding:5px;box-shadow:0 14px 30px -14px rgba(0,0,0,.5)}
+.E .ch{font:inherit;font-size:11.5px;color:#d9d9e2;background:none;border:0;border-radius:999px;padding:6px 10px;display:inline-flex;gap:4px;align-items:center;cursor:pointer;white-space:nowrap}
+.E .ch b{color:#fff;font-weight:500}
+.E .ch:hover{background:rgba(255,255,255,.08)}
+.E .ch.v{background:#fff;color:var(--fg)}
+.E .menu{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);background:#fff;border-radius:14px;box-shadow:0 18px 40px -16px rgba(0,0,0,.35),0 0 0 1px var(--rim);padding:6px;min-width:170px}
+.E .menu button{display:flex;width:100%;justify-content:space-between;font:inherit;font-size:12.5px;border:0;background:none;border-radius:9px;padding:8px 10px;cursor:pointer;color:var(--fg)}
+.E .menu button:hover{background:#f4f4f7}.E .menu button .ti{color:var(--ac)}
+.E .menu .h{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);padding:6px 10px 4px}
+.E .peek{position:absolute;left:24px;right:24px;top:90px;color:var(--fg3);font-size:20px;font-weight:300;line-height:1.5}
+/* F · presets */
+.F .pre{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 10px}
+.F .card{border:1px solid var(--rim);border-radius:12px;padding:10px;cursor:pointer;text-align:left;background:#fff;font:inherit}
+.F .card b{display:block;font-size:12.5px;font-weight:500}.F .card small{color:var(--fg3);font-size:11px}
+.F .card.on{border-color:var(--fg);box-shadow:0 0 0 1px var(--fg)}
+.F .card .sw{display:flex;gap:3px;margin-bottom:6px}.F .card .sw i{width:16px;height:10px;border-radius:3px;background:#e9e9ef}
+.F .card .sw i.k{background:var(--ac)}
+.F .fine{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--rim);padding-top:10px;font-size:11.5px;color:var(--fg2);font-weight:500}
+.F .row{margin-top:10px}.F .row>span{display:block;font-size:11.5px;font-weight:500;margin-bottom:5px}
+@media(max-width:640px){body{padding:16px}.opt{width:100%}}
+</style></head><body>
+<h1>Prototype panel · options</h1>
+<p class="sub">Same settings in each, laid out differently. They're all clickable. Today's compact panel is first for reference.</p>
+<div class="grid">
+
+<div class="opt"><div class="lab"><b>A · Today</b><br>compact, stacked</div>
+<div class="stage"><div class="tools"><span class="tb"><i class="ti ti-sun"></i></span><span class="tb on"><i class="ti ti-adjustments-horizontal"></i></span></div>
+<div class="panel A"><div style="display:flex;justify-content:space-between;align-items:center"><span class="eb">Prototype</span><button class="mini"><i class="ti ti-rotate"></i>Restart</button></div>
+<div class="row"><span>Version</span><div class="seg"><button>V1</button><button class="on">V2 · Rich</button></div></div>
+<div class="row"><span>Day</span><div class="seg"><button class="on">Busy</button><button>Quiet</button></div></div>
+<div class="row"><span>Landing</span><div class="seg"><button>List</button><button class="on">Sentence</button></div></div>
+<div class="row"><span>Dashboard</span><div class="seg"><button>Columns</button><button class="on">Ribbon</button><button>Day</button></div></div>
+<div class="more">More options <i class="ti ti-chevron-down"></i></div></div></div>
+<p class="note">Clear, but every setting takes two lines, and opening More options makes the panel taller than most screens.</p></div>
+
+<div class="opt"><div class="lab"><b>B · One line per setting</b><br>label left, choice right</div>
+<div class="stage"><div class="tools"><span class="tb"><i class="ti ti-sun"></i></span><span class="tb on"><i class="ti ti-adjustments-horizontal"></i></span></div>
+<div class="panel B"><div class="head"><span class="eb">Prototype</span><button class="mini"><i class="ti ti-rotate"></i>Restart</button></div>
+<div class="row"><span>Version</span><div class="seg"><button>V1</button><button class="on">V2</button></div></div>
+<div class="row"><span>Day</span><div class="seg"><button class="on">Busy</button><button>Quiet</button></div></div>
+<div class="row"><span>Landing</span><div class="seg"><button>List</button><button class="on">Sentence</button></div></div>
+<div class="row"><span>Dashboard</span><div class="seg"><button>Cols</button><button class="on">Ribbon</button><button>Day</button></div></div>
+<div class="row"><span>Voice</span><div class="seg"><button>Creature</button><button class="on">Bar</button></div></div>
+<div class="row"><span>Room</span><div class="seg"><button>Chat</button><button class="on">Live</button></div></div>
+<div class="row"><span>Desk</span><div class="seg"><button class="on">Today</button><button>One AI</button></div></div>
+<div class="row"><span>Front</span><div class="seg"><button class="on">Cols</button><button>One</button><button>Spot</button></div></div>
+<div class="row"><span>Look</span><div class="seg"><button class="on">Modern</button><button>Ink</button><button>Edit</button><button>Frost</button></div></div>
+<div class="row"><span>Ask box</span><div class="seg"><button class="on">Bottom</button><button>Panel</button></div></div></div></div>
+<p class="note"><span class="pick">My pick</span>Every setting fits on one line, so <b>all ten fit without "More options"</b> at about half the height of today's open panel. Labels are shortened to fit.</p></div>
+
+<div class="opt"><div class="lab"><b>C · Tabs</b><br>V2 · Room · Look</div>
+<div class="stage"><div class="tools"><span class="tb"><i class="ti ti-sun"></i></span><span class="tb on"><i class="ti ti-adjustments-horizontal"></i></span></div>
+<div class="panel C"><div style="display:flex;justify-content:space-between;align-items:center"><span class="eb">Prototype</span><button class="mini"><i class="ti ti-rotate"></i>Restart</button></div>
+<div class="tabs"><button class="on" data-tab="v2">V2</button><button data-tab="room">Room</button><button data-tab="look">Look</button></div>
+<div class="pane on" data-pane="v2"><div class="row"><span>Version</span><div class="seg"><button>V1</button><button class="on">V2 · Rich</button></div></div><div class="row"><span>Day</span><div class="seg"><button class="on">Busy</button><button>Quiet</button></div></div><div class="row"><span>Landing</span><div class="seg"><button>List</button><button class="on">Sentence</button></div></div><div class="row"><span>Dashboard</span><div class="seg"><button>Columns</button><button class="on">Ribbon</button><button>Day</button></div></div></div>
+<div class="pane" data-pane="room"><div class="row"><span>Voice in the room</span><div class="seg"><button>Creature</button><button class="on">Bar</button></div></div><div class="row"><span>In the room</span><div class="seg"><button>Chat</button><button class="on">Live work</button></div></div><div class="row"><span>Desk</span><div class="seg"><button class="on">Today</button><button>One AI</button></div></div></div>
+<div class="pane" data-pane="look"><div class="row"><span>Front page</span><div class="seg"><button class="on">Columns</button><button>One column</button><button>Spotlight</button></div></div><div class="row"><span>Look</span><div class="seg"><button class="on">Modern</button><button>Scribbles</button><button>Editorial</button><button>Frost</button></div></div><div class="row"><span>Ask box</span><div class="seg"><button class="on">Bottom</button><button>In the panel</button></div></div></div></div></div>
+<p class="note">Settings grouped by what they change. <b>The panel never grows</b>, and full labels fit. You need one extra tap to reach the room and look settings.</p></div>
+
+<div class="opt"><div class="lab"><b>D · Settings list</b><br>current value, tap to change</div>
+<div class="stage"><div class="tools"><span class="tb"><i class="ti ti-sun"></i></span><span class="tb on"><i class="ti ti-adjustments-horizontal"></i></span></div>
+<div class="panel D"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span class="eb">Prototype</span><button class="mini"><i class="ti ti-rotate"></i>Restart</button></div>
+<div class="group">Version 2</div>
+<div class="li" data-cycle="V1,V2 · Rich"><i class="ic ti ti-versions" style="background:#5b5bd6"></i><span class="t">Version</span><span class="v"><span>V2 · Rich</span><i class="ti ti-selector"></i></span></div>
+<div class="li" data-cycle="Busy,Quiet"><i class="ic ti ti-sun-high" style="background:#e5a23c"></i><span class="t">Day</span><span class="v"><span>Busy</span><i class="ti ti-selector"></i></span></div>
+<div class="li" data-cycle="List,Sentence"><i class="ic ti ti-align-left" style="background:#2f9e6a"></i><span class="t">Landing</span><span class="v"><span>Sentence</span><i class="ti ti-selector"></i></span></div>
+<div class="li" data-cycle="Columns,Ribbon,Day"><i class="ic ti ti-layout-dashboard" style="background:#2f5fe0"></i><span class="t">Dashboard</span><span class="v"><span>Ribbon</span><i class="ti ti-selector"></i></span></div>
+<div class="group">Room and look</div>
+<div class="li" data-cycle="Creature,Bar"><i class="ic ti ti-wave-sine" style="background:#9d8cff"></i><span class="t">Voice</span><span class="v"><span>Bar</span><i class="ti ti-selector"></i></span></div>
+<div class="li" data-cycle="Chat,Live work"><i class="ic ti ti-message-circle" style="background:#858896"></i><span class="t">In the room</span><span class="v"><span>Live work</span><i class="ti ti-selector"></i></span></div>
+<div class="li" data-cycle="Modern,Scribbles,Editorial,Frost"><i class="ic ti ti-palette" style="background:#d9468b"></i><span class="t">Look</span><span class="v"><span>Modern</span><i class="ti ti-selector"></i></span></div></div></div>
+<p class="note">Like phone Settings: each row shows what's chosen, and a tap steps to the next choice. <b>Calmest to scan</b>, but you can't see the other choices without tapping.</p></div>
+
+<div class="opt"><div class="lab"><b>E · Dock at the bottom</b><br>out of the way, always visible</div>
+<div class="stage E"><div class="peek">Morning, Maya. Overnight your team handled 61 things. Three things need you…</div>
+<div class="menu" id="Emenu"><div class="h">Dashboard</div><button>Columns</button><button>Ribbon <i class="ti ti-check"></i></button><button>Day</button></div>
+<div class="dock"><button class="ch v"><b style="color:var(--fg)">V2</b></button><button class="ch">Busy <i class="ti ti-chevron-up"></i></button><button class="ch">Sentence <i class="ti ti-chevron-up"></i></button><button class="ch" style="background:rgba(255,255,255,.12)">Ribbon <i class="ti ti-chevron-up"></i></button><button class="ch"><i class="ti ti-dots"></i></button><button class="ch"><i class="ti ti-rotate"></i></button></div></div>
+<p class="note">A slim dark dock along the bottom shows the four main choices. Each opens a small menu. <b>You can switch while watching the screen</b>, which is good for demos, but it sits over the page.</p></div>
+
+<div class="opt"><div class="lab"><b>F · Presets first</b><br>one tap to a whole setup</div>
+<div class="stage"><div class="tools"><span class="tb"><i class="ti ti-sun"></i></span><span class="tb on"><i class="ti ti-adjustments-horizontal"></i></span></div>
+<div class="panel F"><div style="display:flex;justify-content:space-between;align-items:center"><span class="eb">Prototype</span><button class="mini"><i class="ti ti-rotate"></i>Restart</button></div>
+<div class="pre">
+<button class="card on"><div class="sw"><i class="k"></i><i></i><i></i></div><b>Rich's V2</b><small>Sentence · Ribbon · Bar</small></button>
+<button class="card"><div class="sw"><i class="k"></i><i class="k"></i><i></i></div><b>Quiet day</b><small>Nothing needs you</small></button>
+<button class="card"><div class="sw"><i></i><i class="k"></i><i></i></div><b>Demo: phone</b><small>Phone frame · voice</small></button>
+<button class="card"><div class="sw"><i></i><i></i><i class="k"></i></div><b>V1 original</b><small>Three columns</small></button></div>
+<div class="fine">Fine-tune <i class="ti ti-chevron-down"></i></div>
+<div class="row"><span>Landing</span><div class="seg"><button>List</button><button class="on">Sentence</button></div></div>
+<div class="row"><span>Dashboard</span><div class="seg"><button>Columns</button><button class="on">Ribbon</button><button>Day</button></div></div></div></div>
+<p class="note">Named setups for the demos you actually run, with single settings under Fine-tune. <b>Fastest for presenting</b>. The presets need picking and naming once.</p></div>
+
+</div>
+<script>
+document.querySelectorAll('.seg').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{s.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}))
+document.querySelectorAll('.C .tabs button').forEach(b=>b.onclick=()=>{const p=b.closest('.panel');p.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));p.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.dataset.pane===b.dataset.tab))})
+document.querySelectorAll('.D .li').forEach(li=>li.onclick=()=>{const o=li.dataset.cycle.split(','),v=li.querySelector('.v span');v.textContent=o[(o.indexOf(v.textContent)+1)%o.length]})
+document.querySelectorAll('.F .card').forEach(c=>c.onclick=()=>{c.parentElement.querySelectorAll('.card').forEach(x=>x.classList.toggle('on',x===c))})
+</script>
+</body></html>

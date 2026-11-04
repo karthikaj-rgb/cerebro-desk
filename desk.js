@@ -2,12 +2,12 @@
 // Stage: your platform laid out as aligned cards. Scribble: the same cards, placed by hand, with pencil
 // notes; tidy them back any time. Circle things to talk about them together. Click anything to open
 // a room: a call with the AI, centred on its voice; switch to chat whenever you'd rather type.
-import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261106a'
-import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261106a'
+import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261107j'
+import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261107j'
 // Everything that can be on the desk, including the One AI option's extras (ONE_ITEMS).
 const ALL = [...ITEMS, ...ONE_ITEMS]
 const CARDED = ALL.filter((it) => !it.nocard)
-import { createStitch } from './stitch.js?v=20261106a'
+import { createStitch } from './stitch.js?v=20261107j'
 
 const $ = (s, r = document) => r.querySelector(s)
 const root = document.documentElement
@@ -217,7 +217,8 @@ $('#makeChips').querySelectorAll('[data-make]').forEach((b) => b.insertAdjacentH
 // ── Prototype option: Desk · Today | One AI ──────────────────────────────────
 // One AI: the AI speaks for its whole team, the team shows as one row, fixed cards keep a receipt
 // and ask for a rule, and "what I do on my own" sits on the desk.
-let deskMode = store.get('desk-mode') ?? 'today'
+// Older builds saved the room's voice/chat choice under this key; anything but 'one' means Today.
+let deskMode = store.get('desk-mode') === 'one' ? 'one' : 'today'
 const DESK_HINTS = { today: 'Today’s desk: three things need you, the rest is running.', one: 'One AI: every HighLevel AI product is one team under it. Fixed cards show a receipt and ask for a rule; the trust chip opens what it may do alone.' }
 const TEAM = [
   ['ti-phone', 'Voice', '14 calls', '2 need you', 'callers', 'hot'],
@@ -853,7 +854,7 @@ addEventListener('resize', () => drawThreads())
 
 // ── Voice ───────────────────────────────────────────────────────────────────
 let DUR = {}
-fetch('audio/durations.json')
+fetch('audio/durations.json?v=20261107j')
   .then((r) => (r.ok ? r.json() : {}))
   .then((d) => (DUR = d))
   .catch(() => {})
@@ -885,6 +886,7 @@ function togglePause() {
     b.setAttribute('aria-label', p ? 'Resume' : 'Pause')
     b.classList.toggle('on', p)
   })
+  document.querySelectorAll('[data-steer="Pause"]').forEach((b) => (b.textContent = p ? 'Resume' : 'Pause'))
   const st = $('#rstatus')
   if (st) {
     st.textContent = p ? 'Paused' : 'Speaking'
@@ -892,6 +894,24 @@ function togglePause() {
   }
   const bs = $('#rbstate')
   if (bs) bs.textContent = p ? 'Paused' : 'Speaking'
+}
+/** Sound waits for the first tap or key on the page (browser rule). Queue what was blocked and show a cue. */
+let soundQueue = []
+function whenSoundAllowed(fn) {
+  soundQueue.push(fn)
+  if (soundQueue.length > 1) return
+  if (!$('#soundcue')) document.body.insertAdjacentHTML('beforeend', '<button type="button" class="soundcue" id="soundcue"><i class="ti ti-volume"></i> Tap to hear your briefing</button>')
+  const go = () => {
+    removeEventListener('pointerdown', go, true)
+    removeEventListener('keydown', go, true)
+    $('#soundcue')?.remove()
+    try { actx?.resume?.() } catch {}
+    const q = soundQueue
+    soundQueue = []
+    q.forEach((f) => f())
+  }
+  addEventListener('pointerdown', go, true)
+  addEventListener('keydown', go, true)
 }
 /** Plays a clip, reveals words in time, and reports loudness for the creature. */
 function speak(line, { onWord, onAmp, onEnd } = {}, src) {
@@ -919,24 +939,41 @@ function speak(line, { onWord, onAmp, onEnd } = {}, src) {
   let paused = false
   let pausedAt = 0
   audio.muted = muted
-  audio.play().then(
-    () => {
-      audible = true
+  const ok = () => {
+    audible = true
+    start = performance.now()
+    dispatchEvent(new Event('deskvoice'))
+  }
+  audio.play().then(ok, (e) => {
+    // The browser blocks sound until the first tap or key on the page. Hold the line instead of
+    // running it silently, and play it from the top the moment the person does anything.
+    if (stopped || e?.name !== 'NotAllowedError') return
+    paused = true
+    pausedAt = performance.now()
+    onAmp?.(0)
+    whenSoundAllowed(() => {
+      if (stopped) return
+      paused = false
       start = performance.now()
-    },
-    () => {},
-  )
+      onWord?.(0)
+      audio.currentTime = 0
+      audio.play().then(ok, () => {})
+    })
+  })
   const timer = setInterval(() => {
     if (paused) return
     const t = audible ? audio.currentTime * 1000 : performance.now() - start
     onWord?.(Math.min(words.length, Math.ceil((t / ms) * words.length)))
     let amp = 0
-    if (analyser && audible) {
+    // Speech-like motion for when there's nothing to measure (muted, or the audio graph is silent).
+    const fake = () => Math.max(0.08, 0.34 + Math.sin(t / 90) * 0.22 + Math.sin(t / 37) * 0.12)
+    if (analyser && audible && !audio.muted) {
       analyser.getByteTimeDomainData(buf)
       let s = 0
       for (const v of buf) s += ((v - 128) / 128) ** 2
       amp = Math.min(1, Math.sqrt(s / buf.length) * 5)
-    } else amp = 0.3 + Math.sin(t / 90) * 0.25
+      if (amp < 0.01 && t > 400 && !audio.paused) amp = fake() * 0.7
+    } else amp = fake()
     onAmp?.(amp)
     // End when the clip really ends (DUR is only a guide); without audio, fall back to the estimate.
     if ((audible && (audio.ended || t >= ms + 4000)) || (!audible && t >= ms + 120)) finish()
@@ -988,7 +1025,7 @@ function speak(line, { onWord, onAmp, onEnd } = {}, src) {
 let kokoro = null
 let kokoroLoading = null
 function loadKokoro() {
-  if (kokoro || kokoroLoading || !V2() || inPhone) return kokoroLoading
+  if (kokoro || kokoroLoading || !V2() || PHONE()) return kokoroLoading
   kokoroLoading = import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm')
     .then(async (m) => {
       const load = (device) => m.KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', { dtype: device === 'webgpu' ? 'fp32' : 'q8', device })
@@ -1000,6 +1037,22 @@ function loadKokoro() {
 }
 function speakDyn(text, go = {}) {
   if (V2() && !kokoro) loadKokoro()
+  // V2 keeps one voice. On phones (no model download) or before the voice has loaded, a line without a
+  // recorded clip is shown, not read in a second, robotic voice.
+  // Muted means silent: show the words, never fall back to the browser voice.
+  if (muted) return speakQuiet(text, go)
+  if (V2() && !kokoro && !muted) {
+    if (!PHONE() && kokoroLoading) {
+      stopVoice()
+      let cancelled = false
+      const ph = { stop() { cancelled = true }, pause() {}, resume() {}, get paused() { return false }, mute() {} }
+      voice = ph
+      const give = setTimeout(() => { cancelled = true; if (voice === ph) speakQuiet(text, go) }, 6000)
+      kokoroLoading.then((k) => { clearTimeout(give); if (!cancelled && voice === ph) (k ? speakDyn(text, go) : speakQuiet(text, go)) })
+      return ph
+    }
+    return speakQuiet(text, go)
+  }
   if (!V2() || !kokoro || muted) return speakBrowser(text, go)
   stopVoice()
   let cancelled = false
@@ -1015,6 +1068,20 @@ function speakDyn(text, go = {}) {
     })
     .catch(() => { if (!cancelled) speakBrowser(text, go) })
   return voice
+}
+/** Phones: true phone screens, the phone frame, or touch-first devices. */
+function PHONE() { return inPhone || matchMedia('(max-width: 760px)').matches || (navigator.maxTouchPoints > 0 && matchMedia('(pointer: coarse)').matches) }
+/** A line with no clip in V2 when the voice isn't available: shown as words, no second voice. */
+function speakQuiet(text, { onWord, onAmp, onEnd } = {}) {
+  stopVoice()
+  const words = text.split(' ')
+  let stopped = false
+  onWord?.(words.length)
+  onAmp?.(0)
+  const t = setTimeout(() => { if (!stopped) { stopped = true; if (voice === me) voice = null; onEnd?.() } }, Math.min(6000, 600 + words.length * 120))
+  const me = { stop() { stopped = true; clearTimeout(t) }, pause() {}, resume() {}, get paused() { return false }, mute() {} }
+  voice = me
+  return me
 }
 /** A line with no recorded clip and no Kokoro yet: the browser's own voice, words revealed as it goes. */
 function speakBrowser(text, { onWord, onAmp, onEnd } = {}) {
@@ -1452,6 +1519,10 @@ function startBuild(c) {
 }
 
 function openRoom(items, fromEl, opts = {}) {
+  // The desk's caption belongs to the desk: clear it when a room opens so it never sits over the room.
+  clearTimeout(toastT)
+  const tst = $('#toast')
+  if (tst) tst.hidden = true
   if (!items.length) return
   clearTimeout(autoT)
   stopVoice()
@@ -1492,7 +1563,7 @@ function openRoom(items, fromEl, opts = {}) {
       <div class="r-you" id="ryou"></div>
       <div class="r-work" id="rwork">${!group && roomStyle === 'live' && LIVE[it.id] ? `<div class="r-live" id="rlive">${liveHtml(it)}</div><div class="r-doing" id="rdoing" hidden></div>` : ''}${group ? `<div class="r-nums">${items.map((i) => nums(i)).join('')}</div>` : `<div class="r-nums">${nums(it)}</div>${it.big ? `<button type="button" class="r-more" id="rmore">Show ${it.big.kind === 'quote' ? 'the message' : it.big.kind === 'make' ? 'what I can make' : 'the detail'} <i class="ti ti-chevron-down"></i></button><div class="r-detail" id="rdetail">${detail(it.big)}</div>` : ''}`}
         <div id="rpreview"></div></div>
-      <div class="r-can" id="rcan">${can.map((c, i) => `<button type="button" class="chip ${i ? '' : 'main'}" data-c="${i}">${c.label}</button>`).join('')}</div>
+      <div class="r-can" id="rcan">${can.map((c, i) => `<button type="button" class="chip ${i ? '' : 'main'}" data-c="${i}">${c.label}</button>`).join('')}${V2() && !group && it?.problem ? '<button type="button" class="chip rlater" data-rlater><i class="ti ti-clock"></i> Later</button>' : ''}</div>
     </div>
     <div class="r-foot"><div class="r-ctl"><button type="button" class="sm" data-pause aria-label="Pause"><i class="ti ti-player-pause"></i></button><button type="button" class="big" id="rmic" aria-label="Talk"><i class="ti ti-microphone"></i></button><span class="bar-wave r-eq" aria-hidden="true">${"<i></i>".repeat(8)}</span><button type="button" class="sm" data-mute aria-label="Mute"><i class="ti ti-volume"></i></button></div><div class="hint">Tap to talk · pause or mute the AI</div></div>
     <div class="r-bar" id="rbar"><span class="rb-ic"><i class="ti ti-sparkles"></i></span><span class="rb-wave" id="rbwave">${'<i></i>'.repeat(16)}</span>
@@ -1645,7 +1716,8 @@ function say(line, after) {
     onAmp: (a) => {
       creature?.style.setProperty('--amp', a.toFixed(3))
       $('#rlog .creature.speaking')?.style.setProperty('--amp', a.toFixed(3))
-      $('#rbwave')?.style.setProperty('--amp', a.toFixed(3))
+      const wv = $('#rbwave')
+      if (wv) { wv.style.setProperty('--amp', a.toFixed(3)); wv.classList.toggle('talking', a > 0.02) }
       stitch?.amp(a)
     },
     onEnd: done,
@@ -1722,14 +1794,16 @@ function runCan(i, quiet = false) {
       $('#rstatus').textContent = ''
       $('#rstatus').dataset.on = ''
       $('#rbstate') && ($('#rbstate').textContent = 'Stopped')
-      $('#rdoing').insertAdjacentHTML('beforeend', '<div class="step stopped"><i class="ti ti-hand-stop"></i><span>Stopped here. Nothing else changes until you say so.</span></div>')
+      $('#rdoing').insertAdjacentHTML('beforeend', '<div class="step stopped"><i class="ti ti-hand-stop"></i><span>Stopped here. Nothing else changes until you say so. Say “resume” or tap it again to finish the rest.</span></div>')
+      if (room) room.stoppedAt = i
       autoRun = false
       if (room) { room.speaking = null; renderLog() }
       setTimeout(() => room && handsFree(), 300)
     }
     if (canEl.dataset.was) canEl.innerHTML = canEl.dataset.was
     canEl.querySelectorAll('[data-c]').forEach((b) => (b.onclick = () => runCan(+b.dataset.c)))
-    if (!ok) canEl.querySelector(`[data-c="${i}"]`)?.classList.remove('used')
+    // Stopped: the fix can be started again (by tapping it or saying "resume").
+    if (!ok) { c.used = false; canEl.querySelector(`[data-c="${i}"]`)?.classList.remove('used') }
   }
   say(c, () => {
     finishRun(true)
@@ -1747,14 +1821,33 @@ function reveal(el) {
   requestAnimationFrame(() => el.scrollIntoView({ block: 'end', behavior: 'smooth', inline: 'nearest' }))
 }
 /** The next thing that needs you, offered where the choices were; one click carries the room over. */
+/** After the last fix: wait for the AI to finish its line, then close the room and say we're done.
+ *  Anything you do in the room first (speak, tap a chip, switch to chat) cancels it. */
+function goHomeWhenDone(r) {
+  const started = Date.now()
+  const mine = () => r.log.filter((e) => e.who === 'me').length
+  const log = mine()
+  const tick = () => {
+    if (room !== r || mine() > log) return
+    if (voice && Date.now() - started < 12000) return setTimeout(tick, 300)
+    setTimeout(() => {
+      if (room !== r || mine() > log) return
+      closeRoom()
+      setTimeout(() => !room && deskSay(DYN['d-all-done']), 900)
+    }, 1400)
+  }
+  setTimeout(tick, 600)
+}
 function offerNext(after) {
   if (!room) return
   const next = openNeeds().find((it) => it.id !== after.id)
   room.next = next ?? null
   if (autoRun) {
     if (next) autoT = setTimeout(() => room && autoRun && openRoom([next], cards[next.id]?.offsetParent ? cards[next.id] : null, { direct: healIndex(next) }), 1400)
-    else { autoRun = false; setTimeout(() => room && say(L('d-all-done')), 900) }
+    else autoRun = false
   }
+  // V2 · Nothing left: once the result has been said, close the room and land on "All done".
+  if (V2() && !next) goHomeWhenDone(room)
   const html = next
     ? `<div class="next-up"><span class="eb">Next · needs you</span><b>${next.problem}</b>${next.cost ? `<span class="cost">${next.cost}</span>` : ''}<div class="acts"><button type="button" class="chip main" data-next="${next.id}">Take me there</button><button type="button" class="chip" data-next-later="${next.id}">Later</button></div></div>`
     : `<div class="next-up"><span class="eb">That’s everything</span><b>Nothing else needs you right now.</b></div>`
@@ -1791,6 +1884,16 @@ const ALL_OF_IT = /\b(everything|all of them|all of it|all three|all of these|al
 function heard(text, alts = []) {
   if (!room) return
   const t = norm(text)
+  // While a fix runs: "pause" pauses it, "resume" picks it up, "stop" stops the fix (not the room).
+  const steer = (n) => $(`#rcan [data-steer="${n}"]`)
+  if (/\b(resume|continue|keep going|go on|carry on|unpause|pick (it )?up|finish (it|the rest))\b/.test(t)) {
+    youSaid(text)
+    if (voice?.paused) return togglePause()
+    if (room.stoppedAt != null) { const k = room.stoppedAt; room.stoppedAt = null; return runCan(k) }
+    return say(L('d-ok'))
+  }
+  if (/\b(pause|hold on|hold it|hang on|wait)\b/.test(t) && voice && !voice.paused) { youSaid(text); return togglePause() }
+  if (/\bstop\b/.test(t) && steer('Stop')) { youSaid(text); return steer('Stop').click() }
   if (/\b(stop|cancel|never mind|nevermind|close|go back|back to the desk)\b/.test(t)) return closeRoom()
   // "Later" puts THIS off (same as the button); "next" / "skip" moves on.
   if (/\b(later|not now|put (it|this|that) off|tomorrow)\b/.test(t)) {
@@ -1814,7 +1917,7 @@ function heard(text, alts = []) {
   if (!V2()) return say(FALLBACK)
   understandLLM(text).then((u) => {
     u ??= understandRules(text)
-    if (u.intent === 'chat' || u.intent === 'brief') return say({ id: null, t: u.reply ?? DYN['d-catch-room'] })
+    if (u.intent === 'chat' || u.intent === 'brief') return say({ id: clipFor(u.reply ?? DYN['d-catch-room']), t: u.reply ?? DYN['d-catch-room'] })
     if (u.intent === 'act' && room.items.some((i) => i.id === u.target)) { const i = room.can.findIndex((c) => !c.used); return i >= 0 ? runCan(i) : say(L('d-done-already')) }
     act(u, text)
   })
@@ -1830,9 +1933,48 @@ function fixAll() {
   autoRun = true
   openRoom([next], cards[next.id]?.offsetParent ? cards[next.id] : $(`.fit[data-fopen='${next.id}']`), { direct: healIndex(next) })
 }
+// V2 · Undo: every fix can be taken back for a little while, by tapping Undo or saying "undo that".
+let undoGroup = null
+function noteDone(id) {
+  if (!V2()) return
+  if (undoGroup && Date.now() - undoGroup.t < 15000) { if (!undoGroup.ids.includes(id)) undoGroup.ids.push(id); undoGroup.t = Date.now() }
+  else undoGroup = { ids: [id], t: Date.now() }
+  let el = $('#undopill')
+  if (!el) {
+    document.body.insertAdjacentHTML('beforeend', '<div class="undopill" id="undopill" role="status" hidden><i class="ti ti-circle-check"></i><span></span><button type="button">Undo</button></div>')
+    el = $('#undopill')
+    el.querySelector('button').onclick = () => undoLast(false)
+  }
+  const first = byId(undoGroup.ids[0])
+  el.querySelector('span').textContent = undoGroup.ids.length > 1 ? `${undoGroup.ids.length} fixes done` : first?.receipt ?? 'Done'
+  el.hidden = false
+  clearTimeout(noteDone.t)
+  noteDone.t = setTimeout(() => { if ($('#undopill')) $('#undopill').hidden = true }, 10000)
+}
+function undoLast(spoken) {
+  const g = undoGroup
+  if ($('#undopill')) $('#undopill').hidden = true
+  if (!g || Date.now() - g.t > 120000) return spoken ? (room ? say({ id: 'd-undo-none', t: DYN['d-undo-none'] }) : deskSay(DYN['d-undo-none'])) : null
+  undoGroup = null
+  autoRun = false
+  const wasRoom = !!room
+  if (room) closeRoom()
+  g.ids.forEach((id) => {
+    const it = byId(id)
+    if (!it) return
+    bringBack(it)
+    const c = cards[id]
+    c?.querySelector('.tick')?.remove()
+    c?.querySelector('.receipt')?.remove()
+    c?.querySelector('.rule')?.remove()
+  })
+  setTimeout(() => { if (desk.hasAttribute('data-v2')) renderFocus(); placeV2Later() }, wasRoom ? 800 : 0)
+  deskSay(DYN['d-undone'])
+}
 /** Something got fixed: sparks, the room turns calm green, and its card on the desk shows it. */
 function heal(item) {
   heat[item.id] = 'done'
+  noteDone(item.id)
   roomEl.dataset.heat = 'done'
   const c = cards[item.id]
   if (c) {
@@ -1869,6 +2011,7 @@ function heal(item) {
 /** Mark something done without the room's sparks (it was fixed as part of another fix). */
 function healQuiet(id) {
   heat[id] = 'done'
+  noteDone(id)
   const c = cards[id]
   if (c) { c.dataset.heat = 'done'; const a = c.querySelector('.acts'); if (a) a.innerHTML = '<span class="saved done"><i class="ti ti-check"></i> Done</span>' }
   if (desk.hasAttribute('data-v2')) setTimeout(renderFocus, 800)
@@ -1965,14 +2108,20 @@ function understandRules(text) {
   const t = norm(text)
   const pool = deskMode === 'one' ? ALL : ITEMS
   if (/\b(stop|cancel|never mind|nevermind|close|go back|back to the desk)\b/.test(t)) return { intent: 'close' }
+  // Hold, undo and "I'm busy" come before anything that acts, so they can never trigger a fix.
+  if (/\b(pause|hold off|hold everything|hold it|freeze|don.?t (run|do|touch|fix|change))\b/.test(t)) return { intent: 'hold', reply: DYN['d-hold'] }
+  if (/\b(undo|take (that|it) back|revert|reverse (that|it)|put it back)\b/.test(t)) return { intent: 'undo' }
+  if (/\b(i.?m busy|i am busy|not now|remind me (tomorrow|later)|do (it|this|them) later|later today|tomorrow)\b/.test(t) && !/\b(what|bring)\b/.test(t)) return { intent: 'putoff_all' }
+  if (/\b(best|top|biggest|largest) (client|clients|account|accounts|customer|customers)\b/.test(t)) return { intent: 'open', target: 'mrr' }
   const kindWord = Object.keys(KINDS).sort((a, b) => b.length - a.length).find((k) => new RegExp(`\\b${k}\\b`).test(t))
-  if (kindWord && (VERB_MAKE.test(t) || /\b(i need|i want|can you|could you|new)\b/.test(t))) return { intent: 'build', kind: KINDS[kindWord], reply: DYN[`d-make-${KINDS[kindWord].toLowerCase()}`] }
+  if (kindWord && (VERB_MAKE.test(t) || /\b(i need|i want|can you|could you|new)\b/.test(t))) return { intent: 'build', kind: KINDS[kindWord], brand: (t.match(/\b(glow|harbor|peak)\b/) || [])[1], reply: DYN[`d-make-${KINDS[kindWord].toLowerCase()}`] }
   if (/\bbring\b.*\bback\b/.test(t)) return { intent: 'later_back' }
   if (/\b(put off|postponed|saved for later|later list|what did i (put off|postpone|skip|save)|what.s (on )?later)\b/.test(t)) return { intent: 'later' }
   if (NO.test(t) && !/\bnot now\b/.test(t)) return { intent: 'chat', reply: DYN['d-ok'] }
   if (/\b(dashboard|numbers|everything that.s running|running for you|show me everything|the full desk|metrics|how are we doing|how is business|mrr)\b/.test(t)) return { intent: 'dashboard', reply: DYN['d-dash'] }
   if (/\b(what needs|needs me|what do i need|what should i( do)?|what.s up|whats up|anything (urgent|new|wrong)|brief|good morning|morning|hello|hi|hi there|hey)\b/.test(t) && !/\b(fix|run|turn|send|set up|handle|switch|restart)\b/.test(t)) return { intent: 'brief' }
-  if (ALL_OF_IT.test(t) || /^(yes|yeah|yep|go ahead|do it|fix it|ok|okay|sure|please|go)$/.test(t)) return { intent: 'fix_all' }
+  // "Everything" alone isn't an order: it needs a doing word ("fix everything"), or to be the whole answer.
+  if ((ALL_OF_IT.test(t) && (/\b(fix|handle|sort|run|do|take care|deal with|clear|resolve)\b/.test(t) || /^(everything|all of it|all of them|all three|them all|it all)$/.test(t))) || /^(yes|yeah|yep|go ahead|do it|fix it|ok|okay|sure|please|go)$/.test(t)) return { intent: 'fix_all' }
   // Whole words only: "leads" is not "ads", "agency" is not "agent".
   const has = (k) => new RegExp(`(^|\\b)${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(s|es)?\\b`).test(t)
   const hit = pool.find((it) => (KEYS[it.id] ?? []).some(has))
@@ -1991,17 +2140,22 @@ function guesses(text, alts = []) {
   const open = openNeeds()
   const C = ['Fix them all', 'What needs me?', 'Build me a website', 'Build me a funnel', 'Show me the dashboard', ...open.map((it) => `Fix ${lower(it.problem)}`)]
   const all = [text, ...alts]
-  return C.map((c) => [c, Math.max(...all.map((a) => sim(a, c)))]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([c]) => c)
+  const ranked = C.map((c) => [c, Math.max(...all.map((a) => sim(a, c)))]).sort((x, y) => y[1] - x[1])
+  const out = ranked.slice(0, 3).map(([c]) => c)
+  out.score = ranked[0]?.[1] ?? 0
+  return out
 }
-function showGuess(heardText, opts) {
+function showGuess(heardText, opts, cant = false) {
   guessEl?.remove()
-  document.body.insertAdjacentHTML('beforeend', `<div class="guess" id="guess" role="dialog"><div class="q">I heard <i>“${esc(heardText)}”</i>. Did you mean:</div><div class="opts">${opts.map((o, i) => `<button type="button" class="chip${i ? '' : ' main'}" data-g="${esc(o)}">${esc(o)}</button>`).join('')}<button type="button" class="chip" data-g="">Say it again</button></div></div>`)
+  document.body.insertAdjacentHTML('beforeend', `<div class="guess" id="guess" role="dialog"><div class="q">${cant ? `I can’t do <i>“${esc(heardText)}”</i> yet. Here’s what I can do:` : `I heard <i>“${esc(heardText)}”</i>. Did you mean:`}</div><div class="opts">${opts.map((o, i) => `<button type="button" class="chip${i ? '' : ' main'}" data-g="${esc(o)}">${esc(o)}</button>`).join('')}<button type="button" class="chip" data-g="">Say it again</button></div></div>`)
   guessEl = $('#guess')
   guessEl.querySelectorAll('[data-g]').forEach((b) => (b.onclick = () => { const g = b.dataset.g; guessEl?.remove(); guessEl = null; if (g) ask(g); else deskHandsFree() }))
   const me = guessEl
   setTimeout(() => { if (guessEl === me) { me.remove(); guessEl = null } }, 15000)
 }
 async function ask(text, alts = []) {
+  clearTimeout(toastT)
+  if ($('#toast')) $('#toast').hidden = true
   if (guessEl) {
     const first = guessEl.querySelector('[data-g]')?.dataset.g
     guessEl.remove()
@@ -2014,15 +2168,21 @@ async function ask(text, alts = []) {
     if (u.reply === DYN['d-catch-desk']) for (const a of alts) { const v = understandRules(a); if (v.reply !== DYN['d-catch-desk']) { u = v; break } }
   }
   if (V2() && u.intent === 'chat' && u.reply === DYN['d-catch-desk']) {
-    showGuess(text, guesses(text, alts))
+    // Close to something we can do: offer the nearest. Nothing close: say so honestly and show what we can do.
+    const g = guesses(text, alts)
+    if (g.score < 0.18) {
+      showGuess(text, ['What needs me?', 'Fix them all', 'Show me the dashboard'], true)
+      return deskSay(DYN['d-cant'], true)
+    }
+    showGuess(text, g)
     return deskSay(DYN['d-catch-short'], true)
   }
   act(u, text)
 }
 function act(u, text) {
   // Desk things asked from inside a room: close the room first, then do them on the desk.
-  if (room && ['dashboard', 'focus', 'later', 'later_back', 'brief'].includes(u.intent)) { closeRoom(); return setTimeout(() => act(u, text), 750) }
-  if (room && u.intent === 'chat') return say({ id: null, t: u.reply ?? DYN['d-ok'] })
+  if (room && ['dashboard', 'focus', 'later', 'later_back', 'brief', 'putoff_all'].includes(u.intent)) { closeRoom(); return setTimeout(() => act(u, text), 750) }
+  if (room && u.intent === 'chat') return say({ id: clipFor(u.reply ?? DYN['d-ok']), t: u.reply ?? DYN['d-ok'] })
   const it = u.target ? ALL.find((i) => i.id === u.target) : null
   const from = (id) => cards[id]?.offsetParent ? cards[id] : $(`.fit[data-fopen='${id}']`)
   switch (u.intent) {
@@ -2030,10 +2190,28 @@ function act(u, text) {
     case 'fix_all': return fixAll()
     case 'act': if (it) return openRoom([it], from(it.id), { direct: healIndex(it) }); break
     case 'open': if (it) return openRoom([it], from(it.id)); break
-    case 'build': return openRoom([ITEMS.find((i) => i.id === 'make')], $('[data-fmake]') ?? $('#makeChips'), { kind: BUILDS[u.kind] ? u.kind : 'Website' })
+    case 'build': {
+      // Named the client too ("a landing page for Peak")? Skip the question and start building it.
+      const kind = BUILDS[u.kind] ? u.kind : 'Website'
+      const di = u.brand ? BUILDS[kind].findIndex((c) => c.id.endsWith(`-${u.brand}`)) : -1
+      return openRoom([ITEMS.find((i) => i.id === 'make')], $('[data-fmake]') ?? $('#makeChips'), di >= 0 ? { kind, direct: di } : { kind })
+    }
     case 'dashboard': if (V2()) setV2View('dash'); return deskSay(u.reply ?? DYN['d-dash'])
     case 'focus': if (V2()) setV2View('focus'); return deskSay(u.reply ?? DYN['d-focus'])
-    case 'close': return closeRoom()
+    case 'close':
+      if (room) return closeRoom()
+      if (V2() && v2view === 'dash') { setV2View('focus'); return deskSay(DYN['d-focus']) }
+      return deskSay(DYN['d-home'])
+    case 'hold': autoRun = false; if (room) closeRoom(); return deskSay(DYN['d-hold'])
+    case 'undo': return undoLast(true)
+    case 'putoff_all': {
+      const open = openNeeds()
+      if (!open.length) return deskSay(DYN['d-quiet'])
+      open.forEach((x) => { heat[x.id] = 'later'; if (cards[x.id]) cards[x.id].dataset.heat = 'later' })
+      if (desk.hasAttribute('data-v2')) renderFocus()
+      placeV2Later()
+      return deskSay(DYN['d-putoff-all'])
+    }
     case 'later': { const items = laterItems(); openLater([...document.querySelectorAll('[data-later-open]')].find((e) => e.offsetParent)); if (items.length) deskSay(`${DYN['d-later']} ${items.map((i) => i.problem).join('. ')}.`); return }
     case 'later_back': { const items = laterItems(); if (!items.length) return deskSay(DYN['d-later-none']); items.forEach(bringBack); closeLater(); if (desk.hasAttribute('data-v2')) renderFocus(); placeV2Later(); return deskSay(DYN['d-back']) }
   }
@@ -2162,12 +2340,28 @@ $('#mic').onclick = () => listen($('#mic'), (t, alts) => ask(t, alts), deskStatu
 let version = store.get('desk-version') === '2' ? '2' : '1'
 let day = store.get('desk-day') === 'quiet' ? 'quiet' : 'busy'
 let v2view = 'focus'
-let landing = store.get('desk-brief') === 'sentence' ? 'sentence' : 'list'
+let landing = ['sentence', 'sheet'].includes(store.get('desk-brief')) ? store.get('desk-brief') : 'list'
 let briefSig = ''
+// Phone sentence: the words light up once the AI's voice actually starts (it may wait for a first tap).
+let karaPending = false
+let karaT = 0
+addEventListener('deskvoice', () => {
+  if (!karaPending) return
+  const p = document.querySelector('#focus:not([hidden]) .fsent.fkara')
+  if (!p) return
+  karaPending = false
+  clearTimeout(karaT)
+  const ws = [...p.querySelectorAll('.fw')]
+  const cap = p.parentElement.querySelector('.fcap')
+  p.classList.remove('done')
+  cap?.classList.add('speaking')
+  ws.forEach((w, i) => setTimeout(() => w.classList.add('on'), 120 + i * 230))
+  setTimeout(() => { p.classList.add('done'); cap?.classList.remove('speaking') }, 120 + ws.length * 230 + 300)
+})
 let dstyle = ['ribbon', 'timeline'].includes(store.get('desk-dstyle')) ? store.get('desk-dstyle') : 'columns'
 let tlTimer = 0
 const V2 = () => version === '2'
-const VERSION_HINTS = { 1: 'The desk as built so far: three columns, the room opens on a click.', 2: 'Rich’s feedback: only what needs you on landing, dashboard behind a chip, hands-free voice, a chat inside the draft, an empty state, and a phone layout.' }
+const VERSION_HINTS = { 1: 'The desk as built so far: three columns, the room opens on a click.', 2: 'Rich’s feedback.' }
 const DAY_HINTS = { busy: 'Three things need you.', quiet: 'Nothing needs you: the open space.' }
 const focusEl = $('#focus')
 const focusItems = () => (day === 'quiet' ? [] : hotItems().filter((it) => heat[it.id] !== 'later'))
@@ -2216,6 +2410,7 @@ function placeV2Later() {
   top.querySelector('[data-later-open]')?.addEventListener('click', (e) => openLater(e.currentTarget))
 }
 function renderFocus() {
+  focusEl?.classList.remove('fsheet-on')
   if (!focusEl || focusEl.hidden) { if (V2() && v2view === 'dash' && dstyle !== 'columns') renderDalt(); return }
   const items = focusItems()
   const open = items.filter((it) => heat[it.id] !== 'done')
@@ -2231,7 +2426,7 @@ function renderFocus() {
       <div class="fsug"><button type="button" class="chip" data-fask="new leads">Find new leads</button><button type="button" class="chip" data-fask="social posts">Draft next week’s posts</button><button type="button" class="chip" data-fmake="Website">Build a page</button><button type="button" class="chip" data-ftalk><i class="ti ti-microphone"></i> Just talk</button></div>
       <div class="frow">${chipDash()}${laterChip()}</div></div>`
     if (line) line.innerHTML = doneN ? '<b>All done.</b> Nothing circled.' : '<b>All quiet.</b> Nothing circled.'
-  } else if (landing === 'sentence') {
+  } else if (landing === 'sentence' || landing === 'sheet') {
     const words = ['', 'One thing needs', 'Two things need', 'Three things need', 'Four things need'][open.length] ?? `${open.length} things need`
     const low = (s) => s.charAt(0).toLowerCase() + s.slice(1)
     const done = items.filter((it) => heat[it.id] === 'done')
@@ -2245,8 +2440,20 @@ function renderFocus() {
     parts.push('.')
     if (done.length) { parts.push(' Already fixed: '); done.forEach((it, i) => { if (i) parts.push(', '); parts.push(T('ok', `✓ ${low(it.problem)}`, it.id)) }); parts.push('.') }
     parts.push(' Revenue is up ', T('num', '6.2% this month', 'dash'), '.')
+    // In the sheet the greeting is already the heading, so the brief starts with the news.
+    if (landing === 'sheet' && (inPhone || matchMedia('(max-width: 760px)').matches)) parts[0] = 'Overnight your team handled '
     const sig = parts.map((p) => (typeof p === 'string' ? p : p.txt)).join('')
-    focusEl.innerHTML = `<div class="fcap"><span class="eb">Needs you · ${open.length}</span></div><p class="fsent" aria-live="polite"></p>
+    // Screen readers get the finished sentence once, not every word as it's typed.
+    setTimeout(() => { const sr = focusEl.querySelector('.sr-only'); if (sr) sr.textContent = sig }, 50)
+    // Sheet (phones): a calm greeting with the orb up top, the brief in a sheet under your thumb.
+    const sheet = landing === 'sheet' && (inPhone || matchMedia('(max-width: 760px)').matches)
+    focusEl.classList.toggle('fsheet-on', sheet)
+    const fixBtn = `<button type="button" class="chip main" data-ffix>${open.length > 1 ? `Fix all ${open.length}` : `${open[0].act}`}</button>`
+    const talkBtn = '<button type="button" class="chip" data-ftalk><i class="ti ti-microphone"></i> Just talk</button>'
+    if (sheet) focusEl.innerHTML = `<div class="fsheet-hero"><span class="fsheet-orb"></span><h1>Morning, Maya.</h1><span class="eb">${words} you</span></div>
+      <div class="fsheet"><span class="fsheet-grab"></span><p class="fsent" aria-hidden="true"></p><p class="sr-only" aria-live="polite"></p>
+      <div class="fsent-chips">${fixBtn}${talkBtn}<button type="button" class="chip" id="chipdash"><i class="ti ti-layout-dashboard"></i> Dashboard</button>${laterChip()}</div></div>`
+    else focusEl.innerHTML = `<div class="fcap"><span class="eb">Needs you · ${open.length}</span><span class="fspk" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div><p class="fsent" aria-hidden="true"></p><p class="sr-only" aria-live="polite"></p>
       <div class="fsent-chips"><button type="button" class="chip main" data-ffix>${open.length > 1 ? `Fix all ${open.length}` : `${open[0].act}`}</button><button type="button" class="chip" data-ftalk><i class="ti ti-microphone"></i> Just talk</button></div>
       <div class="frow">${chipDash()}${laterChip()}</div>
       <p class="fmake"><b>Make something</b> ${['Website', 'Funnel', 'Campaign', 'Agent'].map((m) => `<button type="button" class="ln" data-fmake="${m}">${m}</button>`).join(' · ')}</p>`
@@ -2255,7 +2462,23 @@ function renderFocus() {
     const tok = (t) => { const b = document.createElement('button'); b.type = 'button'; b.className = `ftok ${t.cls}`; b.textContent = t.txt; if (t.id) b.dataset.ftok = t.id; return b }
     const instant = sig === briefSig || matchMedia('(prefers-reduced-motion: reduce)').matches
     if (instant) briefSig = sig
-    if (instant) parts.forEach((x) => p.append(typeof x === 'string' ? x : tok(x)))
+    const phoneMode = inPhone || matchMedia('(max-width: 760px)').matches
+    if (instant && !phoneMode) parts.forEach((x) => p.append(typeof x === 'string' ? x : tok(x)))
+    else if (phoneMode) {
+      // On a phone the whole sentence lands at once (a glance is enough). As the AI speaks, each word
+      // lights up, like captions. If no voice starts (blocked or muted), it simply shows in full.
+      p.classList.add('fkara')
+      parts.forEach((x) => {
+        if (typeof x !== 'string') { const t = tok(x); t.classList.add('fw'); return p.append(t) }
+        x.split(/(\s+)/).forEach((w) => { if (!w) return; if (/^\s+$/.test(w)) return p.append(w); const s = document.createElement('span'); s.className = 'fw'; s.textContent = w; p.append(s) })
+      })
+      if (!instant) {
+        briefSig = sig
+        karaPending = true
+        clearTimeout(karaT)
+        karaT = setTimeout(() => focusEl.querySelector('.fsent.fkara')?.classList.add('done'), 3500)
+      } else if (!karaPending) p.classList.add('done')
+    }
     else {
       const caret = document.createElement('span'); caret.className = 'fcaret'; p.append(caret)
       let i = 0
@@ -2326,7 +2549,12 @@ function setVersion(v) {
   $('#pbDash').hidden = v !== '2'
   $('#segDevice').hidden = v !== '2'
   if (v !== '2') { setPhone(false); stopHandsFree() }
-  else { loadKokoro(); if (!micOK) setTimeout(askForMic, 400) }
+  else {
+    loadKokoro()
+    // Don't pop the browser's mic prompt on landing. If the mic is already allowed, start listening;
+    // otherwise the bar offers "turn on the mic" and we ask when you tap it.
+    if (!micOK) navigator.permissions?.query({ name: 'microphone' }).then((p) => { if (p.state === 'granted') askForMic() }).catch(() => {})
+  }
   v2view = 'focus'
   placeV2()
 }
@@ -2415,7 +2643,7 @@ function renderTimeline() {
     track += `<span class="tl-mk ${past ? 'dn' : 'pl'}" style="left:${pct(e.h)}%"></span><div class="tl-ev ${past ? 'dn' : 'pl'}${above ? '' : ' b'}${pct(e.h) > 72 ? ' r' : ''}" data-ev="${i}" style="left:${pct(e.h)}%;${st}"><div class="l">${e.t}<small>${tlFmt(e.h)} · ${e.s}</small></div></div>`
   })
   track += `<div class="tl-now" style="left:${pct(TL.now)}%"></div><div class="tl-nowo" style="left:${pct(TL.now)}%"></div><span class="tl-nowt" style="left:${pct(TL.now)}%">Now</span><div class="tl-scrub"></div>`
-  daltEl.innerHTML = `<div class="tl-top"><div><span class="eb">Today, as the AI sees it</span><div class="tl-clock"><b>${tlFmt(TL.now)}</b><span>Drag the line. Left of now is done, right is planned.</span></div></div>
+  daltEl.innerHTML = `<div class="tl-top"><div><span class="eb">Today, as the AI sees it · <em class="tl-sample">sample day</em></span><div class="tl-clock"><b>${tlFmt(TL.now)}</b><span>Drag the line. Left of now is done, right is planned.</span></div></div>
     <div class="tl-strip"><button type="button" data-dopen="mrr"><b>${m('mrr')}</b><span>MRR · <em>+6.2%</em></span></button><button type="button" data-dopen="spend"><b>${byId('spend')?.viz?.pct ?? 77}%</b>AI spend</button><button type="button" data-dopen="bookings"><b>${m('bookings')}</b>bookings today</button><button type="button" data-dopen="agents"><b>4/${m('agents')}</b>agents working</button></div></div>
     <div class="tl-wrap"><div class="tl-track">${track}</div></div>
     <div class="tl-bot"><div class="tl-det"></div><div class="tl-wait"><span class="eb">${wait.some((it) => heat[it.id] !== 'done') ? 'Waiting on you, right now' : 'Nothing waiting on you'}</span>
@@ -2462,7 +2690,7 @@ function setPhone(on) {
   const frame = $('#phoneFrame')
   // The phone is a second copy of the desk: load it when it opens, unload it when it closes,
   // so it never listens or talks in the background.
-  if (on && !frame.dataset.live) { frame.src = `${location.pathname}?phone=1`; frame.dataset.live = '1' }
+  if (on && !frame.dataset.live) { frame.src = `${location.pathname}?phone=1&t=${Date.now()}`; frame.dataset.live = '1' }
   if (!on && frame.dataset.live) { frame.src = 'about:blank'; delete frame.dataset.live }
   if (on) { stopVoice(); stopHandsFree(); setListen('') }
   if (!on && was) setTimeout(() => deskHandsFree(), 400)
@@ -2477,6 +2705,70 @@ function setPhone(on) {
 $('#lay-phone').onclick = () => setPhone(true)
 $('#view-desk').onclick = () => setPhone(false)
 $('#phoneX').onclick = () => setPhone(false)
+// Restart from the phone: reload just the phone, fresh, without going back to desktop.
+$('#phoneRestart').onclick = () => { const f = $('#phoneFrame'); f.src = `${location.pathname}?phone=1&t=${Date.now()}` }
+// Restart the whole demo (works on a real phone too, from the prototype panel). Options are kept.
+// Mute on the desk's ask bar: the same setting as the room's speaker, remembered between visits.
+document.querySelectorAll('#bar [data-mute]').forEach((b) => (b.onclick = () => setMuted(!muted)))
+setMuted(muted)
+// V2 · One main button that always shows the next thing you can do: the mic when idle, a send arrow once
+// you've typed, stop while the AI is talking, and the live listening look while it listens.
+const MAIN_ICON = { mic: 'ti-microphone', send: 'ti-arrow-up', stop: 'ti-player-stop-filled' }
+function setMainMode(b, m) {
+  if (!b || b.dataset.mode === m) return
+  b.dataset.mode = m
+  const i = b.querySelector('i.ti')
+  if (i) i.className = `ti ${MAIN_ICON[m]}`
+  b.setAttribute('aria-label', m === 'send' ? 'Send' : m === 'stop' ? 'Stop talking' : 'Talk')
+}
+function syncMainButtons() {
+  if (!V2()) return
+  const talking = !!voice
+  const typed = (id) => !!$(id)?.value.trim()
+  const mode = (b, input, here) => (b?.classList.contains('live') ? 'mic' : input && typed(input) ? 'send' : talking && here ? 'stop' : 'mic')
+  setMainMode($('#mic'), mode($('#mic'), '#ask', !room))
+  setMainMode($('#rbmic'), mode($('#rbmic'), null, !!room))
+  setMainMode($('#rmic2'), mode($('#rmic2'), '#rask', !!room))
+}
+setInterval(syncMainButtons, 150)
+addEventListener('input', (e) => { if (e.target.id === 'ask' || e.target.id === 'rask') syncMainButtons() })
+function stopTalking() {
+  stopVoice()
+  if (room) {
+    $('#rsay')?.querySelectorAll('.w.dim').forEach((w) => w.classList.remove('dim'))
+    room.speaking = null
+    renderLog()
+    setTimeout(() => room && handsFree(), 300)
+  } else setTimeout(deskHandsFree, 300)
+  syncMainButtons()
+}
+// Send and stop take over the click before the mic's own listener sees it.
+document.addEventListener('click', (e) => {
+  const b = e.target.closest?.('#mic, #rbmic, #rmic2')
+  if (!b || !V2()) return
+  // The bar says "Mic is on" but the button is between listens (hands-free restarting): a tap turns it off.
+  if (b.id === 'mic' && !b.classList.contains('live') && ['on', 'grace', 'hearing'].includes($('#bar')?.dataset.listen)) {
+    e.stopPropagation()
+    e.preventDefault()
+    stopHandsFree()
+    setListen('idle')
+    return
+  }
+  const m = b.dataset.mode
+  if (m !== 'send' && m !== 'stop') return
+  e.stopPropagation()
+  e.preventDefault()
+  if (m === 'stop') return stopTalking()
+  if (b.id === 'mic') $('#bar').requestSubmit()
+  else $('#rform')?.requestSubmit()
+  setTimeout(syncMainButtons, 0)
+}, true)
+
+// The room's Later chip (delegated, so it survives the run controls swapping the chips).
+document.addEventListener('click', (e) => { if (e.target.closest?.('[data-rlater]') && room) heard('later') })
+$('#pbRestart').onclick = () => { stopVoice(); stopHandsFree(); location.reload() }
+// The panel's extra options fold away; remember whether they were open.
+{ const m = $('#pbMore'); if (m) { m.open = store.get('desk-pbmore') === '1'; m.ontoggle = () => store.set('desk-pbmore', m.open ? '1' : '0') } }
 
 // V2 · hands-free: the room listens as soon as the AI finishes a line, dims to "take your time"
 // when you're quiet, and listens again. Any line it speaks pauses the mic so it doesn't hear itself.
@@ -2577,13 +2869,14 @@ setVersion(version)
 if (V2() && new URLSearchParams(location.search).get('view') === 'dash') setV2View('dash')
 requestAnimationFrame(() => root.classList.remove('booting'))
 if (V2()) setTimeout(loadKokoro, 1200)
+// Greet on landing. If the browser blocks sound until the first tap, speak() holds the line and shows
+// "Tap anywhere to hear me", so it plays the moment you do anything.
 let greeted = false
-addEventListener(
-  'pointerdown',
-  () => {
-    if (greeted) return
-    greeted = true
-    setTimeout(() => !room && !voice && !phoneOn && (stopHandsFree(), setListen(''), (V2() && !openNeeds().length ? (deskSay(DYN['d-quiet']), null) : speak(deskMode === 'one' ? GREETING_ONE : GREETING, { onAmp: (a) => stitch?.amp(a), onEnd: () => { if (V2()) setTimeout(() => !room && deskSay(V2() && focusItems().filter((it) => heat[it.id] !== 'done').length ? `${focusItems().filter((it) => heat[it.id] !== 'done').map((it) => it.problem).join('. ')}. Say “fix them” and I’ll handle all of it.` : DYN['d-quiet']), 400) } }))), 150)
-  },
-  { once: true },
-)
+function greet() {
+  if (greeted) return
+  greeted = true
+  const say = () => !room && !voice && !phoneOn && (stopHandsFree(), setListen(''), (V2() && !openNeeds().length ? (deskSay(DYN['d-quiet']), null) : speak(deskMode === 'one' ? GREETING_ONE : GREETING, { onAmp: (a) => stitch?.amp(a), onEnd: () => { if (V2()) setTimeout(() => !room && deskSay(V2() && focusItems().filter((it) => heat[it.id] !== 'done').length ? `${focusItems().filter((it) => heat[it.id] !== 'done').map((it) => it.problem).join('. ')}. Say “fix them” and I’ll handle all of it.` : DYN['d-quiet'], landing !== 'list'), 400) } })))
+  say()
+}
+setTimeout(greet, 900)
+addEventListener('pointerdown', () => setTimeout(greet, 150), { once: true })

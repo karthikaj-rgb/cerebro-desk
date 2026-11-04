@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ask bar and button styles</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#f6f6f7;--card:#fff;--fg:#15161b;--fg2:#52545f;--fg3:#858896;--rim:rgba(21,22,27,.09);--rim2:rgba(21,22,27,.18);--ac:#5b5bd6;--ac2:#9d8cff;--hot:#e5484d;--mono:'Geist Mono',monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#ececef;font:13px/1.45 Inter,system-ui,sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased;padding:32px}
+h1{font-weight:500;font-size:22px;margin:0 0 4px}.sub{color:var(--fg3);margin:0 0 18px;max-width:860px}
+.states{position:sticky;top:0;z-index:5;display:flex;gap:6px;flex-wrap:wrap;background:#ececef;padding:10px 0 14px}
+.states button{font:inherit;font-size:12px;border:1px solid var(--rim2);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--fg2)}
+.states button.on{background:var(--fg);color:#fff;border-color:var(--fg)}
+.states span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);align-self:center;margin-right:4px}
+.opt{background:#fff;border:1px solid var(--rim);border-radius:18px;margin-bottom:18px;overflow:hidden}
+.oh{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--rim);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}.oh b{color:var(--fg);font-weight:500}
+.pick{background:var(--fg);color:#fff;border-radius:999px;padding:2px 8px;font-size:10px;margin-right:6px}
+.two{display:grid;grid-template-columns:1fr 1fr}
+.cell{position:relative;padding:22px 22px 26px;min-height:150px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;background:var(--bg)}
+.cell+.cell{border-left:1px solid var(--rim)}
+.cell.room{background:radial-gradient(60% 70% at 50% 0%,rgba(157,140,255,.16),transparent 70%),#f2f1f7}
+.cap{position:absolute;top:12px;left:16px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
+.note{padding:12px 16px 14px;color:var(--fg3);font-size:12.5px;border-top:1px solid var(--rim)}.note b{color:var(--fg);font-weight:500}
+/* shared bits */
+.pill{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--rim);border-radius:999px;padding:6px 6px 6px 16px;box-shadow:0 10px 24px -16px rgba(0,0,0,.3);min-height:54px}
+.sp{color:var(--ac)}
+.tx{flex:1;min-width:0;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px}
+.tx.typed{color:var(--fg)}
+.tx .lbl{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);margin-bottom:1px}
+.c{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:17px;border:1px solid var(--rim);background:#fff;color:var(--fg);transition:all .2s}
+.c.pri{background:var(--fg);color:#fff;border-color:var(--fg)}
+.c.ghost{border-color:transparent;background:transparent;color:var(--fg2)}
+.c.on{background:var(--fg);color:#fff;border-color:var(--fg)}
+.c.soft{background:#efeff3;border-color:transparent;color:var(--fg2)}
+.c.live{background:var(--ac);border-color:var(--ac);color:#fff;box-shadow:0 0 0 6px rgba(91,91,214,.15)}
+.c.stop{background:var(--fg);color:#fff}
+.eq{display:flex;gap:2px;align-items:center;justify-content:center;height:18px;width:24px}.eq i{display:block;flex:none;width:3px;height:8px;border-radius:2px;background:#fff;animation:eqb .7s ease-in-out infinite alternate}
+.eq i:nth-child(2){animation-delay:.12s}.eq i:nth-child(3){animation-delay:.24s}.eq i:nth-child(4){animation-delay:.36s}.eq i:nth-child(5){animation-delay:.48s}
+@keyframes eqb{from{height:4px}to{height:16px}}
+.badge{font-family:var(--mono);font-size:10px;color:var(--fg3);display:inline-flex;gap:5px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--hot);display:inline-block}
+.dot.l{background:var(--ac);animation:pulse 1.2s ease-in-out infinite}@keyframes pulse{50%{opacity:.35}}
+/* C · capsule */
+.caps{display:flex;align-items:center;background:#f1f1f5;border-radius:999px;padding:3px;gap:2px}
+.caps .c{width:36px;height:36px;border:0;background:transparent}
+.caps .c.pri{background:var(--fg);color:#fff}
+.caps .c.live{background:var(--ac);color:#fff}
+.caps .c.on{background:#fff;color:var(--hot);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* E · dark voice bar */
+.dark{background:#16171c;border-color:#16171c;color:#fff}
+.dark .tx{color:#a6a7b4}.dark .tx.typed{color:#fff}.dark .tx .lbl{color:#7d7e8c}
+.dark .c{background:rgba(255,255,255,.08);border-color:transparent;color:#fff}
+.dark .c.pri{background:#fff;color:#16171c}
+.dark .c.on{background:#fff;color:var(--hot)}
+.dark .c.live{background:var(--ac);color:#fff}
+/* F · orb */
+.orbb{flex:none;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#efe9ff,#9d8cff 40%,#5b5bd6 75%,#2a2a6a);display:grid;place-items:center;color:#fff;font-size:17px;box-shadow:0 6px 16px -6px rgba(91,91,214,.55);transition:all .25s}
+.orbb.live{transform:scale(1.08);box-shadow:0 0 0 7px rgba(157,140,255,.22),0 6px 18px -6px rgba(91,91,214,.6)}
+.orbb.idle{filter:saturate(.9)}
+.tiny{font-size:11px;color:var(--fg3);display:flex;gap:12px;padding:0 6px}
+.tiny span{display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+.tiny span.on{color:var(--hot)}
+@media(max-width:860px){.two{grid-template-columns:1fr}.cell+.cell{border-left:0;border-top:1px solid var(--rim)}body{padding:16px}}
+</style></head><body>
+<h1>Ask bar and buttons · options</h1>
+<p class="sub">Each option shows the landing bar and the room bar together, so the system stays the same in both. Use the buttons to switch every option to the same moment.</p>
+<div class="states"><span>State</span><button data-s="idle" class="on">Idle</button><button data-s="typing">Typing</button><button data-s="listening">Listening</button><button data-s="speaking">AI speaking</button><button data-s="muted">Muted</button></div>
+<div id="opts"></div>
+<script>
+const S={idle:'Ask your desk anything…',typing:'turn the ads back on for Harbor',listening:'Listening…',speaking:'Harbor’s ads are back on, at $640 a week.',muted:'Ask your desk anything…'}
+const eq='<span class="eq"><i></i><i></i><i></i><i></i><i></i></span>'
+const tx=(s,room)=>{const t=S[s];const typed=s==='typing'||s==='speaking';const lbl=room?(s==='speaking'?'<span class="lbl">AI · speaking</span>':s==='listening'?'<span class="lbl">Listening</span>':'<span class="lbl">Harbor Dental · ads</span>'):s==='listening'?'<span class="lbl">Mic is on</span>':s==='speaking'?'<span class="lbl">AI · speaking</span>':'';return `<span class="tx${typed?' typed':''}">${lbl}${t}</span>`}
+const O=[
+ {k:'A',name:'Today',tag:'two circles, mic always filled',note:'What we have now. Clear, but the mic never changes to show what\'s happening, and when you type there\'s no send button, so you press Enter blind.',
+  bar:(s,room)=>`<div class="pill"><span class="sp">✦</span>${tx(s,room)}${room?`<span class="c"><i class="ti ti-player-pause"></i></span>`:''}<span class="c${s==='muted'?' on':''}"><i class="ti ti-volume${s==='muted'?'-off':''}"></i></span><span class="c pri${s==='listening'?' live':''}"><i class="ti ti-microphone"></i></span></div>`},
+ {k:'B',name:'One button that changes',tag:'mic → send → stop',pick:1,note:'The main button always shows the one thing you can do next: <b>mic</b> when idle, <b>send arrow</b> when you type, <b>stop</b> while the AI talks, a <b>live wave</b> while listening. Mute becomes a quiet icon. Same in the room, plus pause. One obvious button, never two black circles fighting.',
+  bar:(s,room)=>{const p=s==='typing'?'<span class="c pri"><i class="ti ti-arrow-up"></i></span>':s==='speaking'?'<span class="c pri"><i class="ti ti-player-stop-filled"></i></span>':s==='listening'?`<span class="c live">${eq}</span>`:'<span class="c pri"><i class="ti ti-microphone"></i></span>';return `<div class="pill"><span class="sp">✦</span>${tx(s,room)}${room&&s==='speaking'?'<span class="c ghost"><i class="ti ti-player-pause"></i></span>':''}<span class="c ghost${s==='muted'?'':''}" style="${s==='muted'?'color:var(--hot)':''}"><i class="ti ti-volume${s==='muted'?'-off':''}"></i></span>${p}</div>`}},
+ {k:'C',name:'Controls in one capsule',tag:'grouped, like a media player',note:'Mute, pause and mic sit together in a soft grey capsule on the right. Tidy and clearly "controls", but the mic is a smaller target and typing still has no send button.',
+  bar:(s,room)=>`<div class="pill"><span class="sp">✦</span>${tx(s,room)}<span class="caps">${room?'<span class="c"><i class="ti ti-player-pause"></i></span>':''}<span class="c${s==='muted'?' on':''}"><i class="ti ti-volume${s==='muted'?'-off':''}"></i></span><span class="c ${s==='listening'?'live':'pri'}">${s==='listening'?eq:s==='typing'?'<i class="ti ti-arrow-up"></i>':'<i class="ti ti-microphone"></i>'}</span></span></div>`},
+ {k:'D',name:'Quiet icons, colour only when live',tag:'no filled buttons at rest',note:'Every icon is light grey at rest; only what\'s active gets colour: the mic turns purple when listening, mute turns red when on. The calmest, most premium look, but at rest nothing says "tap here to talk".',
+  bar:(s,room)=>`<div class="pill"><span class="sp">✦</span>${tx(s,room)}${room?'<span class="c ghost"><i class="ti ti-player-pause"></i></span>':''}<span class="c ghost" style="${s==='muted'?'color:var(--hot);background:rgba(229,72,77,.08)':''}"><i class="ti ti-volume${s==='muted'?'-off':''}"></i></span><span class="c ${s==='listening'?'live':s==='typing'?'pri':'soft'}">${s==='listening'?eq:s==='typing'?'<i class="ti ti-arrow-up"></i>':'<i class="ti ti-microphone"></i>'}</span></div>`},
+ {k:'E',name:'Bar turns dark in voice',tag:'light to type, dark to talk',note:'The bar is light while you type and turns dark while you\'re talking or the AI is, like a call. <b>Mode is obvious at a glance</b> from across the room, but the colour change can feel heavy if it flips often.',
+  bar:(s,room)=>{const v=s==='listening'||s==='speaking'||room;return `<div class="pill${v?' dark':''}"><span class="sp" style="${v?'color:#b3a8ff':''}">✦</span>${tx(s,room)}${room?'<span class="c"><i class="ti ti-player-pause"></i></span>':''}<span class="c${s==='muted'?' on':''}"><i class="ti ti-volume${s==='muted'?'-off':''}"></i></span><span class="c ${s==='listening'?'live':'pri'}">${s==='listening'?eq:s==='typing'?'<i class="ti ti-arrow-up"></i>':'<i class="ti ti-microphone"></i>'}</span></div>`}},
+ {k:'F',name:'The orb is the button',tag:'the AI itself is the mic',note:'The small orb replaces the mic: tap the AI to talk to it. It swells while listening. Mute and pause become text links under the bar. <b>Most on-brand</b> and ties to the room\'s orb, but it\'s less obvious than a mic icon for first-timers.',
+  bar:(s,room)=>`<div class="pill"><span class="sp">✦</span>${tx(s,room)}${s==='typing'?'<span class="c pri"><i class="ti ti-arrow-up"></i></span>':''}<span class="orbb${s==='listening'?' live':''}">${s==='listening'?eq:''}</span></div><div class="tiny">${room?'<span><i class="ti ti-player-pause"></i>Pause</span>':''}<span class="${s==='muted'?'on':''}"><i class="ti ti-volume${s==='muted'?'-off':''}"></i>${s==='muted'?'Muted':'Mute'}</span></div>`},
+]
+let st='idle'
+function draw(){document.getElementById('opts').innerHTML=O.map(o=>`<div class="opt"><div class="oh"><b>${o.pick?'<span class="pick">My pick</span>':''}${o.k} · ${o.name}</b><span>${o.tag}</span></div><div class="two"><div class="cell"><span class="cap">Landing</span>${o.bar(st,false)}</div><div class="cell room"><span class="cap">Room</span>${o.bar(st,true)}</div></div><div class="note">${o.note}</div></div>`).join('')}
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{st=b.dataset.s;document.querySelectorAll('[data-s]').forEach(x=>x.classList.toggle('on',x===b));draw()})
+draw()
+</script>
+</body></html>

@@ -20,14 +20,14 @@
         r.dataset.theme = g('desk-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
         var look = g('desk-look'); if (look) r.dataset.look = look
         r.classList.add('booting')
-        setTimeout(function () { r.classList.remove('booting') }, 2500)
+        setTimeout(function () { r.classList.remove('booting') }, 8000)
       })()
     </script>
-    <style>html.booting .desk, html.booting .bar, html.booting .barfrost { opacity: 0 } html[data-theme='light'] body { background: #f6f6f7 } html[data-theme='dark'] body { background: #0e0f12 }</style>
+    <style>html.booting .desk, html.booting .bar, html.booting .barfrost, html.booting .hello { opacity: 0 } html[data-theme='light'] body { background: #f6f6f7 } html[data-theme='dark'] body { background: #0e0f12 }</style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
-    <link rel="stylesheet" href="desk.css?v=20261106a" />
+    <link rel="stylesheet" href="desk.css?v=20261107j" />
     <script defer src="/_vercel/insights/script.js"></script>
   <script src="/_audit/scan.js"></script>
 </head>
@@ -68,15 +68,15 @@
         <button class="tbtn icon" id="theme" title="Light / dark" aria-label="Switch light and dark"><i class="ti ti-sun-moon"></i></button>
         <button class="tbtn icon" id="proto" title="Prototype options" aria-label="Prototype options"><i class="ti ti-adjustments-horizontal"></i></button>
         <div class="pbox" id="pbox" hidden>
-          <div class="pb-title">Prototype</div>
+          <div class="pb-title"><span>Prototype</span><button type="button" class="pb-restart" id="pbRestart" title="Start the demo over: everything you fixed comes back, your options stay"><i class="ti ti-rotate"></i> Restart</button></div>
           <div class="pb-row"><span>Version</span>
-            <div class="seg small" role="tablist"><button data-version="1" role="tab">V1</button><button data-version="2" role="tab">V2 · Rich</button></div></div>
+            <div class="seg small" role="tablist"><button data-version="1" role="tab">V1</button><button data-version="2" role="tab">V2</button></div></div>
           <div class="pb-hint" id="pbHint0"></div>
           <div class="pb-row" id="pbDay" hidden><span>Day</span>
             <div class="seg small" role="tablist"><button data-day="busy" role="tab">Busy</button><button data-day="quiet" role="tab">Quiet</button></div></div>
           <div class="pb-hint" id="pbHintDay" hidden></div>
           <div class="pb-row" id="pbBrief" hidden><span>Landing</span>
-            <div class="seg small" role="tablist"><button data-brief="list" role="tab">List</button><button data-brief="sentence" role="tab">Sentence</button></div></div>
+            <div class="seg small" role="tablist"><button data-brief="list" role="tab">List</button><button data-brief="sentence" role="tab">Sentence</button><button data-brief="sheet" role="tab">Sheet</button></div></div>
           <div class="pb-row" id="pbDash" hidden><span>Dashboard</span>
             <div class="seg small" role="tablist"><button data-dstyle="columns" role="tab">Columns</button><button data-dstyle="ribbon" role="tab">Ribbon</button><button data-dstyle="timeline" role="tab">Day</button></div></div>
           <div class="pb-row"><span>Voice in the room</span>
@@ -129,15 +129,16 @@
         <input id="ask" placeholder="Ask your desk anything…" />
         <span class="bar-live" id="barLive" aria-live="polite"></span>
         <span class="bar-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <button type="button" class="bar-mute" data-mute aria-label="Mute" title="Mute the AI’s voice"><i class="ti ti-volume"></i></button>
         <span class="bar-micwrap"><svg class="bar-ring" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/></svg><button type="button" class="mic" id="mic" aria-label="Talk"><i class="ti ti-microphone"></i></button></span>
       </div>
     </form>
 
-    <div class="phone-wrap" id="phoneWrap" hidden><div class="phone-frame"><div class="phone-screen"><div class="phone-notch"></div><iframe id="phoneFrame" title="The Desk on a phone" allow="microphone; autoplay"></iframe><div class="phone-home"></div></div></div><button type="button" class="chip phone-x" id="phoneX"><i class="ti ti-x"></i> Back to desktop</button></div>
+    <div class="phone-wrap" id="phoneWrap" hidden><div class="phone-frame"><div class="phone-screen"><div class="phone-notch"></div><iframe id="phoneFrame" title="The Desk on a phone" allow="microphone; autoplay"></iframe><div class="phone-home"></div></div></div><div class="phone-acts"><button type="button" class="chip phone-x" id="phoneRestart" title="Start the demo over on the phone"><i class="ti ti-rotate"></i> Restart</button><button type="button" class="chip phone-x" id="phoneX"><i class="ti ti-x"></i> Back to desktop</button></div></div>
     <div class="toast" id="toast" hidden></div>
     <div class="veil" id="veil" aria-hidden="true"></div>
     <div class="room" id="room" hidden></div>
 
-    <script type="module" src="desk.js?v=20261106a&test=1"></script>
+    <script type="module" src="desk.js?v=20261107j&test=1"></script>
   </body>
 </html>
