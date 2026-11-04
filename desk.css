@@ -5123,3 +5123,78 @@ body:has(.fsheet-on) .barfrost { opacity: 0 !important }
 .rb-wave:not(.talking) i { animation: rbidle 2.2s ease-in-out infinite; animation-delay: calc(var(--k, 0.6) * -2.2s) }
 @keyframes rbidle { 0%, 100% { transform: scaleY(0.18) } 50% { transform: scaleY(0.34) } }
 @media (prefers-reduced-motion: reduce) { .rb-wave:not(.talking) i { animation: none } }
+
+/* V2 · Presence options: one setting changes how the AI looks everywhere */
+.seg.small.seg-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-radius: 14px; gap: 2px }
+.seg.small.seg-grid button { border-radius: 10px }
+.fsheet-orb { position: relative }
+.fsheet-orb .fsv1 { display: none; position: absolute; inset: 0; width: 100%; height: 100% }
+canvas.pcv { position: absolute; left: -22%; top: -22%; width: 144%; height: 144%; pointer-events: none; z-index: 1 }
+body:not([data-v='2']) canvas.pcv, body[data-presence='orb'] canvas.pcv, body[data-presence='v1'] canvas.pcv { display: none }
+/* Canvas styles: hide the built-in orb wherever the AI appears */
+body[data-v='2']:is([data-presence='swarm'], [data-presence='chrome'], [data-presence='cymatics'], [data-presence='culture']) .creature > i,
+body[data-v='2']:is([data-presence='swarm'], [data-presence='chrome'], [data-presence='cymatics'], [data-presence='culture']) .creature > b,
+body[data-v='2']:is([data-presence='swarm'], [data-presence='chrome'], [data-presence='cymatics'], [data-presence='culture']) .fempty .forb > i { display: none !important }
+body[data-v='2']:is([data-presence='swarm'], [data-presence='chrome'], [data-presence='cymatics'], [data-presence='culture']) .creature::before,
+body[data-v='2']:is([data-presence='swarm'], [data-presence='chrome'], [data-presence='cymatics'], [data-presence='culture']) .creature::after { opacity: 0 !important; box-shadow: none !important }
+body[data-v='2']:is([data-presence='swarm'], [data-presence='chrome'], [data-presence='cymatics'], [data-presence='culture']) .fsheet-orb { background: none !important; box-shadow: none !important; animation: none !important }
+/* V1 blob: bring back V1's three morphing blobs where V2 drew the orb */
+body[data-v='2'][data-presence='v1'] .creature > i,
+body[data-v='2'][data-presence='v1'] .creature > b { display: block !important }
+body[data-v='2'][data-presence='v1'] .creature::before,
+body[data-v='2'][data-presence='v1'] .creature::after { content: none !important }
+body[data-v='2'][data-presence='v1'] .fsheet-orb { background: none !important; box-shadow: none !important; animation: none !important }
+body[data-v='2'][data-presence='v1'] .fsheet-orb .fsv1 { display: block }
+
+/* Prototype panel over everything (opens from the top bar or from inside a room) */
+.pbox { position: fixed !important; top: 64px !important; right: 18px !important; z-index: 200 !important; max-height: calc(100vh - 84px) !important }
+.r-tr { justify-self: end; display: flex; align-items: center; gap: 8px }
+.r-proto { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--rim); background: var(--card); display: grid; place-items: center; font-size: 16px; color: var(--fg); cursor: pointer; transition: transform var(--fast) var(--ease) }
+.r-proto:active { transform: scale(0.92) }
+@media (max-width: 760px) { body[data-v='2'] .room .r-head .r-tr { order: 3 } .pbox { top: 56px !important; right: 12px !important } }
+
+/* Ribbon / Day dashboards: Make something, small charts, Made today */
+.dalt .dmake { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 26px }
+.dalt .dmake .eb { margin-right: 6px }
+.dalt .dmake .chip { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px !important; padding: 7px 13px !important; border-radius: 999px !important; border: 1px solid var(--rim-2) !important; color: var(--fg-2) !important; background: var(--card) !important; cursor: pointer }
+.dalt .dmake .chip:hover { border-color: var(--fg-3) !important; color: var(--fg) !important }
+.dalt .tl-top + .dmake { margin: 22px 0 0 }
+.dalt .dviz { display: block; margin-top: 8px; color: #5b5bd6; height: 22px }
+.dalt svg.dviz { width: 100%; max-width: 120px }
+.dalt .dbar { height: 6px; margin-top: 14px; border-radius: 3px; background: color-mix(in srgb, var(--fg) 8%, transparent); max-width: 120px; overflow: hidden }
+.dalt .dbar i { display: block; height: 100%; border-radius: 3px; background: #5b5bd6 }
+.dalt .dslots, .dalt .ddots, .dalt .dweek { display: flex; gap: 3px; align-items: flex-end; height: 22px }
+.dalt .dslots i { width: 7px; height: 16px; border-radius: 2px; background: #5b5bd6 }
+.dalt .dslots i:not(.on) { background: transparent; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--warm) 60%, transparent) }
+.dalt .ddots { align-items: center }
+.dalt .ddots i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 14%, transparent) }
+.dalt .ddots i.on { background: #5b5bd6; box-shadow: 0 0 0 3px color-mix(in srgb, #5b5bd6 18%, transparent) }
+.dalt .dweek i { width: 15px; height: 18px; border-radius: 4px; font: 500 9px/18px var(--mono); text-align: center; font-style: normal; color: var(--fg-3); background: color-mix(in srgb, var(--fg) 5%, transparent) }
+.dalt .dweek i.next { background: #5b5bd6; color: #fff }
+.dalt .dweek i.set { background: color-mix(in srgb, #5b5bd6 18%, transparent); color: #5b5bd6 }
+.dalt .dweek i.none { opacity: 0.5 }
+.dalt .dmade { margin-top: 30px }
+.dalt .rr[data-h='made'] .rdot { background: #5b5bd6 }
+.dalt .dmade .rr .rbtn + .rbtn { margin-left: 6px }
+
+/* Ribbon numbers: calm hover, an AI hint, and a tooltip that says what each number is */
+.dalt .rk { position: relative; overflow: visible }
+.dalt .rk:hover, .dalt .rk:focus-visible { background: none !important }
+.dalt .rk b, .dalt .rk .dviz { transition: color var(--fast) var(--ease) }
+.dalt .rk:hover b, .dalt .rk:focus-visible b { color: #5b5bd6 }
+.dalt .rk-ai { position: absolute; top: 14px; right: 14px; font-size: 15px; color: #5b5bd6; opacity: 0; transform: scale(0.8); transition: opacity var(--fast) var(--ease), transform var(--fast) var(--ease) }
+.dalt .rk:hover .rk-ai, .dalt .rk:focus-visible .rk-ai { opacity: 1; transform: none }
+.dalt .rk-tip { position: absolute; left: 0; top: calc(100% + 8px); z-index: 40; width: 240px; padding: 10px 12px; border-radius: 12px; background: var(--fg); color: var(--bg); font: 400 12.5px/1.45 var(--sans); letter-spacing: 0; text-transform: none; text-align: left; box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.45); opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.15s var(--ease) 0.25s, transform 0.15s var(--ease) 0.25s }
+.dalt .rk-tip em { display: flex; align-items: center; gap: 5px; margin-top: 6px; font-style: normal; font-size: 11.5px; color: color-mix(in srgb, var(--bg) 70%, transparent) }
+.dalt .rk:not(:first-child) .rk-tip { left: 18px }
+.dalt .rk:last-child .rk-tip { left: auto; right: 0 }
+.dalt .rk:hover .rk-tip, .dalt .rk:focus-visible .rk-tip { opacity: 1; transform: none }
+@media (hover: none) { .dalt .rk-tip { display: none } }
+
+/* Priority: same plain rows; "Worth a look" is simply lighter, with soft grey dots */
+.dalt .rgroup { margin-top: 6px }
+.dalt .rgroup + .rgroup { margin-top: 30px }
+.dalt .rgroup.hot .rhead .eb:first-child { color: var(--hot) }
+.dalt .rgroup.warm .rdot { background: #5b5bd6 }
+[data-theme='dark'] .dalt .rgroup.warm .rdot { background: #9d8cff }
+.dalt .rgroup.warm .rr .rtag { color: var(--fg-3) }

@@ -2,12 +2,13 @@
 // Stage: your platform laid out as aligned cards. Scribble: the same cards, placed by hand, with pencil
 // notes; tidy them back any time. Circle things to talk about them together. Click anything to open
 // a room: a call with the AI, centred on its voice; switch to chat whenever you'd rather type.
-import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261107j'
-import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261107j'
+import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261107s'
+import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261107s'
 // Everything that can be on the desk, including the One AI option's extras (ONE_ITEMS).
 const ALL = [...ITEMS, ...ONE_ITEMS]
 const CARDED = ALL.filter((it) => !it.nocard)
-import { createStitch } from './stitch.js?v=20261107j'
+import { createStitch } from './stitch.js?v=20261107s'
+import { initPresence, setPresenceStyle, setPresenceAmp, nextPhrase } from './presence.js?v=20261107s'
 
 const $ = (s, r = document) => r.querySelector(s)
 const root = document.documentElement
@@ -50,10 +51,13 @@ function setVoiceStyle(v) {
   $('#pbHint').textContent = HINTS[v]
   if (!roomEl.hidden) roomEl.dataset.voice = v
 }
+// The prototype panel lives at the page level so it can open over a room too (room's settings button).
+document.body.appendChild($('#pbox'))
 $('#proto').onclick = () => ($('#pbox').hidden = !$('#pbox').hidden)
+document.addEventListener('click', (e) => { if (e.target.closest?.('[data-proto]')) $('#pbox').hidden = !$('#pbox').hidden })
 document.querySelectorAll('[data-voice]').forEach((b) => (b.onclick = () => setVoiceStyle(b.dataset.voice)))
 addEventListener('pointerdown', (e) => {
-  if (!e.target.closest?.('#pbox, #proto')) $('#pbox').hidden = true
+  if (!e.target.closest?.('#pbox, #proto, [data-proto]')) $('#pbox').hidden = true
 })
 
 // ── Small helpers ────────────────────────────────────────────────────────────
@@ -854,7 +858,7 @@ addEventListener('resize', () => drawThreads())
 
 // ── Voice ───────────────────────────────────────────────────────────────────
 let DUR = {}
-fetch('audio/durations.json?v=20261107j')
+fetch('audio/durations.json?v=20261107s')
   .then((r) => (r.ok ? r.json() : {}))
   .then((d) => (DUR = d))
   .catch(() => {})
@@ -975,6 +979,7 @@ function speak(line, { onWord, onAmp, onEnd } = {}, src) {
       if (amp < 0.01 && t > 400 && !audio.paused) amp = fake() * 0.7
     } else amp = fake()
     onAmp?.(amp)
+    setPresenceAmp(amp)
     // End when the clip really ends (DUR is only a guide); without audio, fall back to the estimate.
     if ((audible && (audio.ended || t >= ms + 4000)) || (!audible && t >= ms + 120)) finish()
   }, 40)
@@ -1461,6 +1466,7 @@ function saveDraft(c) {
   return d
 }
 function renderDrafts() {
+  if (V2() && v2view === 'dash' && dstyle !== 'columns') setTimeout(renderDalt, 0)
   const el = $('#drafts')
   if (!el) return
   el.hidden = !drafts.length
@@ -1554,7 +1560,7 @@ function openRoom(items, fromEl, opts = {}) {
   roomEl.innerHTML = `<div class="r-glow"></div>
     <div class="r-head"><span class="eb"><b></b>${title}</span>
       <div class="r-mode" role="tablist"><button role="tab" data-m="voice"><i class="ti ti-phone"></i> Voice</button><button role="tab" data-m="chat"><i class="ti ti-message"></i> Chat</button></div>
-      <button class="r-close" aria-label="Close (Esc)"><i class="ti ti-x"></i></button>
+      <div class="r-tr"><button type="button" class="r-proto" data-proto aria-label="Prototype options" title="Prototype options"><i class="ti ti-adjustments-horizontal"></i></button><button class="r-close" aria-label="Close (Esc)"><i class="ti ti-x"></i></button></div>
       <div class="r-hacts"><button type="button" class="r-hb" data-pause aria-label="Pause"><i class="ti ti-player-pause"></i></button><button type="button" class="r-hb" data-mute aria-label="Mute"><i class="ti ti-volume"></i></button></div></div>
     <div class="r-stage">
       <div class="creature" id="creature"><i></i><i></i><i></i><b></b></div>
@@ -2450,7 +2456,7 @@ function renderFocus() {
     focusEl.classList.toggle('fsheet-on', sheet)
     const fixBtn = `<button type="button" class="chip main" data-ffix>${open.length > 1 ? `Fix all ${open.length}` : `${open[0].act}`}</button>`
     const talkBtn = '<button type="button" class="chip" data-ftalk><i class="ti ti-microphone"></i> Just talk</button>'
-    if (sheet) focusEl.innerHTML = `<div class="fsheet-hero"><span class="fsheet-orb"></span><h1>Morning, Maya.</h1><span class="eb">${words} you</span></div>
+    if (sheet) focusEl.innerHTML = `<div class="fsheet-hero"><span class="fsheet-orb"><span class="creature fsv1"><i></i><i></i><i></i><b></b></span></span><h1>Morning, Maya.</h1><span class="eb">${words} you</span></div>
       <div class="fsheet"><span class="fsheet-grab"></span><p class="fsent" aria-hidden="true"></p><p class="sr-only" aria-live="polite"></p>
       <div class="fsent-chips">${fixBtn}${talkBtn}<button type="button" class="chip" id="chipdash"><i class="ti ti-layout-dashboard"></i> Dashboard</button>${laterChip()}</div></div>`
     else focusEl.innerHTML = `<div class="fcap"><span class="eb">Needs you · ${open.length}</span><span class="fspk" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div><p class="fsent" aria-hidden="true"></p><p class="sr-only" aria-live="polite"></p>
@@ -2547,6 +2553,8 @@ function setVersion(v) {
   $('#pbHintDay').hidden = v !== '2'
   $('#pbBrief').hidden = v !== '2'
   $('#pbDash').hidden = v !== '2'
+  $('#pbPresence') && ($('#pbPresence').hidden = v !== '2')
+  if (typeof presence !== 'undefined') setPresenceStyle(v === '2' ? presence : 'orb')
   $('#segDevice').hidden = v !== '2'
   if (v !== '2') { setPhone(false); stopHandsFree() }
   else {
@@ -2590,29 +2598,68 @@ document.querySelectorAll('[data-dstyle]').forEach((b) => { b.setAttribute('aria
 const daltEl = $('#dalt')
 const DASH_RIB = ['mrr', 'spend', 'bookings', 'agents', 'social']
 const RIB_SUB = { mrr: '+6.2% on Sept', spend: '77% of $2,500', bookings: '3 gaps this pm', agents: '4 working now', social: 'next post' }
+const RIB_TIP = {
+  mrr: 'Monthly recurring revenue across all your clients.',
+  spend: 'What your AI agents cost this month, against your $2,500 budget.',
+  bookings: 'Appointments booked across clients today, and the open slots left.',
+  agents: 'Your AI team: 27 agents, and how many are working right now.',
+  social: 'When your next social post goes out, and this week’s plan.',
+}
 const RIB_LBL = { mrr: 'Agency MRR', spend: 'AI spend · Oct', bookings: 'Bookings today', agents: 'AI team', social: 'Social' }
 const SHORT = { revenue: 'Ads paused · widget broke', ads: 'Card on file expired', calls: '14 clinics', reviews: 'Replies drafted', voicemail: '0:48 voicemail', lead: 'Dr. Priya Nair', invoices: 'Reminders drafted', callers: 'Both about pricing' }
 const TAG = { revenue: '−$4.8k/mo', ads: '−$2.4k/mo', calls: '+18%', reviews: '6 days', voicemail: 'today', lead: '11:00', invoices: '$2,140', callers: 'today' }
 const dashList = () => CARDED.filter((it) => (it.heat === 'hot' || it.heat === 'warm') && it.problem && (!it.only || deskMode === 'one') && heat[it.id] !== 'later')
   .sort((a, b) => (a.heat === b.heat ? 0 : a.heat === 'hot' ? -1 : 1))
 function wireDalt() {
-  daltEl.querySelectorAll('[data-dopen]').forEach((r) => (r.onclick = (e) => { if (e.target.closest('button')) return; const it = byId(r.dataset.dopen); if (it) openRoom([it], r) }))
+  daltEl.querySelectorAll('[data-dopen]').forEach((r) => (r.onclick = (e) => { const btn = e.target.closest('button'); if (btn && btn !== r) return; const it = byId(r.dataset.dopen); if (it) openRoom([it], r) }))
   daltEl.querySelectorAll('[data-dact]').forEach((b) => (b.onclick = () => { const it = byId(b.dataset.dact); if (it) openRoom([it], b, { direct: 0 }) }))
+}
+/** A tiny chart for a number, from the data it already has. */
+function vizMini(it) {
+  const v = it?.viz
+  if (!v) return ''
+  if (v.kind === 'area' && v.points) {
+    const p = v.points, lo = Math.min(...p), hi = Math.max(...p), W = 96, H = 22
+    const pts = p.map((y, i) => `${((i / (p.length - 1)) * W).toFixed(1)},${(H - 2 - ((y - lo) / Math.max(1, hi - lo)) * (H - 4)).toFixed(1)}`).join(' ')
+    return `<svg class="dviz" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  }
+  if (v.kind === 'gauge') return `<span class="dviz dbar"><i style="width:${Math.min(100, v.pct)}%"></i></span>`
+  if (v.kind === 'slots') return `<span class="dviz dslots">${v.slots.map((s) => `<i${s ? ' class="on"' : ''}></i>`).join('')}</span>`
+  if (v.kind === 'ring') return `<span class="dviz ddots">${Array.from({ length: 14 }, (_, i) => `<i${v.on.some((o) => Math.floor((o / v.n) * 14) === i) ? ' class="on"' : ''}></i>`).join('')}</span>`
+  if (v.kind === 'week') return `<span class="dviz dweek">${v.days.map((d, i) => `<i class="${v.state[i]}">${d}</i>`).join('')}</span>`
+  return ''
+}
+/** Make something + Made today, shared by Ribbon and Day. */
+function daltMake() {
+  return `<div class="dmake"><span class="eb">Make something</span>${MAKE.map(([ic, t]) => `<button type="button" class="chip" data-dmake="${t}"><i class="ti ${ic}"></i>${t}</button>`).join('')}</div>`
+}
+function daltMade() {
+  if (!drafts.length) return ''
+  return `<div class="dmade"><div class="rhead"><span class="eb">Made today</span><span class="eb">${drafts.length} ${drafts.length > 1 ? 'drafts' : 'draft'}</span></div>${drafts.map((d, i) => `<div class="rr" data-dview="${i}" data-h="made"><i class="rdot"></i><div class="rt"><b>${d.title}</b><small>${d.published ? 'Live' : 'Draft 1'} · ${d.at}</small></div><button type="button" class="rbtn" data-dview="${i}">Open</button>${d.published ? '' : `<button type="button" class="rbtn main" data-dpub="${i}">Publish</button>`}</div>`).join('')}</div>`
+}
+function wireDaltExtras() {
+  daltEl.querySelectorAll('[data-dmake]').forEach((b) => (b.onclick = () => openRoom([ITEMS.find((i) => i.id === 'make')], b, { kind: b.dataset.dmake })))
+  daltEl.querySelectorAll('[data-dview]').forEach((b) => (b.onclick = (e) => { if (b.tagName !== 'BUTTON' && e.target.closest('button')) return; e.stopPropagation(); openPop(drafts[+b.dataset.dview], b.getBoundingClientRect()) }))
+  daltEl.querySelectorAll('[data-dpub]').forEach((b) => (b.onclick = (e) => { e.stopPropagation(); const d = drafts[+b.dataset.dpub]; d.published = true; renderDrafts(); toast(`Published. ${d.title} is live.`) }))
 }
 function renderDalt() {
   clearInterval(tlTimer)
   if (dstyle === 'ribbon') renderRibbon()
   else renderTimeline()
   wireDalt()
+  wireDaltExtras()
 }
 function renderRibbon() {
   const list = dashList()
-  const rib = DASH_RIB.map((id) => { const it = byId(id); return it ? `<button type="button" class="rk" data-dopen="${id}"><span class="eb">${RIB_LBL[id]}</span><b>${it.value}</b><small>${RIB_SUB[id] ?? it.sub}</small></button>` : '' }).join('')
-  const rows = list.map((it) => {
+  const rib = DASH_RIB.map((id) => { const it = byId(id); return it ? `<button type="button" class="rk" data-dopen="${id}" aria-label="${RIB_LBL[id]}: ${it.value}. ${RIB_TIP[id]} Tap to ask the AI."><span class="rk-tip" role="tooltip">${RIB_TIP[id]}<em><i class="ti ti-sparkles"></i> Tap to ask the AI</em></span><span class="eb">${RIB_LBL[id]}</span><b>${it.value}</b><small>${RIB_SUB[id] ?? it.sub}</small>${vizMini(it)}</button>` : '' }).join('')
+  const row = (it) => {
     const done = heat[it.id] === 'done'
     return `<div class="rr${done ? ' done' : ''}" data-dopen="${it.id}" data-h="${it.heat}"><i class="rdot"></i><div class="rt"><b>${it.problem}</b><small>${done ? `<i class="ti ti-check"></i> ${it.receipt ?? 'Done'}` : SHORT[it.id] ?? it.sub ?? ''}</small></div>${done ? '' : `<span class="rtag">${TAG[it.id] ?? it.cost ?? ''}</span><button type="button" class="rbtn${it.heat === 'hot' ? ' main' : ''}" data-dact="${it.id}">${it.act}</button>`}</div>`
-  }).join('')
-  daltEl.innerHTML = `<div class="rib">${rib}</div><div class="rhead"><span class="eb">Everything, most urgent first</span><span class="eb">${list.length} items</span></div><div class="rlist">${rows}</div>`
+  }
+  const hot = list.filter((it) => it.heat === 'hot'), warm = list.filter((it) => it.heat !== 'hot')
+  const hotOpen = hot.filter((it) => heat[it.id] !== 'done').length
+  const rows = `${hot.length ? `<div class="rgroup hot"><div class="rhead"><span class="eb">${hotOpen ? `Needs you · ${hotOpen}` : 'Needs you · all done'}</span>${hotOpen ? '<span class="eb">Fix these first</span>' : ''}</div>${hot.map(row).join('')}</div>` : ''}${warm.length ? `<div class="rgroup warm"><div class="rhead"><span class="eb">Worth a look · ${warm.length}</span><span class="eb">When you have a minute</span></div>${warm.map(row).join('')}</div>` : ''}`
+  daltEl.innerHTML = `<div class="rib">${rib}</div>${daltMake()}<div class="rlist">${rows}</div>${daltMade()}`
 }
 const TL = { t0: 6, t1: 19, now: 9 + 38 / 60 }
 const TL_EVS = [
@@ -2645,9 +2692,10 @@ function renderTimeline() {
   track += `<div class="tl-now" style="left:${pct(TL.now)}%"></div><div class="tl-nowo" style="left:${pct(TL.now)}%"></div><span class="tl-nowt" style="left:${pct(TL.now)}%">Now</span><div class="tl-scrub"></div>`
   daltEl.innerHTML = `<div class="tl-top"><div><span class="eb">Today, as the AI sees it · <em class="tl-sample">sample day</em></span><div class="tl-clock"><b>${tlFmt(TL.now)}</b><span>Drag the line. Left of now is done, right is planned.</span></div></div>
     <div class="tl-strip"><button type="button" data-dopen="mrr"><b>${m('mrr')}</b><span>MRR · <em>+6.2%</em></span></button><button type="button" data-dopen="spend"><b>${byId('spend')?.viz?.pct ?? 77}%</b>AI spend</button><button type="button" data-dopen="bookings"><b>${m('bookings')}</b>bookings today</button><button type="button" data-dopen="agents"><b>4/${m('agents')}</b>agents working</button></div></div>
+    ${daltMake()}
     <div class="tl-wrap"><div class="tl-track">${track}</div></div>
     <div class="tl-bot"><div class="tl-det"></div><div class="tl-wait"><span class="eb">${wait.some((it) => heat[it.id] !== 'done') ? 'Waiting on you, right now' : 'Nothing waiting on you'}</span>
-    ${wait.map((it) => { const done = heat[it.id] === 'done'; return `<div class="rr${done ? ' done' : ''}" data-dopen="${it.id}" data-h="hot"><i class="rdot"></i><div class="rt"><b>${it.problem}</b><small>${done ? `<i class="ti ti-check"></i> ${it.receipt ?? 'Done'}` : TAG[it.id] ?? it.cost ?? ''}</small></div>${done ? '' : `<button type="button" class="rbtn main" data-dact="${it.id}">${it.act}</button>`}</div>` }).join('')}</div></div>`
+    ${wait.map((it) => { const done = heat[it.id] === 'done'; return `<div class="rr${done ? ' done' : ''}" data-dopen="${it.id}" data-h="hot"><i class="rdot"></i><div class="rt"><b>${it.problem}</b><small>${done ? `<i class="ti ti-check"></i> ${it.receipt ?? 'Done'}` : TAG[it.id] ?? it.cost ?? ''}</small></div>${done ? '' : `<button type="button" class="rbtn main" data-dact="${it.id}">${it.act}</button>`}</div>` }).join('')}</div></div>${daltMade()}`
   const trackEl = daltEl.querySelector('.tl-track'), det = daltEl.querySelector('.tl-det'), scrub = daltEl.querySelector('.tl-scrub'), clock = daltEl.querySelector('.tl-clock b')
   const evEls = [...daltEl.querySelectorAll('.tl-ev')]
   let cur = -1, hold = 0
@@ -2766,6 +2814,33 @@ document.addEventListener('click', (e) => {
 
 // The room's Later chip (delegated, so it survives the run controls swapping the chips).
 document.addEventListener('click', (e) => { if (e.target.closest?.('[data-rlater]') && room) heard('later') })
+// V2 · Presence: how the AI looks everywhere it appears (room, chat, phone sheet, empty state).
+const PRESENCES = ['orb', 'v1', 'swarm', 'chrome', 'culture']
+let presence = PRESENCES.includes(store.get('desk-presence')) ? store.get('desk-presence') : 'orb'
+initPresence({
+  state: () => {
+    if (voice && !voice.paused) return 'speaking'
+    if (activeRec || ['on', 'hearing', 'grace'].includes($('#bar')?.dataset.listen) || $('#rbmic.live, #rmic.live, #rmic2.live')) return 'listening'
+    if (room && $('#rdoing .step[data-state="now"]')) return 'thinking'
+    return 'idle'
+  },
+})
+addEventListener('deskvoice', nextPhrase)
+function setPresence(v) {
+  presence = v
+  store.set('desk-presence', v)
+  document.querySelectorAll('[data-presence-opt]').forEach((b) => b.setAttribute('aria-selected', b.dataset.presenceOpt === v))
+  setPresenceStyle(V2() ? v : 'orb')
+}
+document.querySelectorAll('[data-presence-opt]').forEach((b) => (b.onclick = () => { if (!V2()) setVersion('2'); setPresence(b.dataset.presenceOpt) }))
+setPresence(presence)
+// The phone frame is its own page: when an option changes in the desktop panel, apply it here live too.
+addEventListener('storage', (e) => {
+  if (e.key === 'desk-presence' && PRESENCES.includes(e.newValue) && e.newValue !== presence) setPresence(e.newValue)
+  if (e.key === 'desk-brief' && e.newValue && e.newValue !== landing) setBrief(e.newValue)
+  if (e.key === 'desk-dstyle' && e.newValue && e.newValue !== dstyle) setDstyle(e.newValue)
+  if (e.key === 'desk-day' && e.newValue && e.newValue !== day) setDay(e.newValue)
+})
 $('#pbRestart').onclick = () => { stopVoice(); stopHandsFree(); location.reload() }
 // The panel's extra options fold away; remember whether they were open.
 { const m = $('#pbMore'); if (m) { m.open = store.get('desk-pbmore') === '1'; m.ontoggle = () => store.set('desk-pbmore', m.open ? '1' : '0') } }

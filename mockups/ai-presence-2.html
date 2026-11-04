@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI presence round two</title>
+<style>
+:root{--page:#ececef;--stage:#f6f6f7;--ink:#17171c;--muted:#6b6b76;--line:rgba(20,20,40,.08);--card:#fff;--v1:#5b5bd6;--v2:#9d8cff}
+body.dark{--stage:#0e0f12}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif;padding:32px;-webkit-font-smoothing:antialiased}
+h1{font-size:26px;letter-spacing:-.02em;margin:0 0 4px;font-weight:650}
+.sub{color:var(--muted);margin:0 0 18px;max-width:760px}
+.bar{position:sticky;top:12px;z-index:20;display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:rgba(255,255,255,.8);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);border:1px solid var(--line);border-radius:14px;padding:7px;margin-bottom:20px;box-shadow:0 10px 30px -18px rgba(20,20,60,.35)}
+.seg{display:flex;background:#eeeef2;border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button,.btn{appearance:none;border:0;font:inherit;font-size:13px;font-weight:550;color:#55556a;background:transparent;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .2s,color .2s,box-shadow .2s}
+.seg button:hover,.btn:hover{color:var(--ink)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04)}
+.seg button i{width:6px;height:6px;border-radius:50%;background:#c8c8d2;transition:background .2s}
+.seg button.on i{background:var(--v1)}
+.btn{background:#eeeef2}
+.btn.on{background:var(--v1);color:#fff}
+.btn .dot{width:7px;height:7px;border-radius:50%;background:#b9b9c6}
+.btn.on .dot{background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.35}}
+.spacer{flex:1}
+.msg{font-size:12px;color:#8a4b2a;padding:0 6px;max-width:320px}
+.kbd{font-size:11.5px;color:var(--muted);padding:0 6px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:var(--card);border-radius:20px;padding:14px 14px 16px;border:1px solid var(--line);min-width:0}
+.head{display:flex;align-items:center;gap:8px;margin:2px 4px 10px}
+.lbl{font-weight:620;font-size:14.5px;letter-spacing:-.01em}
+.pick{font-size:11px;font-weight:600;color:var(--v1);background:rgba(91,91,214,.1);padding:2px 8px;border-radius:99px}
+.wrap{position:relative}
+.stage{position:relative;height:360px;border-radius:14px;background:var(--stage);overflow:hidden;transition:background .45s;touch-action:pan-y}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.mini{position:absolute;right:10px;bottom:10px;width:110px;height:110px;border-radius:12px;overflow:hidden;background:var(--stage);box-shadow:0 0 0 1px rgba(20,20,40,.09),0 6px 18px -10px rgba(0,0,0,.25);transition:background .45s}
+body.dark .mini{box-shadow:0 0 0 1px rgba(255,255,255,.09)}
+.mini canvas{width:110px;height:110px;display:block}
+.mini span{position:absolute;left:8px;top:6px;font-size:10px;font-weight:600;letter-spacing:.02em;color:rgba(80,80,100,.55);pointer-events:none}
+body.dark .mini span{color:rgba(220,220,240,.4)}
+.note{margin:12px 4px 0;color:#4a4a57;font-size:13.5px}
+.note b{color:var(--v1);font-weight:620}
+.err{position:absolute;inset:0;display:grid;place-items:center;color:#a33;font-size:12px;padding:20px;text-align:center}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+@media (max-width:560px){
+  body{padding:16px}
+  h1{font-size:22px}
+  .bar{top:8px}
+  .spacer,.kbd{display:none}
+  .seg{width:100%;flex-wrap:nowrap}
+  .seg button{flex:1 1 0;min-width:0;justify-content:center;padding:7px 4px;font-size:12.5px;gap:5px}
+  .bar .btn{flex:1 1 0;justify-content:center}
+  .msg{max-width:none;width:100%}
+  .stage{height:320px}
+  .mini{position:relative;right:auto;bottom:auto;margin:10px 0 0 0}
+}
+</style>
+</head>
+<body>
+<h1>AI presence · round two</h1>
+<p class="sub">Six stranger directions, none of them a sphere, a blob or an aperture. Each one is built from something the AI actually does: hearing, thinking, working with a team, finding what leaks. Hover a stage, switch states, or turn on your mic.</p>
+
+<div class="bar" role="toolbar" aria-label="Presence controls">
+  <div class="seg" id="states">
+    <button data-s="0" class="on"><i></i>Idle</button>
+    <button data-s="1"><i></i>Listening</button>
+    <button data-s="2"><i></i>Thinking</button>
+    <button data-s="3"><i></i>Speaking</button>
+  </div>
+  <button class="btn" id="mic"><span class="dot"></span><span id="micTxt">Use my mic</span></button>
+  <button class="btn" id="dark" aria-pressed="false">Dark</button>
+  <span class="msg" id="msg" role="status"></span>
+  <span class="spacer"></span>
+  <span class="kbd">Keys 1 to 4 switch states</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+(function(){
+'use strict';
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+const V1=[91,91,214], V2=[157,140,255];
+const TAU=Math.PI*2;
+const S={W:[1,0,0,0], target:0, amp:0, dark:0, darkT:0, t:0, mic:null, reduced:false, phrase:0, pitch:.5};
+const mq=matchMedia('(prefers-reduced-motion: reduce)'); S.reduced=mq.matches;
+mq.addEventListener && mq.addEventListener('change',e=>S.reduced=e.matches);
+
+/* ---------- helpers ---------- */
+const clamp=(x,a,b)=>x<a?a:x>b?b:x;
+const mix=(a,b,t)=>a+(b-a)*t;
+const sstep=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+function rgba(c,a){return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+clamp(a,0,1).toFixed(3)+')'}
+function mixc(a,b,t){return [mix(a[0],b[0],t),mix(a[1],b[1],t),mix(a[2],b[2],t)]}
+function rand(seed){let s=seed>>>0||1;return()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return (s>>>0)/4294967296}}
+function canvas2d(canvas,w,h){canvas.width=Math.round(w*DPR);canvas.height=Math.round(h*DPR)}
+
+function program(gl,vs,fs){
+  const p=gl.createProgram();
+  [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]].forEach(([t,src])=>{
+    const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p,s);
+  });
+  gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));
+  return p;
+}
+function locs(gl,p,names){const u={};names.forEach(n=>u[n]=gl.getUniformLocation(p,n));return u}
+
+/* ---------- simulated voice (amplitude, plus a phrase counter and pitch per phrase) ---------- */
+function Voice(){
+  let phase='pause',left=.3,dur=.1,peak=0,count=0,val=0;
+  function syl(){dur=left=.08+Math.random()*.17;peak=.45+Math.random()*.55}
+  const f=function(dt){
+    left-=dt;
+    if(phase==='pause'){val=0;if(left<=0){phase='syl';count=2+Math.floor(Math.random()*8);f.phrase++;f.pitch=Math.random();syl()}}
+    else if(phase==='syl'){
+      const k=clamp(1-left/dur,0,1);
+      val=peak*Math.pow(Math.sin(Math.PI*k),.7)*(.88+.12*Math.sin(k*37));
+      if(left<=0){count--;if(count<=0){phase='pause';left=.22+Math.random()*.6}else{phase='gap';left=.025+Math.random()*.08}}
+    } else {val=.04;if(left<=0){phase='syl';syl()}}
+    return val;
+  };
+  f.phrase=0;f.pitch=.5;
+  return f;
+}
+const aiVoice=Voice(), userVoice=Voice();
+
+/* =========================================================
+   A · Cymatics (Canvas 2D): sand on a Chladni plate
+   ========================================================= */
+function Cymatics(canvas,mini){
+  const ctx=canvas.getContext('2d');
+  const N=mini?1700:6000, r=rand(mini?3:4);
+  const X=new Float32Array(N),Y=new Float32Array(N),M=new Uint8Array(N);
+  for(let i=0;i<N;i++){const a=r()*TAU,d=Math.sqrt(r())*.98;X[i]=Math.cos(a)*d;Y[i]=Math.sin(a)*d}
+  // [n, m, sign]
+  const MODES=[[1,3,-1],[2,4,1],[3,5,-1],[1,5,1],[2,6,-1],[3,5,1],[1,7,-1],[4,6,1],[3,7,-1],[2,8,1],[5,7,-1]];
+  const IDLE=2, SPEAK=mini?[1,3,4,5,6]:[3,4,5,6,7,8,9,10], THINK=mini?[2,1,5,3,4,0]:[2,4,7,3,9,5,1];
+  let ma=IDLE,mb=IDLE,k=1,tgt=IDLE,lastPh=-1,thinkT=0,thinkI=0,rot=0;
+  const H=Math.PI/2;
+  function field(md,x,y,o){
+    const n=md[0],m=md[1],s=md[2],u=(x+1)*H,v=(y+1)*H;
+    const cnu=Math.cos(n*u),snu=Math.sin(n*u),cmu=Math.cos(m*u),smu=Math.sin(m*u);
+    const cnv=Math.cos(n*v),snv=Math.sin(n*v),cmv=Math.cos(m*v),smv=Math.sin(m*v);
+    o[0]=cnu*cmv+s*cmu*cnv;
+    o[1]=H*(-n*snu*cmv-s*m*smu*cnv);
+    o[2]=H*(-m*cnu*smv-s*n*cmu*snv);
+  }
+  const fa=[0,0,0],fb=[0,0,0];
+  function physics(P){
+    const W=P.W,dt=P.dt,amp=P.amp;
+    // which mode the plate is driven at
+    if(W[2]>.5){thinkT+=dt;if(thinkT>2.8){thinkT=0;thinkI=(thinkI+1)%THINK.length}tgt=THINK[thinkI]}
+    else{thinkT=2.8;
+      const voiced=W[3]>.5||(W[1]>.5&&S.mic);
+      if(voiced){if(P.phrase!==lastPh){lastPh=P.phrase;tgt=SPEAK[Math.floor(P.pitch*SPEAK.length*.999)]}}
+      else{tgt=IDLE;lastPh=P.phrase}
+    }
+    if(tgt!==mb){if(k>=1){ma=mb;mb=tgt;k=0}else if(k<.3){mb=tgt}}
+    k=Math.min(1,k+dt*(W[2]>.5?.45:2.2));
+    const e=k*k*(3-2*k), ea=1-e;
+    const A=MODES[ma],B=MODES[mb];
+    rot+=dt*(.025+.12*W[2]);
+    const cr=Math.cos(rot),sr=Math.sin(rot);
+    const base=W[0]*.011+W[1]*(.05+.06*amp)+W[2]*.02+W[3]*(.014+.03*amp);
+    const vib=W[0]*.07+W[1]*.08+W[2]*.08+W[3]*(.05+.5*amp*amp);
+    const settle=W[0]*4+W[1]*1.4+W[2]*2.4+W[3]*3.6;
+    const sq=Math.sqrt(Math.max(dt,1e-4)), kS=1-Math.exp(-dt*settle);
+    const hx=P.px,hy=P.py,hov=P.hover*(.5+.5*W[1]);
+    for(let i=0;i<N;i++){
+      let x=X[i],y=Y[i];
+      const xr=x*cr+y*sr, yr=-x*sr+y*cr;
+      field(A,xr,yr,fa);
+      let f=fa[0],gxr=fa[1],gyr=fa[2];
+      if(ea<.999){field(B,xr,yr,fb);f=f*ea+fb[0]*e;gxr=gxr*ea+fb[1]*e;gyr=gyr*ea+fb[2]*e}
+      const gx=gxr*cr-gyr*sr, gy=gxr*sr+gyr*cr, g2=gx*gx+gy*gy+.02;
+      let sx=-f*gx/g2, sy=-f*gy/g2; const sl=Math.hypot(sx,sy); if(sl>.08){sx*=.08/sl;sy*=.08/sl}
+      const af=Math.abs(f), j=(base+vib*af)*sq;
+      x+=sx*kS+(Math.random()-.5)*j*2.4; y+=sy*kS+(Math.random()-.5)*j*2.4;
+      if(hov>.01){const dx=x-hx,dy=y-hy,d=Math.hypot(dx,dy);if(d<.26&&d>1e-4){const p=(.26-d)*hov*dt*4;x+=dx/d*p;y+=dy/d*p}}
+      const rr=x*x+y*y;if(rr>.96){const q=.98/Math.sqrt(rr);x*=q*.995;y*=q*.995}
+      X[i]=x;Y[i]=y;M[i]=af<.12?0:af<.4?1:2;
+    }
+  }
+  {const Q={W:[1,0,0,0],dt:1/60,amp:0,px:0,py:0,hover:0,phrase:0,pitch:.5};for(let i=0;i<110;i++)physics(Q)}
+  return {R:1,resize(w,h){canvas2d(canvas,w,h);this.R=Math.min(w,h)*(mini?.42:.41)},
+  draw(P){
+    physics(P);
+    const W=P.W,t=P.t,amp=P.amp,dk=P.dark,w=canvas.width,h=canvas.height,R=this.R*DPR,cx=w/2,cy=h/2;
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,w,h);
+    // plate
+    ctx.fillStyle=dk>.5?'rgba(255,255,255,.028)':'rgba(30,30,90,.035)';
+    ctx.beginPath();ctx.arc(cx,cy,R*1.04,0,TAU);ctx.fill();
+    ctx.strokeStyle=dk>.5?'rgba(200,195,255,.12)':'rgba(30,30,90,.08)';ctx.lineWidth=DPR*.8;ctx.stroke();
+    const sz=(mini?1.05:1.3)*DPR, hs=sz/2;
+    const inkL=[64,64,190], inkD=[205,198,255];
+    const ink=mixc(inkL,inkD,dk);
+    const alphas=[.9,.5,.22];
+    for(let b=0;b<3;b++){
+      ctx.fillStyle=rgba(b===0?ink:mixc(ink,dk>.5?V2:V1,.5),alphas[b]*(mini&&b===0?1:1));
+      ctx.beginPath();
+      for(let i=0;i<N;i++)if(M[i]===b)ctx.rect(cx+X[i]*R-hs,cy+Y[i]*R-hs,sz,sz);
+      ctx.fill();
+    }
+    // the driver at the centre of the plate
+    ctx.fillStyle=rgba(dk>.5?V2:V1,.55+.4*amp*W[3]);
+    ctx.beginPath();ctx.arc(cx,cy,(mini?1.6:2.6)*DPR*(1+.6*amp*W[3]),0,TAU);ctx.fill();
+  }};
+}
+
+/* =========================================================
+   B · The team (Canvas 2D): 27 agents with trails
+   ========================================================= */
+function Team(canvas,mini){
+  const ctx=canvas.getContext('2d');
+  const N=27, TL=mini?22:44, r=rand(mini?21:22);
+  const x=new Float32Array(N),y=new Float32Array(N),vx=new Float32Array(N),vy=new Float32Array(N),hist=new Float32Array(N*TL*2);
+  for(let i=0;i<N;i++){const a=r()*TAU,d=Math.sqrt(r())*.6;x[i]=Math.cos(a)*d;y[i]=Math.sin(a)*d;const b=r()*TAU;vx[i]=Math.cos(b)*.3;vy[i]=Math.sin(b)*.3}
+  for(let i=0;i<N;i++)for(let k=0;k<TL;k++){hist[(i*TL+k)*2]=x[i];hist[(i*TL+k)*2+1]=y[i]}
+  let head=0;
+  const NB=6,bins=[];for(let i=0;i<NB;i++)bins.push([]);
+  return {R:1,resize(w,h){canvas2d(canvas,w,h);this.R=Math.min(w,h)*(mini?.40:.40)},
+  draw(P){
+    const W=P.W,t=P.t,dt=Math.min(P.dt,.033),amp=P.amp,dk=P.dark,w=canvas.width,h=canvas.height,R=this.R*DPR,cx=w/2,cy=h/2;
+    const hov=P.hover, px=clamp(P.px,-1.2,1.2), py=clamp(P.py,-1.1,1.1);
+    const wcx=.28*Math.sin(t*.21), wcy=.18*Math.sin(t*.33+1);
+    const fx=hov>.05?mix(0,px,hov):0, fy=hov>.05?mix(.05,py,hov):.05;
+    const sepR=.11*W[0]+.06*W[1]+.07*W[2]+.09*W[3];
+    for(let i=0;i<N;i++){
+      let ax=0,ay=0;
+      // separation
+      for(let j=0;j<N;j++){if(j===i)continue;const dx=x[i]-x[j],dy=y[i]-y[j],d=Math.hypot(dx,dy);if(d<sepR&&d>1e-5){const s=(sepR-d)/sepR*6;ax+=dx/d*s;ay+=dy/d*s}}
+      if(W[0]>.001){
+        let cxs=0,cys=0,avx=0,avy=0,n=0;
+        for(let j=0;j<N;j++){if(j===i)continue;const dx=x[j]-x[i],dy=y[j]-y[i];if(dx*dx+dy*dy<.16){cxs+=x[j];cys+=y[j];avx+=vx[j];avy+=vy[j];n++}}
+        let ix=0,iy=0;
+        if(n){ix+=(avx/n-vx[i])*1.1+(cxs/n-x[i])*.5;iy+=(avy/n-vy[i])*1.1+(cys/n-y[i])*.5}
+        ix+=(wcx-x[i])*.4;iy+=(wcy-y[i])*.4;
+        if(hov>.05){ix+=(px-x[i])*.35*hov;iy+=(py-y[i])*.35*hov}
+        const sp=Math.hypot(vx[i],vy[i])+1e-5, dv=(.3-sp)*1.6;ix+=vx[i]/sp*dv;iy+=vy[i]/sp*dv;
+        const wob=Math.sin(t*.7+i*1.3)*.5;ix+=-vy[i]*wob;iy+=vx[i]*wob;
+        const rr=Math.hypot(x[i],y[i]);if(rr>.82){ix-=x[i]/rr*(rr-.82)*7;iy-=y[i]/rr*(rr-.82)*7}
+        ax+=ix*W[0];ay+=iy*W[0];
+      }
+      const spring=(tx,ty,wt)=>{ax+=((tx-x[i])*10-vx[i]*5.2)*wt;ay+=((ty-y[i])*10-vy[i]*5.2)*wt};
+      if(W[1]>.001){
+        const a=i*2.39996+t*.22, d=Math.sqrt((i+.5)/N)*.3*(1+.35*amp);
+        spring(fx*.85+Math.cos(a)*d,fy*.85+Math.sin(a)*d,W[1]);
+      }
+      if(W[2]>.001){
+        const g=i%3, m=Math.floor(i/3), th=g*TAU/3+t*.12-Math.PI/2;
+        const tx=Math.cos(th)*.52+px*.08*hov, ty=Math.sin(th)*.52+py*.08*hov;
+        const oa=m/9*TAU+t*(1.5+.25*g)*(g===1?-1:1), or=.15+.02*Math.sin(t*2+g);
+        spring(tx+Math.cos(oa)*or,ty+Math.sin(oa)*or*.85,W[2]);
+      }
+      if(W[3]>.001){
+        const a=i/N*TAU+t*.16, rr=.58+.06*amp+.1*amp*Math.sin(a*3-t*5);
+        spring(Math.cos(a)*rr+px*.06*hov,Math.sin(a)*rr+py*.06*hov,W[3]);
+      }
+      vx[i]+=ax*dt;vy[i]+=ay*dt;
+      const sp=Math.hypot(vx[i],vy[i]);if(sp>1.8){vx[i]*=1.8/sp;vy[i]*=1.8/sp}
+    }
+    for(let i=0;i<N;i++){x[i]+=vx[i]*dt;y[i]+=vy[i]*dt}
+    head=(head+1)%TL;
+    for(let i=0;i<N;i++){hist[(i*TL+head)*2]=x[i];hist[(i*TL+head)*2+1]=y[i]}
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,w,h);
+    const col=mixc([70,70,196],[200,192,255],dk);
+    // thinking: the hub and the three tasks
+    if(W[2]>.02){
+      ctx.lineWidth=DPR*(mini?.6:.8);
+      for(let g=0;g<3;g++){
+        const th=g*TAU/3+t*.12-Math.PI/2, tx=cx+(Math.cos(th)*.52+px*.08*hov)*R, ty=cy+(Math.sin(th)*.52+py*.08*hov)*R;
+        ctx.strokeStyle=rgba(col,.12*W[2]);ctx.setLineDash([2*DPR,3*DPR]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(tx,ty);ctx.stroke();ctx.setLineDash([]);
+        ctx.strokeStyle=rgba(col,.35*W[2]);ctx.beginPath();ctx.arc(tx,ty,(mini?2:3.5)*DPR,0,TAU);ctx.stroke();
+      }
+      ctx.fillStyle=rgba(col,.4*W[2]);ctx.beginPath();ctx.arc(cx,cy,(mini?1.5:2.5)*DPR,0,TAU);ctx.fill();
+    }
+    // trails, batched by age
+    for(const b of bins)b.length=0;
+    for(let i=0;i<N;i++)for(let s=0;s<TL-1;s++){
+      const a=(head-s+TL)%TL, b=(head-s-1+TL)%TL, bi=Math.min(NB-1,Math.floor(s/(TL-1)*NB));
+      bins[bi].push(hist[(i*TL+a)*2],hist[(i*TL+a)*2+1],hist[(i*TL+b)*2],hist[(i*TL+b)*2+1]);
+    }
+    ctx.lineCap='round';
+    if(dk>.5)ctx.globalCompositeOperation='lighter';
+    for(let b=0;b<NB;b++){
+      const f=1-b/NB;ctx.strokeStyle=rgba(col,(dk>.5?.45:.55)*f);ctx.lineWidth=DPR*(mini?1:1.6)*(.4+.6*f);
+      ctx.beginPath();const a=bins[b];for(let k=0;k<a.length;k+=4){ctx.moveTo(cx+a[k]*R,cy+a[k+1]*R);ctx.lineTo(cx+a[k+2]*R,cy+a[k+3]*R)}ctx.stroke();
+    }
+    // agents
+    const glow=W[3]*amp+W[1]*amp*.5;
+    for(let i=0;i<N;i++){
+      const sx=cx+x[i]*R, sy=cy+y[i]*R, pulse=glow*(.6+.4*Math.sin(i*1.7+t*9));
+      const rr=(mini?1.6:2.6)*DPR*(1+.45*pulse);
+      if(pulse>.05||dk>.5){ctx.fillStyle=rgba(dk>.5?V2:V1,(dk>.5?.18:.12)+.25*pulse);ctx.beginPath();ctx.arc(sx,sy,rr*2.8,0,TAU);ctx.fill()}
+      ctx.fillStyle=rgba(mixc(col,dk>.5?[255,255,255]:[40,40,150],.3+.4*pulse),.95);ctx.beginPath();ctx.arc(sx,sy,rr,0,TAU);ctx.fill();
+    }
+    ctx.globalCompositeOperation='source-over';
+  }};
+}
+
+/* =========================================================
+   C · Culture (WebGL ping-pong): Gray-Scott reaction-diffusion
+   ========================================================= */
+const QUAD_VS='attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+const RD_SIM=`
+precision highp float;
+uniform sampler2D uS; uniform vec2 uPx; uniform float uGrid,uF,uK,uT,uInit,uSeed,uCore,uClear,uAuto,uRot; uniform vec2 uPtr,uAutoP;
+float hsh(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+void main(){
+  vec2 uv=gl_FragCoord.xy*uPx; vec2 p=uv*2.-1.; float r=length(p);
+  if(uInit>.5){
+    vec2 g=floor(uv*uGrid), f=fract(uv*uGrid);
+    float v=(hsh(g)>.55&&length(f-.5)<.3&&length(p)<.85)?1.:0.;
+    gl_FragColor=vec4(1.-.5*v,.25*v,0.,1.);return;
+  }
+  // a very slow turn of the dish
+  float cr=cos(uRot),sr=sin(uRot);
+  vec2 q=vec2(cr*p.x-sr*p.y,sr*p.x+cr*p.y)*.5+.5;
+  vec2 c=texture2D(uS,q).xy;
+  vec2 l=-c+.2*(texture2D(uS,q+vec2(uPx.x,0.)).xy+texture2D(uS,q-vec2(uPx.x,0.)).xy+texture2D(uS,q+vec2(0.,uPx.y)).xy+texture2D(uS,q-vec2(0.,uPx.y)).xy)
+     +.05*(texture2D(uS,q+uPx).xy+texture2D(uS,q-uPx).xy+texture2D(uS,q+vec2(uPx.x,-uPx.y)).xy+texture2D(uS,q+vec2(-uPx.x,uPx.y)).xy);
+  float u=c.x,v=c.y,uvv=u*v*v;
+  float F=uF+.004*sin(p.x*2.7+uT*.11)*cos(p.y*2.3-uT*.09);
+  u+=1.0*l.x-uvv+F*(1.-u);
+  v+=.5*l.y+uvv-(F+uK)*v;
+  float dp=length(p-uPtr); if(dp<.06){v=mix(v,.5,uSeed);u=mix(u,.4,uSeed);}
+  float da=length(p-uAutoP); if(da<.05){v=mix(v,.5,uAuto);u=mix(u,.4,uAuto);}
+  if(r<.07){v=mix(v,.5,uCore);u=mix(u,.4,uCore);}
+  float cl=uClear*smoothstep(.42,.0,r); u=mix(u,1.,cl); v=mix(v,0.,cl);
+  float edge=smoothstep(.86,.95,r); v*=1.-.15*edge; if(r>.95){u=1.;v=0.;}
+  gl_FragColor=vec4(clamp(u,0.,1.),clamp(v,0.,1.),0.,1.);
+}`;
+const RD_SHOW=`
+precision highp float;
+uniform sampler2D uS; uniform vec2 uRes; uniform float uR,uDark,uE,uAmp,uSpk;
+void main(){
+  vec2 p=(gl_FragCoord.xy-.5*uRes)/uR; float r=length(p);
+  float aa=1.4/uR;
+  float sh=.10*(1.-uDark)*exp(-pow(max(r-.98,0.)/.05,2.))*smoothstep(.95,1.,r);
+  if(r>1.){gl_FragColor=vec4(0.,0.,.05,1.)*sh;return;}
+  vec2 uv=p*.5+.5;
+  float v=texture2D(uS,uv).y;
+  float vx=texture2D(uS,uv+vec2(uE,0.)).y-texture2D(uS,uv-vec2(uE,0.)).y;
+  float vy=texture2D(uS,uv+vec2(0.,uE)).y-texture2D(uS,uv-vec2(0.,uE)).y;
+  float m=smoothstep(.1,.32,v)*smoothstep(.95,.84,r);
+  vec3 dish=mix(vec3(.935,.935,.955),vec3(.075,.078,.10),uDark);
+  vec3 ink=mix(vec3(.357,.357,.839),vec3(.64,.58,1.),uDark);
+  float lit=clamp(.5+(vy-vx)*3.,0.,1.);
+  vec3 col=mix(dish,ink*(.88+.24*lit),m*.9);
+  col+=vec3(1.)*.12*max(lit-.5,0.)*m;
+  col+=ink*uSpk*uAmp*.35*exp(-r*r*9.)*(1.-m);
+  // glass: rim line, inner shade and a soft highlight
+  col=mix(col,dish,smoothstep(.9,.97,r)*.55);
+  float ring=exp(-pow((r-.982)*uR/1.3,2.));
+  col=mix(col,mix(vec3(.72,.72,.8),vec3(.38,.37,.5),uDark),ring*.8);
+  float hl=smoothstep(.86,.95,r)*smoothstep(1.,.96,r)*pow(max(dot(normalize(p+1e-5),normalize(vec2(-.6,.8))),0.),6.);
+  col+=vec3(1.)*hl*mix(.5,.25,uDark);
+  float a=1.-smoothstep(1.-aa,1.,r);
+  gl_FragColor=vec4(col*a,a)+vec4(0.,0.,.05,1.)*sh*(1.-a);
+}`;
+function Culture(canvas,mini){
+  const opts={alpha:true,premultipliedAlpha:true,antialias:false,preserveDrawingBuffer:false};
+  let gl=canvas.getContext('webgl2',opts), gl2=!!gl;
+  if(!gl)gl=canvas.getContext('webgl',opts)||canvas.getContext('experimental-webgl',opts);
+  if(!gl)throw new Error('WebGL unavailable');
+  const SIM=mini?112:220;
+  // float render targets
+  let ifmt,type,lin=true;
+  if(gl2){if(!gl.getExtension('EXT_color_buffer_float')&&!gl.getExtension('EXT_color_buffer_half_float'))throw new Error('No float render targets');ifmt=gl.RGBA16F;type=gl.HALF_FLOAT}
+  else{const hf=gl.getExtension('OES_texture_half_float');gl.getExtension('EXT_color_buffer_half_float');
+    if(hf){type=hf.HALF_FLOAT_OES;lin=!!gl.getExtension('OES_texture_half_float_linear')}
+    else if(gl.getExtension('OES_texture_float')){type=gl.FLOAT;gl.getExtension('WEBGL_color_buffer_float');lin=!!gl.getExtension('OES_texture_float_linear')}
+    else throw new Error('No float textures');ifmt=gl.RGBA}
+  const tex=[],fbo=[];
+  for(let i=0;i<2;i++){
+    const tx=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tx);
+    gl.texImage2D(gl.TEXTURE_2D,0,ifmt,SIM,SIM,0,gl.RGBA,type,null);
+    const f=lin?gl.LINEAR:gl.NEAREST;
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,f);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,f);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tx,0);
+    if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw new Error('Float framebuffer incomplete');
+    tex.push(tx);fbo.push(fb);
+  }
+  const ps=program(gl,QUAD_VS,RD_SIM), pd=program(gl,QUAD_VS,RD_SHOW);
+  const us=locs(gl,ps,['uGrid','uS','uPx','uF','uK','uT','uInit','uSeed','uCore','uClear','uAuto','uRot','uPtr','uAutoP']);
+  const ud=locs(gl,pd,['uS','uRes','uR','uDark','uE','uAmp','uSpk']);
+  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  [ps,pd].forEach(p=>{const a=gl.getAttribLocation(p,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,2,gl.FLOAT,false,0,0)});
+  let cur=0,acc=0,autoT=0,ax=0,ay=0,simT=0;
+  const sim={F:.0367,K:.0649,seed:0,core:0,clear:0,auto:0,rot:0,px:9,py:9};
+  function step(init){
+    const dst=1-cur;
+    gl.bindFramebuffer(gl.FRAMEBUFFER,fbo[dst]);gl.viewport(0,0,SIM,SIM);gl.useProgram(ps);
+    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex[cur]);
+    gl.uniform1i(us.uS,0);gl.uniform2f(us.uPx,1/SIM,1/SIM);gl.uniform1f(us.uInit,init?1:0);gl.uniform1f(us.uGrid,SIM/16);
+    gl.uniform1f(us.uF,sim.F);gl.uniform1f(us.uK,sim.K);gl.uniform1f(us.uT,simT);
+    gl.uniform1f(us.uSeed,sim.seed);gl.uniform1f(us.uCore,sim.core);gl.uniform1f(us.uClear,sim.clear);
+    gl.uniform1f(us.uAuto,sim.auto);gl.uniform2f(us.uAutoP,ax,ay);gl.uniform1f(us.uRot,sim.rot);gl.uniform2f(us.uPtr,sim.px,sim.py);
+    gl.drawArrays(gl.TRIANGLES,0,6);cur=dst;
+  }
+  step(true);for(let i=0;i<(mini?900:1400);i++)step(false);
+  return {R:1,resize(w,h){canvas.width=Math.round(w*DPR);canvas.height=Math.round(h*DPR);this.R=Math.min(w,h)*(mini?.44:.43)},
+  draw(P){
+    const W=P.W,amp=P.amp;
+    sim.F=W[0]*.0367+W[1]*.0367+W[2]*.0545+W[3]*.0367;
+    sim.K=W[0]*.0649+W[1]*.0649+W[2]*.0620+W[3]*.0649;
+    const hv=P.hover>.3;
+    sim.px=hv?P.px:9;sim.py=hv?-P.py:9;sim.seed=hv?(.04+.2*W[1]):0;
+    sim.core=W[3]*amp*.25;
+    sim.clear=W[1]*amp*.05;
+    const rotF=P.dt*(.04+.08*W[2]);
+    autoT-=P.dt;sim.auto=0;
+    if(autoT<=0){autoT=2+Math.random()*3;const a=Math.random()*TAU,d=Math.sqrt(Math.random())*.75;ax=Math.cos(a)*d;ay=Math.sin(a)*d;sim.auto=.6}
+    const rate=W[0]*3+W[1]*4+W[2]*14+W[3]*7;
+    acc+=P.dt*60*rate;let n=Math.min(28,Math.floor(acc));acc-=n;
+    for(let i=0;i<n;i++){simT+=1/60;sim.rot=i?0:rotF;step(false);sim.auto=0}sim.rot=0;
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);
+    gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(pd);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex[cur]);
+    gl.uniform1i(ud.uS,0);gl.uniform2f(ud.uRes,canvas.width,canvas.height);gl.uniform1f(ud.uR,this.R*DPR);
+    gl.uniform1f(ud.uDark,P.dark);gl.uniform1f(ud.uE,1/SIM);gl.uniform1f(ud.uAmp,amp);gl.uniform1f(ud.uSpk,W[3]);
+    gl.drawArrays(gl.TRIANGLES,0,6);
+  }};
+}
+
+/* =========================================================
+   D · Glyphs (Canvas 2D): an AI made of type
+   ========================================================= */
+function Glyphs(canvas,mini){
+  const ctx=canvas.getContext('2d');
+  const CW=mini?5.6:10.5, CH=mini?7.8:16.5, FS=mini?7:12.5;
+  const RAMP=' ..::-=+*#%@';
+  const SCR='ABCDEFGHJKLMNPQRSTUVWXYZ0123456789$%#&*+=<>/?';
+  const TXT=mini?['ads on','$412/d','done']:['turn the ads back on','ads paused: $412/day lost','done. your ads are live'];
+  let cols=0,rows=0,chs=[],tmr=null,hs=null,ds=0,prog=0,hold=0;
+  const font=(mini?'600 ':'500 ')+FS+'px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
+  return {R:1,resize(w,h){canvas2d(canvas,w,h);this.R=Math.min(w,h)*(mini?.42:.40);
+    cols=Math.min(mini?17:46,Math.floor(w*.9/CW));rows=mini?11:15;
+    chs=new Array(cols*rows).fill(' ');tmr=new Float32Array(cols*rows);hs=new Float32Array(cols*rows);
+    const r=rand(17);for(let i=0;i<hs.length;i++){hs[i]=r();chs[i]=SCR[Math.floor(r()*SCR.length)]}},
+  draw(P){
+    const W=P.W,t=P.t,dt=P.dt,amp=P.amp,dk=P.dark,w=canvas.width,h=canvas.height,cx=w/2,cy=h/2;
+    // which line of text is on screen
+    let nd=0,best=.4;for(let s=1;s<4;s++)if(W[s]>best){best=W[s];nd=s}
+    if(nd!==ds){ds=nd;prog=0;hold=0}
+    const txt=ds?TXT[ds-1]:'', L=txt.length;
+    let shown=0,resolved=0;
+    if(ds===1||ds===3){
+      if(prog<L){if(amp>.09)prog+=dt*(ds===1?15:18)}else{hold+=dt;if(hold>1.8){prog=0;hold=0}}
+      shown=Math.floor(prog);resolved=shown;
+    }else if(ds===2){
+      prog+=dt;const c=prog%4.4;shown=L;resolved=c<1.1?0:c<2.5?Math.floor((c-1.1)/1.4*L):L;
+    }
+    const tw=ds?W[ds]:0;
+    const r0=Math.floor(rows/2), c0=Math.floor((cols-L)/2);
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,w,h);
+    ctx.font=font.replace(FS+'px',(FS*DPR)+'px');ctx.textAlign='center';ctx.textBaseline='middle';
+    const cw=CW*DPR,ch=CH*DPR,ox=cx-(cols-1)/2*cw,oy=cy-(rows-1)/2*ch;
+    const mx=cx+P.px*this.R*DPR,my=cy+P.py*this.R*DPR,hov=P.hover;
+    const ink=mixc([46,46,78],[206,204,232],dk), acc=dk>.5?[184,172,255]:V1;
+    const caretOn=(t*2.2%1)<.6;
+    for(let rI=0;rI<rows;rI++){
+      const ny=(rI-(rows-1)/2)/(rows/2);
+      const rowDim=1-.75*tw*Math.exp(-(rI-r0)*(rI-r0)*.9);
+      for(let c=0;c<cols;c++){
+        const i=rI*cols+c, nx=(c-(cols-1)/2)/(cols/2);
+        const ang=Math.atan2(ny,nx);
+        const d=Math.pow(Math.pow(Math.abs(nx),3)+Math.pow(Math.abs(ny),3),1/3);
+        const edge=.9+.05*Math.sin(ang*3+t*.6)+.04*Math.sin(ang*5-t*.9);
+        const mask=sstep(edge,edge-.3,d);
+        const n=.5+.5*Math.sin(c*.33+t*.55+2*Math.sin(rI*.45+t*.3))*Math.cos(rI*.6-t*.4+c*.09);
+        const dist=Math.hypot(nx*1.8,ny);
+        const ring=Math.pow(Math.max(0,Math.sin(dist*6-t*6)),3);
+        let b=mask*(W[0]*(.2+.6*n)+W[1]*(.12+.32*n)+W[2]*(.3+.45*n)+W[3]*(.16+.3*n+amp*.95*ring));
+        const gx=ox+c*cw, gy=oy+rI*ch;
+        if(hov>.01){const pd=Math.hypot(gx-mx,gy-my)/(cw*5);b+=hov*Math.exp(-pd*pd)*.65*mask}
+        b*=rowDim;b=clamp(b,0,1);
+        let chr, col=ink, a=Math.min(1,b*(.9+.5*dk));
+        // text overlay on the centre row
+        const ti=c-c0;
+        if(ds&&rI===r0&&ti>=-1&&ti<=L){
+          if(ti>=0&&ti<L&&ti<shown){
+            chr=ti<resolved?txt[ti]:chs[i];col=ti<resolved?acc:ink;a=(ti<resolved?.98:.5)*tw;
+            if(chr===' ')a=0;
+          }else if((ds!==2)&&ti===shown&&ti<=L&&caretOn){chr='_';col=acc;a=.8*tw}
+          else{chr=' ';a=0}
+        }else{
+          const scr=W[2]*.9+W[3]*amp*ring*.5;
+          tmr[i]-=dt;if(tmr[i]<=0){tmr[i]=.05+hs[i]*.12;chs[i]=SCR[Math.floor(Math.random()*SCR.length)]}
+          if(hs[i]<scr&&b>.12){chr=chs[i];a=b*.75}
+          else chr=RAMP[Math.min(RAMP.length-1,Math.floor(b*RAMP.length))];
+          if(b>.62)col=mixc(ink,acc,clamp((b-.62)*2.6,0,1));
+        }
+        if(a<.03||chr===' ')continue;
+        ctx.fillStyle=rgba(col,a);ctx.fillText(chr,gx,gy);
+      }
+    }
+  }};
+}
+
+/* =========================================================
+   E · Terrain (Canvas 2D): contour lines in perspective
+   ========================================================= */
+function Terrain(canvas,mini){
+  const ctx=canvas.getContext('2d');
+  const G=mini?30:56, NV=G+1, Hh=new Float32Array(NV*NV), XS=new Float32Array(NV);
+  for(let i=0;i<NV;i++)XS[i]=-1.04+2.08*i/G;
+  const HL=110, hist=new Float32Array(HL); let hAcc=0,hHead=0;
+  const LV=mini?.085:.06, KMIN=-14, KMAX=22, segs=[];
+  for(let k=KMIN;k<=KMAX;k++)segs.push([]);
+  let bx=0,bz=0;
+  function histAt(r){const f=r*HL*.75;const i=Math.floor(f),fr=f-i;if(i>=HL-1)return 0;const a=hist[(hHead-i+HL*4)%HL],b=hist[(hHead-i-1+HL*4)%HL];return a+(b-a)*fr}
+  return {R:1,resize(w,h){canvas2d(canvas,w,h);this.R=Math.min(w,h)*(mini?.43:.47)},
+  draw(P){
+    const W=P.W,t=P.t,dt=P.dt,amp=P.amp,dk=P.dark,w=canvas.width,h=canvas.height,R=this.R*DPR,cx=w/2,cy=h/2+R*.12;
+    hAcc+=dt*40;while(hAcc>=1){hAcc-=1;hHead=(hHead+1)%HL;hist[hHead]=amp*W[3]}
+    const yaw=t*.05+P.px*.4*P.hover, pitch=.62;
+    const cyw=Math.cos(yaw),syw=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+    // where the cursor touches the ground
+    {const xs=P.px,zs=P.py/sp;const tx=xs*cyw+zs*syw,tz=-xs*syw+zs*cyw;const hv=P.hover;
+     const k=1-Math.exp(-dt*6);bx+=(tx*hv-bx)*k;bz+=(tz*hv-bz)*k;}
+    for(let j=0;j<NV;j++){const z=XS[j];for(let i=0;i<NV;i++){
+      const x=XS[i], r2=x*x+z*z;let fall=1-r2;if(fall<=0){Hh[j*NV+i]=0;continue}fall*=fall;
+      let hgt=0;
+      if(W[0]>.001)hgt+=W[0]*(.62*Math.exp(-r2*2.4)*(1+.06*Math.sin(t*.8))+.1*Math.sin(2.3*x+.4*t)*Math.cos(2.1*z-.3*t)+.06*Math.sin(3.7*(x-z)+.5*t));
+      if(W[1]>.001){const dx=x-bx,dz=z-bz;hgt+=W[1]*(.55*Math.exp(-r2*2)-(.42+.4*amp)*Math.exp(-(dx*dx+dz*dz)*5.5)+.04*Math.sin(3*x+t)*Math.cos(3*z-t))}
+      if(W[2]>.001){const qx=x+.35*Math.sin(1.7*z+t*.4),qz=z+.35*Math.sin(1.9*x-t*.33);
+        hgt+=W[2]*(.3*Math.exp(-r2*1.8)+.22*Math.sin(2.2*qx+t*.3)*Math.cos(2*qz-t*.25)+.14*Math.sin(3.1*(qx+qz)+t*.5))}
+      if(W[3]>.001){const r=Math.sqrt(r2);hgt+=W[3]*(.3*Math.exp(-r2*2.2)+.75*histAt(r)*(1-.4*r))}
+      Hh[j*NV+i]=hgt*fall;
+    }}
+    for(const s of segs)s.length=0;
+    const VS=.62, D=4.2;
+    const px=[0,0,0,0],pz=[0,0,0,0];let np=0;
+    const out=[0,0];
+    function proj(x,z,y){const x1=x*cyw-z*syw,z1=x*syw+z*cyw;const up=y*VS*cp-z1*sp,dep=z1*cp+y*VS*sp;const k=D/(D-dep);out[0]=cx+x1*R*k;out[1]=cy-up*R*k}
+    for(let j=0;j<G;j++){const z0=XS[j],z1=XS[j+1];for(let i=0;i<G;i++){
+      const a=Hh[j*NV+i],b=Hh[j*NV+i+1],c=Hh[(j+1)*NV+i+1],d=Hh[(j+1)*NV+i];
+      const lo=Math.min(a,b,c,d),hi=Math.max(a,b,c,d);if(hi-lo<1e-6)continue;
+      const k0=Math.max(KMIN,Math.ceil(lo/LV-.5)),k1=Math.min(KMAX,Math.floor(hi/LV-.5));
+      const x0=XS[i],x1=XS[i+1];
+      for(let k=k0;k<=k1;k++){
+        const L=(k+.5)*LV;np=0;
+        if((a>L)!==(b>L)){const f=(L-a)/(b-a);px[np]=x0+(x1-x0)*f;pz[np++]=z0}
+        if((b>L)!==(c>L)){const f=(L-b)/(c-b);px[np]=x1;pz[np++]=z0+(z1-z0)*f}
+        if((c>L)!==(d>L)){const f=(L-c)/(d-c);px[np]=x1+(x0-x1)*f;pz[np++]=z1}
+        if((d>L)!==(a>L)){const f=(L-d)/(a-d);px[np]=x0;pz[np++]=z1+(z0-z1)*f}
+        const arr=segs[k-KMIN];
+        for(let q=0;q+1<np;q+=2){proj(px[q],pz[q],L);arr.push(out[0],out[1]);proj(px[q+1],pz[q+1],L);arr.push(out[0],out[1])}
+      }
+    }}
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,w,h);
+    // the map's edge
+    ctx.strokeStyle=dk>.5?'rgba(200,195,255,.14)':'rgba(40,40,100,.12)';ctx.lineWidth=DPR*(mini?.6:.8);
+    ctx.beginPath();for(let q=0;q<=72;q++){const a=q/72*TAU;proj(Math.cos(a),Math.sin(a),0);q?ctx.lineTo(out[0],out[1]):ctx.moveTo(out[0],out[1])}ctx.stroke();
+    ctx.lineCap='round';ctx.lineJoin='round';
+    const lowC=dk>.5?[150,146,190]:[150,150,172], hiC=dk>.5?[205,196,255]:[70,70,200];
+    for(let k=KMIN;k<=KMAX;k++){
+      const arr=segs[k-KMIN];if(!arr.length)continue;
+      const L=(k+.5)*LV, f=clamp((L+.1)/.75,0,1), idx=((k%4)+4)%4===0;
+      ctx.strokeStyle=rgba(L<0?mixc(hiC,lowC,.35):mixc(lowC,hiC,f),(L<0?.55:.35+.6*f)*(idx?1:.8));
+      ctx.lineWidth=DPR*(mini?(idx?.95:.6):(idx?1.5:.9));
+      ctx.beginPath();for(let q=0;q<arr.length;q+=4){ctx.moveTo(arr[q],arr[q+1]);ctx.lineTo(arr[q+2],arr[q+3])}ctx.stroke();
+    }
+  }};
+}
+
+/* =========================================================
+   F · Iron filings (Canvas 2D): the field between poles
+   ========================================================= */
+function Filings(canvas,mini){
+  const ctx=canvas.getContext('2d');
+  let n=0,FX=null,FY=null,FM=null,TH=null;
+  const NB=5,bins=[];for(let i=0;i<NB;i++)bins.push([]);
+  const PX=new Float32Array(5),PY=new Float32Array(5),PQ=new Float32Array(5);
+  return {R:1,resize(w,h){canvas2d(canvas,w,h);this.R=Math.min(w,h)*(mini?.36:.30);
+    const sp=mini?4.6:7.6, r=rand(mini?31:32), R=this.R, lim=mini?1.4:2.1;
+    const xs=[],ys=[],ms=[];
+    for(let y=-h/2;y<h/2;y+=sp)for(let x=-w/2;x<w/2;x+=sp){
+      const jx=x+(r()-.5)*sp*.8,jy=y+(r()-.5)*sp*.8, d=Math.hypot(jx/R/1.25,jy/R)/lim;
+      const m=sstep(1,.55,d);if(m>.02){xs.push(jx/R);ys.push(jy/R);ms.push(m)}
+    }
+    n=xs.length;FX=new Float32Array(xs);FY=new Float32Array(ys);FM=new Float32Array(ms);TH=new Float32Array(n);
+    for(let i=0;i<n;i++)TH[i]=r()*Math.PI},
+  draw(P){
+    const W=P.W,t=P.t,dt=P.dt,amp=P.amp,dk=P.dark,w=canvas.width,h=canvas.height,R=this.R*DPR,cx=w/2,cy=h/2;
+    const hov=P.hover;
+    // poles: blended per state
+    PX.fill(0);PY.fill(0);PQ.fill(0);
+    const add=(i,x,y,q,wt)=>{PX[i]+=x*wt;PY[i]+=y*wt;PQ[i]+=q*wt};
+    {const a=t*.06,s=.48+.04*Math.sin(t*.9);add(0,Math.cos(a)*s,Math.sin(a)*s,1,W[0]);add(1,-Math.cos(a)*s,-Math.sin(a)*s,-1,W[0]);add(2,0,0,0,W[0]);add(3,0,0,0,W[0])}
+    {const ux=hov>.05?P.px:0, uy=hov>.05?P.py:1.05;
+     add(0,0,-.35,1.1,W[1]);add(1,mix(0,ux,1),mix(1.05,uy,1),-(1+.8*amp),W[1]);add(2,0,0,0,W[1]);add(3,0,0,0,W[1])}
+    {const a=t*.45;for(let q=0;q<4;q++){const b=a+q*Math.PI/2;add(q,Math.cos(b)*.5,Math.sin(b)*.5,q%2?-.9:.9,W[2])}}
+    {const s=.42+.2*amp;add(0,s,0,1+1.6*amp,W[3]);add(1,-s,0,-(1+1.6*amp),W[3]);add(2,0,0,0,W[3]);add(3,0,0,0,W[3])}
+    PX[4]=P.px;PY[4]=P.py;PQ[4]=.6*hov*(1-W[1]);
+    for(const b of bins)b.length=0;
+    const kk=1-Math.exp(-dt*(9+10*W[3])), jit=W[3]*amp*.5+W[1]*amp*.15;
+    const sp=(mini?4.6:7.6)*DPR, len0=sp*1.05;
+    for(let i=0;i<n;i++){
+      const x=FX[i],y=FY[i];let bx=0,by=0,near=9;
+      for(let q=0;q<5;q++){const qq=PQ[q];if(qq>-.01&&qq<.01)continue;const dx=x-PX[q],dy=y-PY[q],d2=dx*dx+dy*dy+.003;bx+=qq*dx/d2;by+=qq*dy/d2;if(d2<near)near=d2}
+      if(near<.006)continue;
+      const tg=Math.atan2(by,bx);let df=tg-TH[i];df=((df+Math.PI/2)%Math.PI+Math.PI)%Math.PI-Math.PI/2;
+      TH[i]+=df*kk+(jit?(Math.random()-.5)*jit*.6:0);
+      const B=Math.hypot(bx,by), s=clamp(Math.log(1+B*.7)*.62,0,1)*FM[i];
+      if(s<.04)continue;
+      const L=len0*(.45+.6*s), c=Math.cos(TH[i])*L*.5, sn=Math.sin(TH[i])*L*.5, X=cx+x*R, Y=cy+y*R;
+      bins[Math.min(NB-1,Math.floor(s*NB))].push(X-c,Y-sn,X+c,Y+sn);
+    }
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,w,h);
+    ctx.lineCap='round';
+    const lo=dk>.5?[110,108,140]:[150,150,170], hi=dk>.5?[210,202,255]:[60,60,190];
+    for(let b=0;b<NB;b++){
+      const f=(b+.5)/NB;ctx.strokeStyle=rgba(mixc(lo,hi,f*f),.25+.7*f);ctx.lineWidth=DPR*(mini?.75:1.05)*(.8+.4*f);
+      ctx.beginPath();const a=bins[b];for(let k=0;k<a.length;k+=4){ctx.moveTo(a[k],a[k+1]);ctx.lineTo(a[k+2],a[k+3])}ctx.stroke();
+    }
+    // the poles themselves
+    for(let q=0;q<4;q++){
+      const qq=PQ[q];if(Math.abs(qq)<.15)continue;
+      const X=cx+PX[q]*R,Y=cy+PY[q]*R, rr=(mini?1.8:3)*DPR*(.7+.3*Math.min(2,Math.abs(qq)));
+      ctx.fillStyle=rgba(dk>.5?V2:V1,.9*Math.min(1,Math.abs(qq)));
+      if(qq>0){ctx.beginPath();ctx.arc(X,Y,rr,0,TAU);ctx.fill()}
+      else{ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=DPR*(mini?.9:1.4);ctx.beginPath();ctx.arc(X,Y,rr,0,TAU);ctx.stroke()}
+    }
+  }};
+}
+
+/* ---------- concepts ---------- */
+const CONCEPTS=[
+ {label:'A · Cymatics',pick:true,make:Cymatics,
+  note:'Six thousand grains of sand on a vibrating plate settle onto its silent lines. Each phrase the AI speaks drives the plate at a new mode, so its voice literally draws its face; listening loosens the sand, thinking morphs slowly from pattern to pattern. <b>My pick.</b> Trade-off: the patterns are geometric and symmetric, so it reads as an emblem more than a creature.'},
+ {label:'B · The team',make:Team,
+  note:'Your 27 agents as 27 lights with fading trails. Idle they drift as a loose murmuration, listening they gather toward you, thinking they split into three crews orbiting tasks, speaking they form a ring that pulses with the voice. Trade-off: at 110px it reads as a small swarm rather than one face.'},
+ {label:'C · Culture',make:Culture,
+  note:'A living reaction-diffusion culture in a glass dish, grown on the GPU. Cells divide while idle, grow into coral while thinking, speech seeds new growth from the centre and your cursor plants new cells. Trade-off: needs float textures in WebGL, and it is the most organic here, which some people find slightly biological.'},
+ {label:'D · Glyphs',make:Glyphs,
+  note:'The AI is made of type. Idle it shimmers as a field of characters, listening it spells what it hears, thinking scrambles and resolves into what it found, speaking types its reply inside a ripple. Trade-off: the most literal and least soft, and at 110px the words turn into texture.'},
+ {label:'E · Terrain',make:Terrain,
+  note:'A contour map of a small landscape, seen in perspective. Each syllable raises a ridge that rolls outward, listening sinks a basin under your cursor, thinking makes the ground flow like slow lava. Trade-off: fine linework, so it whispers rather than glows, and it needs a calm surface around it.'},
+ {label:'F · Iron filings',make:Filings,
+  note:'Thousands of iron filings reveal the invisible field between poles. Listening, one pole follows you and the field bridges the gap; thinking spins four poles into a vortex; speaking makes the poles pulse and the filings shiver. Trade-off: it is a field, not an object, so its edge is a soft fade rather than a crisp shape.'}
+];
+
+const grid=document.getElementById('grid'), cards=[];
+CONCEPTS.forEach(c=>{
+  const el=document.createElement('section');el.className='card';
+  el.innerHTML='<div class="head"><span class="lbl">'+c.label+'</span>'+(c.pick?'<span class="pick">My pick</span>':'')+'</div>'+
+    '<div class="wrap"><div class="stage"><canvas></canvas></div><div class="mini"><canvas></canvas><span>110px</span></div></div>'+
+    '<p class="note">'+c.note+'</p>';
+  grid.appendChild(el);
+  const stage=el.querySelector('.stage'), miniEl=el.querySelector('.mini');
+  const card={el,stage,px:0,py:0,tx:0,ty:0,hover:0,ht:0,visible:true,main:null,mini:null};
+  try{card.main=c.make(stage.querySelector('canvas'),false);card.mini=c.make(miniEl.querySelector('canvas'),true);}
+  catch(e){console.error(e);stage.insertAdjacentHTML('beforeend','<div class="err">Could not start this concept: '+String(e.message||e).slice(0,140)+'</div>');card.main=card.mini=null}
+  if(card.main){card.main.resize(stage.clientWidth||600,stage.clientHeight||360);card.mini.resize(110,110)}
+  const ro=new ResizeObserver(()=>{if(card.main&&stage.clientWidth)card.main.resize(stage.clientWidth,stage.clientHeight)});
+  ro.observe(stage);
+  function track(target,inst,e){
+    if(!inst)return;const r=target.getBoundingClientRect();
+    card.tx=(e.clientX-r.left-r.width/2)/inst.R;card.ty=(e.clientY-r.top-r.height/2)/inst.R;card.ht=1;
+  }
+  stage.addEventListener('pointermove',e=>track(stage,card.main,e));
+  miniEl.addEventListener('pointermove',e=>track(miniEl,card.mini,e));
+  [stage,miniEl].forEach(t=>t.addEventListener('pointerleave',()=>{card.ht=0;card.tx=0;card.ty=0}));
+  cards.push(card);
+});
+const io=new IntersectionObserver(es=>es.forEach(en=>{const c=cards.find(c=>c.el===en.target);if(c)c.visible=en.isIntersecting}),{rootMargin:'80px'});
+cards.forEach(c=>io.observe(c.el));
+
+/* ---------- controls ---------- */
+const stateBtns=[...document.querySelectorAll('#states button')];
+function setState(i){S.target=i;stateBtns.forEach((b,j)=>b.classList.toggle('on',j===i))}
+stateBtns.forEach(b=>b.addEventListener('click',()=>setState(+b.dataset.s)));
+addEventListener('keydown',e=>{if(e.key>='1'&&e.key<='4')setState(+e.key-1)});
+const darkBtn=document.getElementById('dark');
+function setDark(on){S.darkT=on?1:0;document.body.classList.toggle('dark',on);darkBtn.classList.toggle('on',on);darkBtn.setAttribute('aria-pressed',on)}
+darkBtn.addEventListener('click',()=>setDark(!S.darkT));
+const msg=document.getElementById('msg'), micBtn=document.getElementById('mic'), micTxt=document.getElementById('micTxt');
+function say(t){msg.textContent=t;clearTimeout(say.h);if(t)say.h=setTimeout(()=>msg.textContent='',6000)}
+micBtn.addEventListener('click',async()=>{
+  if(S.mic){S.mic.stream.getTracks().forEach(t=>t.stop());S.mic.ac.close();S.mic=null;micBtn.classList.remove('on');micTxt.textContent='Use my mic';say('');return}
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw {name:'NotSupported'};
+    const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    const ac=new (window.AudioContext||window.webkitAudioContext)();
+    const an=ac.createAnalyser();an.fftSize=1024;ac.createMediaStreamSource(stream).connect(an);
+    S.mic={stream,ac,an,buf:new Float32Array(an.fftSize),lvl:0,quiet:1,phrase:0,pitch:.5,sr:ac.sampleRate};
+    micBtn.classList.add('on');micTxt.textContent='Mic on';say('Talk and watch every stage react. In Cymatics, each phrase you say picks a new pattern.');
+  }catch(e){
+    say(e&&e.name==='NotAllowedError'?'Mic permission was blocked, so the simulated voice stays on.':'Mic is not available here, so the simulated voice stays on.');
+  }
+});
+const qs=new URLSearchParams(location.search);
+if(qs.has('state')){const i=['idle','listening','thinking','speaking'].indexOf(qs.get('state'));if(i>=0){setState(i);S.W=[0,0,0,0];S.W[i]=1}}
+if(qs.get('dark')==='1'){setDark(true);S.dark=1}
+
+/* ---------- one loop for everything ---------- */
+let last=performance.now();
+const P={t:0,dt:0,W:new Float32Array(4),amp:0,px:0,py:0,hover:0,dark:0,phrase:0,pitch:.5};
+function frame(now){
+  requestAnimationFrame(frame);
+  const rdt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
+  const ts=S.reduced?.18:1, dt=rdt*ts;
+  S.t+=dt;
+  const kw=1-Math.exp(-rdt*(S.reduced?1.5:3.2));
+  for(let i=0;i<4;i++)S.W[i]+=((i===S.target?1:0)-S.W[i])*kw;
+  S.dark+=(S.darkT-S.dark)*(1-Math.exp(-rdt*5));
+  const W=S.W, t=S.t;
+  let target=W[0]*(.07+.05*Math.sin(t*1.3))+W[1]*userVoice(dt)*.6+W[2]*(.08+.04*Math.sin(t*2.1))+W[3]*aiVoice(dt);
+  const v=S.target===1?userVoice:aiVoice;S.phrase=v.phrase;S.pitch=v.pitch;
+  if(S.mic){
+    const m=S.mic;m.an.getFloatTimeDomainData(m.buf);let s=0,zc=0;
+    for(let i=0;i<m.buf.length;i++){const a=m.buf[i];s+=a*a;if(i&&(a>=0)!==(m.buf[i-1]>=0))zc++}
+    const rms=Math.sqrt(s/m.buf.length);const lv=clamp(Math.pow(Math.max(0,rms-.004)*7,.75),0,1);
+    m.lvl+=(lv-m.lvl)*(lv>m.lvl?.5:.12);target=Math.max(.04,m.lvl);
+    // a new phrase starts after a short silence; zero crossings give a rough pitch
+    if(m.lvl<.06)m.quiet+=rdt;else{if(m.quiet>.3&&m.lvl>.15){m.phrase++;const hz=zc*m.sr/m.buf.length/2;m.pitch=clamp((hz-90)/320,0,1)}if(m.lvl>.15)m.quiet=0}
+    S.phrase=1e6+m.phrase;S.pitch=m.pitch;
+  }
+  if(S.reduced)target*=.45;
+  S.amp+=(target-S.amp)*(1-Math.exp(-rdt*(target>S.amp?18:7)));
+  P.t=S.t;P.dt=dt;P.W.set(S.W);P.amp=S.amp;P.dark=S.dark;P.phrase=S.phrase;P.pitch=S.pitch;
+  for(const c of cards){
+    const kp=1-Math.exp(-rdt*6);
+    c.px+=(c.tx-c.px)*kp;c.py+=(c.ty-c.py)*kp;c.hover+=(c.ht-c.hover)*(1-Math.exp(-rdt*4));
+    if(!c.visible||!c.main)continue;
+    let px=c.px,py=c.py;const l=Math.hypot(px,py);if(l>1.6){px*=1.6/l;py*=1.6/l}
+    P.px=px;P.py=py;P.hover=c.hover;
+    c.main.draw(P);c.mini.draw(P);
+  }
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
