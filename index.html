@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>try { if (localStorage.getItem('desk-version') === '3') location.replace('v3/' + (new URLSearchParams(location.search).has('phone') ? '?phone=1' : '')) } catch (e) {}</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cerebro · The Desk</title>
@@ -18,7 +19,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
-    <link rel="stylesheet" href="desk.css?v=20261107w" />
+    <link rel="stylesheet" href="desk.css?v=20261108a" />
     <script defer src="/_vercel/insights/script.js"></script>
   </head>
   <body>
@@ -60,7 +61,7 @@
         <div class="pbox" id="pbox" hidden>
           <div class="pb-title"><span>Prototype</span><button type="button" class="pb-restart" id="pbRestart" title="Start the demo over: everything you fixed comes back, your options stay"><i class="ti ti-rotate"></i> Restart</button></div>
           <div class="pb-row"><span>Version</span>
-            <div class="seg small" role="tablist"><button data-version="1" role="tab">V1</button><button data-version="2" role="tab">V2</button></div></div>
+            <div class="seg small" role="tablist"><button data-version="1" role="tab">V1</button><button data-version="2" role="tab">V2</button><button data-version="3" role="tab">V3</button></div></div>
           <div class="pb-hint" id="pbHint0"></div>
           <div class="pb-row" id="pbDay" hidden><span>Day</span>
             <div class="seg small" role="tablist"><button data-day="busy" role="tab">Busy</button><button data-day="quiet" role="tab">Quiet</button></div></div>
@@ -132,6 +133,6 @@
     <div class="veil" id="veil" aria-hidden="true"></div>
     <div class="room" id="room" hidden></div>
 
-    <script type="module" src="desk.js?v=20261107w"></script>
+    <script type="module" src="desk.js?v=20261108a"></script>
   </body>
 </html>

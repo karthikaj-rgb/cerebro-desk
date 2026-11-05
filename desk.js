@@ -2,13 +2,13 @@
 // Stage: your platform laid out as aligned cards. Scribble: the same cards, placed by hand, with pencil
 // notes; tidy them back any time. Circle things to talk about them together. Click anything to open
 // a room: a call with the AI, centred on its voice; switch to chat whenever you'd rather type.
-import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261107w'
-import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261107w'
+import { GREETING, GREETING_ONE, ITEMS, ONE_ITEMS, THREADS, LASSO, FALLBACK, BUILD_LINES, DYN } from './data.js?v=20261108a'
+import { LIVE, STEPS, STEER, RESULT } from './work.js?v=20261108a'
 // Everything that can be on the desk, including the One AI option's extras (ONE_ITEMS).
 const ALL = [...ITEMS, ...ONE_ITEMS]
 const CARDED = ALL.filter((it) => !it.nocard)
-import { createStitch } from './stitch.js?v=20261107w'
-import { initPresence, setPresenceStyle, setPresenceAmp, nextPhrase } from './presence.js?v=20261107w'
+import { createStitch } from './stitch.js?v=20261108a'
+import { initPresence, setPresenceStyle, setPresenceAmp, nextPhrase } from './presence.js?v=20261108a'
 
 const $ = (s, r = document) => r.querySelector(s)
 const root = document.documentElement
@@ -858,7 +858,7 @@ addEventListener('resize', () => drawThreads())
 
 // ── Voice ───────────────────────────────────────────────────────────────────
 let DUR = {}
-fetch('audio/durations.json?v=20261107w')
+fetch('audio/durations.json?v=20261108a')
   .then((r) => (r.ok ? r.json() : {}))
   .then((d) => (DUR = d))
   .catch(() => {})
@@ -2545,6 +2545,8 @@ function placeV2() {
   else if (!on) { const line = document.querySelector('.hello .line'); if (line && deskMode !== 'one') line.innerHTML = '<b>Three things need you.</b> Everything else is running.'; const m = document.querySelector('.hello .marks'); if (m) { m.hidden = false; m.innerHTML = '<i class="hot"></i>'.repeat(3) + '<i></i>'.repeat(3) } }
 }
 function setVersion(v) {
+  // V3 (the Timeline concept) is its own app in v3/, built from cerebro-timeline. It keeps the same options.
+  if (v === '3') { store.set('desk-version', '3'); location.href = 'v3/' + (inPhone ? '?phone=1' : ''); return }
   version = v
   store.set('desk-version', v)
   document.body.dataset.v = v

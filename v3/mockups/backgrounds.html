@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>V3 · Background options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --page: #141518; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: #e7e7e7; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  header { padding: 40px 48px 8px; }
+  header h1 { margin: 0; font-size: 28px; font-weight: 500; letter-spacing: -0.025em; }
+  header p { margin: 8px 0 0; color: #a2a2a2; font-size: 15px; max-width: 760px; line-height: 1.5; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 32px; padding: 32px 48px 64px; }
+  figure { margin: 0; }
+  figcaption { margin-top: 14px; display: flex; gap: 12px; align-items: baseline; }
+  figcaption b { font-weight: 500; font-size: 17px; letter-spacing: -0.01em; }
+  figcaption span { color: #a2a2a2; font-size: 14px; line-height: 1.45; }
+  figcaption .n { font-family: 'Geist Mono', monospace; font-size: 12px; color: #7d7d7d; min-width: 22px; }
+  .frame { position: relative; width: 100%; aspect-ratio: 1440 / 900; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.08); }
+  .stage { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; transform-origin: 0 0; }
+
+  /* Frame content (Round 10 · frame 4) */
+  .c { position: absolute; }
+  .org { left: 78px; top: 33px; font-size: 15px; font-weight: 600; color: var(--fg); }
+  .subs { left: 188px; top: 36px; font: 400 11px 'Geist Mono', monospace; letter-spacing: .04em; color: var(--fg2); }
+  .mark { left: 40px; top: 30px; width: 26px; height: 26px; border-radius: 4px; background: var(--tile); }
+  .sw { left: 1272px; top: 22px; width: 82px; height: 43px; border-radius: 22px; background: var(--chip); }
+  .sw::after { content: ''; position: absolute; right: 5px; top: 5px; width: 34px; height: 34px; border-radius: 17px; background: var(--tile); }
+  .av { left: 1366px; top: 26px; width: 34px; height: 34px; border-radius: 17px; background: var(--av); color: var(--avf); font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+  .clock { left: 96px; top: 104px; font: 500 12px 'Geist Mono', monospace; letter-spacing: .04em; color: var(--fg2); }
+  .prog { right: 96px; top: 104px; display: flex; align-items: center; gap: 14px; font: 500 11px 'Geist Mono', monospace; letter-spacing: .04em; color: var(--fg2); }
+  .prog i { display: inline-block; width: 16px; height: 2px; border-radius: 1px; background: var(--line); margin-left: 6px; }
+  .prog i.on { background: var(--blue); }
+  .s { left: 200px; top: 200px; font-size: 64px; font-weight: 500; line-height: 1.1; letter-spacing: -0.025em; }
+  .s .a { color: var(--fg); } .s .b { color: var(--fg2); }
+  .ask { left: 200px; top: 376px; font-size: 28px; font-weight: 500; letter-spacing: -0.025em; color: var(--strong); }
+  .opt { left: 200px; top: 428px; font-size: 15px; color: var(--fg2); word-spacing: 18px; }
+  .base { left: 96px; top: 760px; width: 1248px; height: 1px; background: var(--line); }
+  .dot { top: 761px; transform: translate(-50%, -50%); border-radius: 50%; }
+  .past { width: 6px; height: 6px; background: var(--past); }
+  .now { width: 12px; height: 12px; background: #4acf27; }
+  .next { width: 8px; height: 8px; box-shadow: inset 0 0 0 1px var(--ring); }
+  .t { top: 732px; transform: translateX(-50%); font: 500 10.5px 'Geist Mono', monospace; letter-spacing: .04em; color: var(--fg2); white-space: nowrap; }
+  .l { top: 778px; transform: translateX(-50%); font-size: 13px; color: var(--fg); white-space: nowrap; }
+  .wave { left: 500px; top: 689px; transform: translateX(-50%); display: flex; gap: 3px; align-items: center; height: 22px; }
+  .wave i { width: 2px; border-radius: 1px; background: #4acf27; }
+
+  /* Palettes */
+  .dark { --fg: #e7e7e7; --fg2: #a2a2a2; --line: #585858; --strong: #fff; --blue: #2896fb; --past: rgba(231,231,231,.5); --ring: #a2a2a2; --tile: #232529; --chip: rgba(255,255,255,.0875); --av: #e7e7e7; --avf: #121212; }
+  .light { --fg: #121212; --fg2: #6a6a6a; --line: rgba(0,21,45,.22); --strong: #121212; --blue: #155eef; --past: rgba(18,18,18,.35); --ring: #8a8a8a; --tile: #fff; --chip: rgba(23,23,23,.06); --av: #121212; --avf: #fff; }
+
+  /* ── Background options ───────────────────────────────────────── */
+  .bg { position: absolute; inset: 0; overflow: hidden; }
+  .bg i { position: absolute; border-radius: 50%; }
+  .grain::after { content: ''; position: absolute; inset: -50%; opacity: .07; mix-blend-mode: overlay; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+  /* 1 · Today: flat */
+  .b1 { background: #212326; }
+
+  /* 2 · X4 Cloud (already in Figma, switched off in Round 10) */
+  .b2 { background: #212326; }
+  .b2 i { filter: blur(150px); }
+  .b2 .x1 { left: 600px; top: -400px; width: 1320px; height: 1080px; background: radial-gradient(closest-side, rgba(194,194,194,.55), rgba(134,134,134,.18), transparent); }
+  .b2 .x2 { left: -330px; top: -150px; width: 660px; height: 1140px; background: radial-gradient(closest-side, rgba(78,106,133,.7), transparent); }
+  .b2 .x3 { left: 210px; top: 210px; width: 1080px; height: 720px; background: radial-gradient(closest-side, rgba(107,111,118,.4), transparent); }
+  .b2 .x4 { left: -60px; top: 760px; width: 1560px; height: 400px; background: radial-gradient(closest-side, rgba(0,0,0,.45), transparent); }
+  .b2 .x5 { left: -300px; top: 900px; width: 960px; height: 660px; background: radial-gradient(closest-side, rgba(213,213,213,.25), transparent); }
+  .b2 .word { position: absolute; left: 384px; top: 48px; font-size: 145px; font-weight: 900; letter-spacing: -0.07em; color: rgba(255,255,255,.05); }
+
+  /* 3 · Ink + spotlight: near-black with one soft light from above */
+  .b3 { background: #0b0c0e; }
+  .b3 .x1 { left: 220px; top: -620px; width: 1000px; height: 1000px; background: radial-gradient(closest-side, rgba(255,255,255,.13), rgba(255,255,255,.04) 55%, transparent); }
+  .b3 .x2 { left: 0; top: 0; width: 1440px; height: 900px; border-radius: 0; background: radial-gradient(120% 90% at 50% 0%, transparent 55%, rgba(0,0,0,.6)); }
+
+  /* 4 · Aurora: brand green and blue light drifting low, behind the day */
+  .b4 { background: #08090c; }
+  .b4 i { filter: blur(110px); animation: drift 18s ease-in-out infinite alternate; }
+  .b4 .x1 { left: 160px; top: 560px; width: 760px; height: 420px; background: radial-gradient(closest-side, rgba(74,207,39,.38), transparent); }
+  .b4 .x2 { left: 640px; top: 600px; width: 820px; height: 460px; background: radial-gradient(closest-side, rgba(40,150,251,.42), transparent); animation-delay: -6s; }
+  .b4 .x3 { left: 980px; top: -260px; width: 700px; height: 520px; background: radial-gradient(closest-side, rgba(40,150,251,.16), transparent); animation-delay: -12s; }
+  @keyframes drift { from { transform: translate(-40px, 10px) scale(1); } to { transform: translate(60px, -30px) scale(1.12); } }
+
+  /* 5 · Horizon: the day as a glowing line, light rising from the timeline */
+  .b5 { background: linear-gradient(180deg, #0a0b0e 0%, #0d0f13 62%, #111419 100%); }
+  .b5 .x1 { left: -200px; top: 640px; width: 1840px; height: 360px; border-radius: 50%; background: radial-gradient(closest-side, rgba(74,207,39,.22), rgba(40,150,251,.12) 55%, transparent); filter: blur(30px); }
+  .b5 .x2 { left: 96px; top: 760px; width: 1248px; height: 1px; border-radius: 0; background: linear-gradient(90deg, transparent, rgba(160,255,140,.65) 30%, rgba(120,190,255,.6) 70%, transparent); box-shadow: 0 0 24px 2px rgba(74,207,39,.35); }
+
+  /* 6 · Dot field: a quiet engineered grid that fades out toward the edges */
+  .b6 { background: #0e0f12; }
+  .b6 .x1 { inset: 0; border-radius: 0; background-image: radial-gradient(rgba(255,255,255,.13) 1px, transparent 1.4px); background-size: 28px 28px;
+    -webkit-mask-image: radial-gradient(70% 70% at 50% 45%, #000 20%, transparent 85%); mask-image: radial-gradient(70% 70% at 50% 45%, #000 20%, transparent 85%); }
+  .b6 .x2 { left: 220px; top: -500px; width: 1000px; height: 900px; background: radial-gradient(closest-side, rgba(40,150,251,.10), transparent); }
+
+  /* 7 · Light · Paper: warm off-white, soft daylight, fine grain */
+  .b7 { background: #f3f1ec; }
+  .b7 .x1 { left: 500px; top: -520px; width: 1100px; height: 900px; background: radial-gradient(closest-side, rgba(255,255,255,.9), transparent); }
+  .b7 .x2 { left: -300px; top: 600px; width: 900px; height: 600px; background: radial-gradient(closest-side, rgba(214,206,190,.45), transparent); filter: blur(40px); }
+
+  /* 8 · Light · Frost: cool white with pastel brand blooms */
+  .b8 { background: #eef1f5; }
+  .b8 i { filter: blur(90px); }
+  .b8 .x1 { left: 780px; top: -300px; width: 900px; height: 700px; background: radial-gradient(closest-side, rgba(21,94,239,.18), transparent); }
+  .b8 .x2 { left: -200px; top: 560px; width: 900px; height: 520px; background: radial-gradient(closest-side, rgba(74,207,39,.16), transparent); }
+  .b8 .x3 { left: 500px; top: 300px; width: 700px; height: 500px; background: radial-gradient(closest-side, rgba(255,255,255,.8), transparent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Background options for V3</h1>
+  <p>The same moment (Round 10, frame 4) on eight backgrounds. Content, type and colours stay the same; only the room behind them changes. 1 is what the prototype uses today.</p>
+</header>
+<div class="grid" id="grid"></div>
+<script>
+const OPTIONS = [
+  ['b1', 'dark', 'Today · Flat', 'Solid #212326. Calm and safe, but reads like a dark-mode app rather than a product with a point of view.', ''],
+  ['b2', 'dark grain', 'X4 Cloud', 'The cloud the design team already made (hidden in Round 10): soft silver and slate blooms with the ghost HighLevel wordmark. Closest to the brand work.', '<i class="x1"></i><i class="x2"></i><i class="x3"></i><i class="x4"></i><i class="x5"></i><div class="word">HighLevel</div>'],
+  ['b3', 'dark grain', 'Ink + spotlight', 'Near-black with one soft light from above and a vignette. The Linear / Vercel look: the sentence feels lit on a stage.', '<i class="x1"></i><i class="x2"></i>'],
+  ['b4', 'dark grain', 'Aurora', 'Deep black with HighLevel green and blue light drifting slowly behind the timeline. Feels alive and AI, and uses colour the doc already gives meaning to.', '<i class="x1"></i><i class="x2"></i><i class="x3"></i>'],
+  ['b5', 'dark grain', 'Horizon', 'The day becomes a glowing horizon: light rises from the timeline line itself. Ties the background to the concept (the day is the interface).', '<i class="x1"></i><i class="x2"></i>'],
+  ['b6', 'dark', 'Dot field', 'A quiet grid of dots that fades out at the edges, with a faint blue light. Precise and technical, like a canvas for work.', '<i class="x1"></i><i class="x2"></i>'],
+  ['b7', 'light grain', 'Light · Paper', 'Warm off-white with soft daylight and fine grain. Editorial and human; good for the calm, voice-first story.', '<i class="x1"></i><i class="x2"></i>'],
+  ['b8', 'light', 'Light · Frost', 'Cool white with faint pastel blue and green blooms. The light version of Aurora, closer to X4 Light.', '<i class="x1"></i><i class="x2"></i><i class="x3"></i>'],
+]
+const MOMENTS = [['11:48 PM', '61 done overnight', 140, 'past'], ['9:31', 'Morning brief', 320, 'past'], ['9:38 · NOW', 'Harbor', 500, 'now'], ['9:40', 'Peak', 680, 'next'], ['9:42', 'Lumen', 860, 'next'], ['11:00', 'Priya', 1060, 'next'], ['5:00', 'Calls after five', 1260, 'next']]
+const H = [6, 10, 16, 9, 20, 12, 7, 14, 22, 11, 6, 13, 18, 8]
+const stage = (cls, layers) => `
+  <div class="stage ${cls.split(' ')[0] === 'b' ? '' : ''}">
+    <div class="bg ${cls}">${layers}</div>
+    <div class="c mark"></div><div class="c org">Acme Agency</div><div class="c subs">1,284 SUB-ACCOUNTS</div>
+    <div class="c sw"></div><div class="c av">MA</div>
+    <div class="c clock">9:38 AM</div>
+    <div class="c prog">ONE OF THREE <span><i class="on"></i><i></i><i></i></span></div>
+    <div class="c s"><div class="a">Harbor ads paused.</div><div class="b">Card expired.</div></div>
+    <div class="c ask">Switch card?</div>
+    <div class="c opt">“Yes” “Not now”</div>
+    <div class="c wave">${H.map((h) => `<i style="height:${h}px"></i>`).join('')}</div>
+    <div class="c base"></div>
+    ${MOMENTS.map(([t, l, x, st]) => `<div class="c dot ${st}" style="left:${x}px"></div><div class="c t" style="left:${x}px;${st === 'now' ? 'color:var(--strong)' : st === 'past' ? 'opacity:.45' : 'opacity:.7'}">${t}</div><div class="c l" style="left:${x}px;${st === 'now' ? 'font-weight:500' : st === 'past' ? 'opacity:.45' : 'opacity:.7'}">${l}</div>`).join('')}
+  </div>`
+document.getElementById('grid').innerHTML = OPTIONS.map(([b, kind, name, why, layers], i) => `
+  <figure>
+    <div class="frame ${kind.split(' ')[0]}">${stage(`${b} ${kind.includes('grain') ? 'grain' : ''}`, layers)}</div>
+    <figcaption><span class="n">${i + 1}</span><div><b>${name}</b><br><span>${why}</span></div></figcaption>
+  </figure>`).join('')
+const fit = () => document.querySelectorAll('.frame').forEach((f) => (f.querySelector('.stage').style.transform = `scale(${f.clientWidth / 1440})`))
+fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>V3 · Experience improvements</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #0e0f12; --fg: #ececf1; --fg2: #a4a6b1; --fg3: #6e717d; --line: rgba(255,255,255,.16); --green: #3dd68c; --blue: #8fb0ff; --yellow: #e5a23c; --page: #141518; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--fg); font: 15px/1.5 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  header.top { max-width: 1240px; margin: 0 auto; padding: 40px 32px 0; }
+  header.top h1 { margin: 0; font-size: 28px; font-weight: 500; letter-spacing: -0.02em; }
+  header.top p { margin: 8px 0 0; color: var(--fg2); max-width: 820px; }
+  .legend { display: flex; gap: 18px; margin-top: 14px; font-size: 13px; color: var(--fg2); }
+  .legend b { font-family: 'Geist Mono', monospace; font-weight: 500; font-size: 11px; letter-spacing: .08em; padding: 3px 8px; border-radius: 6px; margin-right: 6px; }
+  .must { background: rgba(240,101,90,.16); color: #ff9a8f; } .should { background: rgba(229,162,60,.16); color: #f2c27a; } .nice { background: rgba(143,176,255,.14); color: var(--blue); }
+  .grid { max-width: 1240px; margin: 0 auto; padding: 28px 32px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px 32px; }
+  figure { margin: 0; }
+  .frame { position: relative; aspect-ratio: 1440 / 900; border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.08); background: var(--bg); }
+  .stage { position: absolute; left: 0; top: 0; width: 1440px; height: 900px; transform-origin: 0 0; }
+  figcaption { margin-top: 14px; }
+  figcaption .t { display: flex; align-items: center; gap: 10px; }
+  figcaption .t span { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--fg3); }
+  figcaption .t strong { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+  figcaption p { margin: 6px 0 0; color: var(--fg2); font-size: 14.5px; line-height: 1.5; }
+  figcaption p em { color: var(--fg); font-style: normal; }
+
+  /* Stage pieces (V3 · Round 10 layout, V2 colours) */
+  .c { position: absolute; }
+  .mono { font-family: 'Geist Mono', monospace; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
+  .org { left: 78px; top: 33px; font-size: 15px; font-weight: 600; }
+  .mark { left: 40px; top: 30px; width: 26px; height: 26px; border-radius: 4px; background: #16181d; }
+  .av { left: 1366px; top: 26px; width: 34px; height: 34px; border-radius: 17px; background: var(--fg); color: #0e0f12; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+  .clock { left: 96px; top: 104px; font-size: 12px; color: var(--fg2); }
+  .prog { right: 96px; top: 104px; font-size: 11px; color: var(--fg2); display: flex; gap: 14px; align-items: center; }
+  .prog i { display: inline-block; width: 16px; height: 2px; background: var(--line); margin-left: 6px; border-radius: 1px; } .prog i.on { background: var(--blue); }
+  .s { left: 200px; top: 200px; font-size: 64px; font-weight: 300; line-height: 1.1; letter-spacing: -0.03em; }
+  .s .b { color: var(--fg2); }
+  .ask { left: 200px; top: 376px; font-size: 28px; font-weight: 400; letter-spacing: -0.02em; }
+  .opt { left: 200px; top: 428px; font-size: 15px; color: var(--fg2); display: flex; gap: 22px; }
+  .base { left: 96px; top: 760px; width: 1248px; height: 1px; background: var(--line); }
+  .dot { top: 761px; transform: translate(-50%,-50%); border-radius: 50%; }
+  .past { width: 6px; height: 6px; background: rgba(236,236,241,.45); } .now { width: 12px; height: 12px; background: var(--green); } .next { width: 8px; height: 8px; box-shadow: inset 0 0 0 1px var(--fg3); }
+  .tm { top: 732px; transform: translateX(-50%); font-size: 10.5px; color: var(--fg2); white-space: nowrap; }
+  .lb { top: 778px; transform: translateX(-50%); font-size: 13px; white-space: nowrap; }
+  .wave { top: 689px; transform: translateX(-50%); display: flex; gap: 3px; align-items: center; height: 22px; }
+  .wave i { width: 2px; border-radius: 1px; background: var(--green); }
+  .hint { left: 96px; top: 846px; font-size: 12px; color: var(--fg2); }
+  .callout { position: absolute; border: 1.5px dashed rgba(143,176,255,.7); border-radius: 12px; pointer-events: none; }
+  .note { position: absolute; font: 500 13px Inter; color: var(--blue); background: rgba(143,176,255,.12); padding: 6px 10px; border-radius: 8px; white-space: nowrap; }
+
+  /* 1 · Tap to answer */
+  .pill { padding: 10px 18px; border-radius: 999px; font-size: 16px; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+  .pill.main { background: var(--fg); color: #0e0f12; box-shadow: none; }
+  .mic { left: 1300px; top: 680px; width: 44px; height: 44px; border-radius: 22px; box-shadow: inset 0 0 0 1px var(--line); display: grid; place-items: center; color: var(--fg2); }
+
+  /* 2 · Start moment */
+  .greet { left: 200px; top: 250px; font-size: 72px; font-weight: 300; letter-spacing: -0.035em; line-height: 1.05; }
+  .greet span { color: var(--fg2); }
+  .start { left: 200px; top: 440px; display: flex; align-items: center; gap: 16px; }
+  .start .go { width: 64px; height: 64px; border-radius: 32px; background: var(--fg); display: grid; place-items: center; color: #0e0f12; font-size: 22px; box-shadow: 0 0 0 10px rgba(236,236,241,.06), 0 0 0 22px rgba(236,236,241,.03); }
+  .start div { font-size: 17px; } .start small { display: block; color: var(--fg2); font-size: 13.5px; }
+
+  /* 3 · Heard you */
+  .heard { left: 200px; top: 476px; font-size: 22px; color: var(--blue); font-weight: 400; letter-spacing: -0.015em; }
+  .heard i { font-style: normal; color: var(--fg3); font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: .06em; margin-left: 12px; vertical-align: middle; }
+
+  /* 4 · Skip and captions */
+  .cap { left: 200px; top: 560px; width: 720px; font-size: 17px; color: var(--fg2); line-height: 1.5; }
+  .cap b { color: var(--fg); font-weight: 400; }
+  .skip { top: 650px; left: 455px; font-size: 12px; color: var(--fg2); padding: 6px 10px; border-radius: 8px; box-shadow: inset 0 0 0 1px var(--line); }
+
+  /* 5 · Tappable timeline */
+  .pop { left: 320px; top: 600px; width: 330px; padding: 14px 16px; border-radius: 12px; background: #16181d; box-shadow: 0 0 0 1px rgba(255,255,255,.09), 0 16px 36px -18px rgba(0,0,0,.6); }
+  .pop .mono { font-size: 10.5px; color: var(--fg3); }
+  .pop div { font-size: 15px; margin-top: 4px; } .pop small { color: var(--fg2); font-size: 13px; }
+  .pop .ok { color: var(--green); }
+
+  /* 6 · Undo */
+  .undo { left: 200px; top: 600px; display: flex; gap: 14px; align-items: center; font-size: 15px; color: var(--fg2); }
+  .undo .ok { width: 8px; height: 8px; border-radius: 4px; background: var(--green); }
+  .undo b { color: var(--fg); font-weight: 400; }
+  .undo u { color: var(--fg); text-decoration: none; padding: 5px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); }
+  .undo .bar { width: 120px; height: 2px; background: var(--line); border-radius: 1px; overflow: hidden; } .undo .bar i { display: block; width: 60%; height: 100%; background: var(--fg3); }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>V3: what I'd improve</h1>
+  <p>The idea works: one thing at a time, problem before question, the day as the way you move. These six changes make it smoother to use and easier to demo. Each one is shown on a real V3 moment.</p>
+  <div class="legend"><span><b class="must">MUST</b>breaks without it</span><span><b class="should">SHOULD</b>noticeably smoother</span><span><b class="nice">NICE</b>polish</span></div>
+</header>
+<div class="grid" id="grid"></div>
+
+<script>
+const MOMENTS = [['11:48 PM', '61 done overnight', 140, 'past'], ['9:31', 'Morning brief', 320, 'past'], ['9:38 · NOW', 'Harbor', 500, 'now'], ['9:40', 'Peak', 680, 'next'], ['9:42', 'Lumen', 860, 'next'], ['11:00', 'Priya', 1060, 'next'], ['5:00', 'Calls after five', 1260, 'next']]
+const H = [6, 10, 16, 9, 20, 12, 7, 14, 22, 11, 6, 13, 18, 8]
+const timeline = (moments = MOMENTS, wave = 500, listen = false) => `
+  <div class="c wave" style="left:${wave}px">${H.map((h) => `<i style="height:${listen ? 4 + (h % 3) : h}px"></i>`).join('')}</div>
+  <div class="c base"></div>
+  ${moments.map(([t, l, x, st]) => `<div class="c dot ${st}" style="left:${x}px"></div><div class="c mono tm" style="left:${x}px;${st === 'now' ? 'color:var(--fg)' : st === 'past' ? 'opacity:.45' : 'opacity:.7'}">${t}</div><div class="c lb" style="left:${x}px;${st === 'now' ? 'font-weight:500' : st === 'past' ? 'opacity:.45' : 'opacity:.7'}">${l}</div>`).join('')}`
+const chrome = (clock = '9:38 AM', prog = 1) => `
+  <div class="c mark"></div><div class="c org">Acme Agency</div><div class="c av">MA</div>
+  <div class="c mono clock">${clock}</div>
+  ${prog ? `<div class="c mono prog">${['', 'One', 'Two', 'Three'][prog]} of three <span>${[0, 1, 2].map((i) => `<i class="${i < prog ? 'on' : ''}"></i>`).join('')}</span></div>` : ''}`
+const harbor = `<div class="c s"><div>Harbor ads paused.</div><div class="b">Card expired.</div></div><div class="c ask">Switch card?</div>`
+
+const OPTIONS = [
+  ['must', 'Tap to answer', 'Today the options are plain text, so on a phone (no Space key) <em>you can only answer by voice</em>. Make them soft buttons you can tap, with the mic as a small button by the voice wave. Voice still works the same.',
+    chrome() + harbor + `<div class="c opt" style="top:424px"><span class="pill main">Yes</span><span class="pill">Not now</span></div>` + timeline(undefined, 500, true) + `<div class="c mic">🎙</div>`
+    + `<div class="callout" style="left:188px;top:414px;width:250px;height:62px"></div><div class="note" style="left:460px;top:428px">Tap or say it</div>`],
+  ['must', 'A clear start', 'Today you land on the first sentence with "Click anywhere or press Space" in small grey type. Open on a greeting with one big Start button instead. That tap also unlocks sound and the mic, so the AI never talks to a muted tab.',
+    chrome('9:31 AM', 0) + `<div class="c greet">Good morning, Maya.<br><span>Three things before Priya.</span></div><div class="c start"><span class="go">▶</span><div>Start your morning<small>About 3 minutes · sound on</small></div></div>` + timeline([['11:48 PM', '61 done overnight', 140, 'past'], ['9:31 · NOW', 'Morning brief', 320, 'now'], ['9:38', 'Harbor', 500, 'next'], ['9:40', 'Peak', 680, 'next'], ['9:42', 'Lumen', 860, 'next'], ['11:00', 'Priya', 1060, 'next'], ['5:00', 'Calls after five', 1260, 'next']], 320, true)],
+  ['should', 'Show it heard you', 'When Maya answers by voice nothing on screen confirms it until the line fades. Echo her words for a beat in blue (as the full-screen Figma frames already do), so she knows she was heard, then move on.',
+    chrome() + `<div class="c s" style="opacity:.3"><div>Harbor ads paused.</div><div class="b">Card expired.</div></div><div class="c ask" style="opacity:.35">Switch card?</div><div class="c heard">“Yes, switch it”<i>HEARD</i></div>` + timeline()],
+  ['should', 'Skip ahead, and captions for sound-off demos', 'Long lines (the website build, the report edit) can\'t be cut short today. Let a tap on the wave, or →, skip what the AI is saying. Add an optional Captions setting for demos in a quiet room: the line, quietly, under the question.',
+    chrome() + harbor + `<div class="c opt" style="top:428px"><span>“Yes”</span><span>“Not now”</span></div><div class="c cap"><b>Harbor Dental’s ads paused on Tuesday.</b> The card on file expired. Switch to the new card?</div>` + timeline() + `<div class="c skip">Tap to skip ›</div>`
+    + `<div class="callout" style="left:188px;top:548px;width:760px;height:64px"></div>`],
+  ['nice', 'A day you can tap', 'The timeline only shows where you are. Let Maya tap a past moment to see what was done, with a time and an undo, or an upcoming one to jump ahead. Movement along the day stays the way you navigate.',
+    chrome('9:40 AM', 2) + `<div class="c s"><div>Peak widget down.</div><div class="b">No bookings.</div></div><div class="c ask">Repair it?</div>`
+    + timeline([['11:48 PM', '61 done overnight', 140, 'past'], ['9:31', 'Morning brief', 320, 'past'], ['9:38', 'Harbor', 500, 'past'], ['9:40 · NOW', 'Peak', 680, 'now'], ['9:42', 'Lumen', 860, 'next'], ['11:00', 'Priya', 1060, 'next'], ['5:00', 'Calls after five', 1260, 'next']], 680)
+    + `<div class="c pop"><span class="mono">9:39 · Harbor</span><div><span class="ok">●</span> Card switched. Ads back on.</div><small>3 campaigns live · +$2.4k/mo · <u style="text-decoration:none;color:var(--fg)">Undo</u></small></div><div class="callout" style="left:470px;top:745px;width:60px;height:56px"></div>`],
+  ['nice', 'A short undo after each yes', 'Saying yes acts at once, which is the point, but it needs a safety net. After each action, show one quiet line with an Undo that fades after a few seconds. Builds trust without adding a confirmation step.',
+    chrome('9:40 AM', 2) + `<div class="c s"><div>Peak widget down.</div><div class="b">No bookings.</div></div>`
+    + `<div class="c undo"><span class="ok"></span><span><b>Harbor’s card switched.</b> Ads are back on.</span><u>Undo</u><span class="bar"><i></i></span></div>`
+    + timeline([['11:48 PM', '61 done overnight', 140, 'past'], ['9:31', 'Morning brief', 320, 'past'], ['9:38', 'Harbor', 500, 'past'], ['9:40 · NOW', 'Peak', 680, 'now'], ['9:42', 'Lumen', 860, 'next'], ['11:00', 'Priya', 1060, 'next'], ['5:00', 'Calls after five', 1260, 'next']], 680)],
+]
+document.getElementById('grid').innerHTML = OPTIONS.map(([lvl, name, why, html], i) => `
+  <figure>
+    <div class="frame"><div class="stage">${html}</div></div>
+    <figcaption><div class="t"><span>${i + 1}</span><strong>${name}</strong><b class="${lvl}" style="font-family:'Geist Mono',monospace;font-weight:500;font-size:10.5px;letter-spacing:.08em;padding:3px 8px;border-radius:6px">${lvl.toUpperCase()}</b></div><p>${why}</p></figcaption>
+  </figure>`).join('')
+const fit = () => document.querySelectorAll('.frame').forEach((f) => (f.querySelector('.stage').style.transform = `scale(${f.clientWidth / 1440})`))
+fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

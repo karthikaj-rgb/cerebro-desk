@@ -37,7 +37,7 @@ Then open http://localhost:5183.
 
 Open the panel with the sliders icon, top right.
 
-- **Version:** V1 is the original three-column desk. V2 follows Rich's feedback.
+- **Version:** V1 is the original three-column desk. V2 follows Rich's feedback. V3 is the Timeline concept (Round 10): it opens `v3/`, which is built from `../cerebro-timeline` (run `npm run build` there). Don't edit `v3/` by hand.
 - **Day** (V2 only): Busy or Quiet.
 - **Landing** (V2 only): List or Sentence.
 - **Dashboard** (V2 only): Columns, Ribbon or Day.
