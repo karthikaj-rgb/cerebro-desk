@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V2.1 Landing Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0b0b0e; color: #ececf1; font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 90px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header h1 { font-weight: 300; font-size: 34px; letter-spacing: -.03em; margin: 0 0 8px; }
+  header p { color: #a4a6b1; max-width: 760px; margin: 0 0 40px; }
+  .opt { margin-bottom: 56px; }
+  .meta { display: flex; gap: 18px; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; }
+  .meta .n { font-size: 11px; color: #6e717d; }
+  .meta h2 { font-size: 20px; font-weight: 400; letter-spacing: -.02em; margin: 0; }
+  .meta .why { color: #a4a6b1; font-size: 13.5px; flex-basis: 100%; max-width: 820px; }
+  .frame { position: relative; aspect-ratio: 16 / 9.5; border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 40px 80px -40px rgba(0,0,0,.8); }
+  .top { position: absolute; left: 3%; right: 3%; top: 4%; display: flex; justify-content: space-between; align-items: center; font-size: 12px; z-index: 5; }
+  .top .r { display: flex; gap: 8px; } .top .r i { width: 22px; height: 22px; border-radius: 11px; background: rgba(255,255,255,.08); }
+  .pill { display: inline-flex; gap: 2px; padding: 2px; border-radius: 14px; background: rgba(255,255,255,.07); font-size: 11px; }
+  .pill span { padding: 4px 10px; border-radius: 12px; color: #a4a6b1; } .pill span.on { background: #ececf1; color: #0e0f12; }
+  .wave { display: flex; gap: 3px; align-items: center; height: 22px; } .wave i { width: 2px; border-radius: 1px; background: #3dd68c; animation: w 1s ease-in-out infinite; }
+  .wave i:nth-child(2n) { animation-delay: -.3s } .wave i:nth-child(3n) { animation-delay: -.6s } .wave i:nth-child(5n) { animation-delay: -.15s }
+  @keyframes w { 0%,100% { height: 5px } 50% { height: 18px } }
+
+  /* 1 · Horizon */
+  .f1 { background: #06070a; }
+  .f1 .sky { position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 120%, rgba(91,91,214,.55), rgba(47,95,224,.18) 35%, transparent 60%); }
+  .f1 .arc { position: absolute; left: -20%; right: -20%; bottom: -62%; height: 100%; border-radius: 50%; border-top: 1px solid rgba(180,190,255,.55); box-shadow: 0 -30px 80px -10px rgba(120,130,255,.35), inset 0 30px 80px -30px rgba(120,130,255,.25); }
+  .f1 .stars { position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.5), transparent), radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,.35), transparent), radial-gradient(1px 1px at 85% 45%, rgba(255,255,255,.3), transparent), radial-gradient(1px 1px at 40% 15%, rgba(255,255,255,.4), transparent); }
+  .f1 .c { position: absolute; left: 0; right: 0; top: 22%; text-align: center; }
+  .f1 h3 { font-weight: 200; font-size: clamp(30px, 5.4vw, 64px); letter-spacing: -.045em; margin: 0; background: linear-gradient(180deg, #fff, #9ea3c7); -webkit-background-clip: text; color: transparent; }
+  .f1 .sub { color: #8b8fa8; margin-top: 8px; font-size: 14px; }
+  .f1 .items { display: flex; justify-content: center; gap: 12px; margin-top: 30px; flex-wrap: wrap; padding: 0 20px; }
+  .f1 .it { padding: 10px 16px; border-radius: 999px; font-size: 14px; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); backdrop-filter: blur(10px); }
+  .f1 .it b { font-family: 'Geist Mono'; font-weight: 400; font-size: 10px; color: #6e717d; margin-right: 8px; }
+  .f1 .it.on { background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(180,190,255,.5), 0 0 30px -6px rgba(120,130,255,.6); }
+  .f1 .wv { position: absolute; left: 50%; bottom: 13%; transform: translateX(-50%); }
+
+  /* 2 · Orbit */
+  .f2 { background: radial-gradient(80% 80% at 50% 50%, #12131a, #08090c); }
+  .f2 .ring { position: absolute; left: 50%; top: 54%; border-radius: 50%; border: 1px solid rgba(255,255,255,.07); transform: translate(-50%, -50%); }
+  .f2 .r1 { width: 26%; aspect-ratio: 1; } .f2 .r2 { width: 44%; aspect-ratio: 1; } .f2 .r3 { width: 64%; aspect-ratio: 1; border-style: dashed; border-color: rgba(255,255,255,.05); }
+  .f2 .orb { position: absolute; left: 50%; top: 54%; width: 11%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); background: radial-gradient(circle at 35% 30%, #d9ccff, #6b5bd6 55%, #23235a); box-shadow: 0 0 60px 12px rgba(107,91,214,.45); animation: breathe 4s ease-in-out infinite; }
+  @keyframes breathe { 50% { transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 80px 18px rgba(107,91,214,.55); } }
+  .f2 .spin { position: absolute; left: 50%; top: 54%; width: 44%; aspect-ratio: 1; transform: translate(-50%, -50%); animation: spin 60s linear infinite; }
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  .f2 .sat { position: absolute; transform: translate(-50%, -50%); }
+  .f2 .sat > span { display: block; white-space: nowrap; padding: 7px 12px; border-radius: 999px; font-size: 12.5px; background: rgba(20,21,28,.9); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); animation: spin 60s linear infinite reverse; }
+  .f2 .sat.hot > span { box-shadow: inset 0 0 0 1px rgba(255,120,120,.5); }
+  .f2 .s1 { left: 50%; top: 0; } .f2 .s2 { left: 93%; top: 75%; } .f2 .s3 { left: 7%; top: 75%; }
+  .f2 h3 { position: absolute; left: 0; right: 0; top: 13%; text-align: center; font-weight: 300; font-size: clamp(22px, 3.4vw, 40px); letter-spacing: -.035em; margin: 0; }
+  .f2 .sub { position: absolute; left: 0; right: 0; top: 22%; text-align: center; color: #8b8fa8; font-size: 13px; }
+
+  /* 3 · Glass stack (light) */
+  .f3 { background: linear-gradient(140deg, #eef0f7, #f7f4f2 60%, #eef3f6); color: #15161b; perspective: 1400px; }
+  .f3 .blob { position: absolute; border-radius: 50%; filter: blur(60px); }
+  .f3 .b1 { width: 40%; aspect-ratio: 1; left: 50%; top: 10%; background: rgba(140,130,255,.45); } .f3 .b2 { width: 30%; aspect-ratio: 1; left: 68%; top: 40%; background: rgba(90,200,255,.35); } .f3 .b3 { width: 26%; aspect-ratio: 1; left: 44%; top: 55%; background: rgba(255,170,200,.35); }
+  .f3 .l { position: absolute; left: 7%; top: 26%; width: 36%; }
+  .f3 h3 { font-weight: 300; font-size: clamp(28px, 4.4vw, 52px); letter-spacing: -.045em; margin: 0; line-height: 1.02; }
+  .f3 .sub { color: #52545f; margin-top: 12px; }
+  .f3 .stack { position: absolute; left: 52%; top: 22%; width: 38%; transform-style: preserve-3d; transform: rotateY(-14deg) rotateX(6deg); }
+  .f3 .card { position: absolute; left: 0; right: 0; height: 120px; border-radius: 18px; padding: 18px; background: rgba(255,255,255,.55); backdrop-filter: blur(18px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), 0 20px 40px -20px rgba(40,40,80,.35); }
+  .f3 .card .mono { font-size: 9.5px; color: #858896; } .f3 .card b { display: block; font-weight: 500; font-size: 17px; margin-top: 6px; } .f3 .card span { color: #52545f; font-size: 12.5px; }
+  .f3 .k1 { top: 0; transform: translateZ(60px); } .f3 .k2 { top: 70px; transform: translateZ(0) scale(.96); opacity: .8; } .f3 .k3 { top: 140px; transform: translateZ(-60px) scale(.92); opacity: .55; }
+  .f3 .top .r i { background: rgba(21,22,27,.08); } .f3 .pill { background: rgba(21,22,27,.06); } .f3 .pill span.on { background: #15161b; color: #fff; } .f3 .pill span { color: #52545f; }
+  .f3 .wv { position: absolute; left: 7%; bottom: 14%; }
+
+  /* 4 · Flight board (noir mono) */
+  .f4 { background: #000; font-family: 'Geist Mono', monospace; }
+  .f4 .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(80% 70% at 50% 45%, #000, transparent); }
+  .f4 .c { position: absolute; left: 7%; right: 7%; top: 18%; }
+  .f4 .hello { font-size: 12px; color: #3dd68c; letter-spacing: .1em; } .f4 .hello::after { content: '▋'; animation: blink 1s steps(1) infinite; margin-left: 4px; }
+  @keyframes blink { 50% { opacity: 0 } }
+  .f4 h3 { font-family: Inter; font-weight: 300; font-size: clamp(26px, 4vw, 48px); letter-spacing: -.04em; margin: 10px 0 26px; }
+  .f4 .row { display: grid; grid-template-columns: 50px 1fr 140px 110px; align-items: center; padding: 12px 0; border-top: 1px solid rgba(255,255,255,.1); font-size: 13px; text-transform: uppercase; letter-spacing: .05em; }
+  .f4 .row:last-child { border-bottom: 1px solid rgba(255,255,255,.1); }
+  .f4 .row .t { font-family: Inter; text-transform: none; letter-spacing: -.01em; font-size: 16px; }
+  .f4 .flap { display: inline-flex; gap: 2px; } .f4 .flap b { display: inline-block; width: 14px; text-align: center; padding: 3px 0; background: #111; border-radius: 2px; font-weight: 400; box-shadow: inset 0 -1px 0 rgba(255,255,255,.08); }
+  .f4 .st { color: #ff6b6b; } .f4 .st.ok { color: #3dd68c; }
+  .f4 .wv { position: absolute; right: 7%; bottom: 10%; }
+  .f4 .top { font-family: Inter; }
+
+  /* 5 · Editorial serif, warm */
+  .f5 { background: radial-gradient(90% 90% at 85% 10%, #2a1e2e, transparent 60%), radial-gradient(70% 80% at 10% 100%, #1d2433, transparent 60%), #0f0e12; }
+  .f5 .c { position: absolute; left: 8%; top: 20%; right: 8%; }
+  .f5 .date { font-size: 11px; color: #a49aa8; }
+  .f5 h3 { font-family: 'Instrument Serif'; font-weight: 400; font-size: clamp(38px, 6.6vw, 86px); letter-spacing: -.02em; line-height: .95; margin: 10px 0 26px; }
+  .f5 h3 em { color: #d8b4ff; }
+  .f5 .list { display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,.12); }
+  .f5 .list div { flex: 1; padding: 16px 18px 0 0; }
+  .f5 .list div + div { padding-left: 18px; border-left: 1px solid rgba(255,255,255,.12); }
+  .f5 .list .mono { font-size: 10px; color: #8d8492; } .f5 .list b { display: block; font-family: 'Instrument Serif'; font-weight: 400; font-size: 26px; line-height: 1.1; margin-top: 6px; }
+  .f5 .list span { font-size: 12.5px; color: #a49aa8; }
+  .f5 .wv { position: absolute; right: 8%; bottom: 10%; } .f5 .wave i { background: #d8b4ff; }
+
+  /* 6 · Spatial depth (light, parallax) */
+  .f6 { background: #e9ebf0; color: #15161b; perspective: 1000px; }
+  .f6 .room { position: absolute; inset: 0; background: radial-gradient(60% 50% at 50% 40%, #fff, transparent), linear-gradient(180deg, #f2f3f7, #e1e4ec); }
+  .f6 .floor { position: absolute; left: -10%; right: -10%; bottom: -40%; height: 70%; background: repeating-linear-gradient(90deg, rgba(21,22,27,.05) 0 1px, transparent 1px 60px), repeating-linear-gradient(0deg, rgba(21,22,27,.05) 0 1px, transparent 1px 60px); transform: rotateX(70deg); transform-origin: top; }
+  .f6 .scene { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .2s ease-out; }
+  .f6 .win { position: absolute; border-radius: 22px; background: rgba(255,255,255,.72); backdrop-filter: blur(20px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.9), 0 30px 60px -30px rgba(30,40,80,.4); padding: 20px; }
+  .f6 .main { left: 26%; top: 20%; width: 48%; transform: translateZ(40px); }
+  .f6 .main h3 { font-weight: 300; font-size: clamp(22px, 3vw, 36px); letter-spacing: -.035em; margin: 0 0 14px; }
+  .f6 .main .ln { display: flex; gap: 12px; padding: 9px 0; border-top: 1px solid rgba(21,22,27,.07); font-size: 14px; } .f6 .main .ln i { font-style: normal; font-family: 'Geist Mono'; font-size: 10px; color: #858896; padding-top: 3px; }
+  .f6 .side { left: 6%; top: 34%; width: 17%; transform: translateZ(-30px) rotateY(18deg); font-size: 12px; color: #52545f; } .f6 .side b { display: block; font-size: 22px; font-weight: 300; color: #15161b; letter-spacing: -.03em; }
+  .f6 .side2 { right: 6%; left: auto; top: 30%; width: 17%; transform: translateZ(-30px) rotateY(-18deg); }
+  .f6 .dock { left: 50%; bottom: 8%; transform: translateX(-50%) translateZ(60px); padding: 10px 16px; border-radius: 30px; }
+  .f6 .top .r i { background: rgba(21,22,27,.08); } .f6 .pill { background: rgba(21,22,27,.06); } .f6 .pill span.on { background: #15161b; color: #fff; } .f6 .pill span { color: #52545f; }
+
+  .ideas { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 20px; }
+  .idea { padding: 16px; border-radius: 14px; background: #131419; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+  .idea b { display: block; font-weight: 500; margin-bottom: 4px; } .idea span { color: #a4a6b1; font-size: 13px; }
+  .pickline { margin-top: 26px; color: #a4a6b1; } .pickline b { color: #ececf1; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>V2.1 landing · six directions</h1>
+    <p>Same content in each: the greeting, three things, the voice. What changes is the world around it. All of them keep V2.1’s rules: no buttons, no dashboard, one conversation. Animations are live; move your mouse over 06.</p>
+  </header>
+
+  <section class="opt">
+    <div class="meta"><span class="mono n">01</span><h2>Horizon</h2><span class="why">Dark space with a glowing planet edge at the bottom. The greeting floats in thin, cool type; the three things sit as glass pills. When the AI speaks, the horizon brightens. Calm, cinematic, very “OS of the future”.</span></div>
+    <div class="frame f1"><div class="stars"></div><div class="sky"></div><div class="arc"></div>
+      <div class="top"><span>Acme Agency</span><span class="r"><span class="pill"><span class="on">Voice</span><span>Chat</span></span><i></i><i></i></span></div>
+      <div class="c"><h3>Good morning, Maya.</h3><div class="sub">Three things need you. Start with the first?</div>
+        <div class="items"><span class="it on"><b>01</b>Three accounts dipped</span><span class="it"><b>02</b>Ads paused since Tuesday</span><span class="it"><b>03</b>Missing calls after 5 PM</span></div></div>
+      <div class="wv"><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="meta"><span class="mono n">02</span><h2>Orbit</h2><span class="why">The AI is a living orb at the centre; today’s three things orbit it slowly. The one you’re talking about pulls into the centre ring. The day becomes a little solar system: what’s urgent is close, what’s done drifts out.</span></div>
+    <div class="frame f2">
+      <div class="top"><span>Acme Agency</span><span class="r"><span class="pill"><span class="on">Voice</span><span>Chat</span></span><i></i><i></i></span></div>
+      <h3>Good morning, Maya.</h3><div class="sub">Three things are close today.</div>
+      <div class="ring r3"></div><div class="ring r2"></div><div class="ring r1"></div><div class="orb"></div>
+      <div class="spin"><div class="sat hot s1"><span>Three accounts dipped</span></div><div class="sat s2"><span>Ads paused</span></div><div class="sat s3"><span>Missed calls after 5</span></div></div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="meta"><span class="mono n">03</span><h2>Glass stack</h2><span class="why">Light and airy. Soft colour fields behind frosted glass. The three things are cards stacked in depth; saying yes flicks the front card away and the next slides forward. Feels tactile, premium, Apple-like.</span></div>
+    <div class="frame f3"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+      <div class="top"><span>Acme Agency</span><span class="r"><span class="pill"><span class="on">Voice</span><span>Chat</span></span><i></i><i></i></span></div>
+      <div class="l"><h3>Good morning, Maya.</h3><div class="sub">Three things need you. Here’s the first.</div></div>
+      <div class="stack">
+        <div class="card k3"><span class="mono">03 · Calls</span><b>Missing calls after 5 PM</b><span>Front desk has gone home</span></div>
+        <div class="card k2"><span class="mono">02 · Ads</span><b>Ads paused since Tuesday</b><span>Card on file expired</span></div>
+        <div class="card k1"><span class="mono">01 · Revenue</span><b>Three accounts dipped</b><span>−$4.8k a month · two safe fixes</span></div>
+      </div>
+      <div class="wv"><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="meta"><span class="mono n">04</span><h2>Flight board</h2><span class="why">Black, precise, a little cyber. A terminal-style hello types itself; the three things are a departures board with split-flap status that flips to DONE as you go. Very confident, built for operators.</span></div>
+    <div class="frame f4"><div class="grid"></div>
+      <div class="top"><span>Acme Agency</span><span class="r"><span class="pill"><span class="on">Voice</span><span>Chat</span></span><i></i><i></i></span></div>
+      <div class="c"><div class="hello">MON 02 NOV · 09:38 · 61 HANDLED OVERNIGHT</div><h3>Good morning, Maya.</h3>
+        <div class="row"><span>01</span><span class="t">Three accounts dipped</span><span>−$4.8K/MO</span><span class="st ok"><span class="flap"><b>D</b><b>O</b><b>N</b><b>E</b></span></span></div>
+        <div class="row"><span>02</span><span class="t">Ads paused since Tuesday</span><span>−$2.4K/MO</span><span class="st"><span class="flap"><b>N</b><b>O</b><b>W</b></span></span></div>
+        <div class="row"><span>03</span><span class="t">Missing calls after 5 PM</span><span>+18%</span><span class="st" style="color:#8b8fa8"><span class="flap"><b>N</b><b>E</b><b>X</b><b>T</b></span></span></div>
+      </div>
+      <div class="wv"><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="meta"><span class="mono n">05</span><h2>Editorial</h2><span class="why">A morning paper for one. Big serif greeting with an italic accent, a warm dusk gradient, the three things as columns like headlines. Feels human and crafted rather than techy; still modern.</span></div>
+    <div class="frame f5">
+      <div class="top"><span>Acme Agency</span><span class="r"><span class="pill"><span class="on">Voice</span><span>Chat</span></span><i></i><i></i></span></div>
+      <div class="c"><span class="mono date">Monday, November 2 · Edition 9:38</span><h3>Good morning, <em>Maya.</em></h3>
+        <div class="list"><div><span class="mono">01 · Revenue</span><b>Three accounts dipped</b><span>Two safe fixes win back $3.6k</span></div><div><span class="mono">02 · Ads</span><b>Ads paused since Tuesday</b><span>The card expired</span></div><div><span class="mono">03 · Calls</span><b>Missing calls after five</b><span>Nobody’s at the desk</span></div></div>
+      </div>
+      <div class="wv"><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    </div>
+  </section>
+
+  <section class="opt">
+    <div class="meta"><span class="mono n">06</span><h2>Spatial</h2><span class="why">Like a visionOS room. The conversation is a glass window in the middle; the numbers and the overnight work float as smaller panes on either side, tilted toward you. Panels shift with your mouse (parallax). Most immersive.</span></div>
+    <div class="frame f6" id="f6"><div class="room"></div><div class="floor"></div>
+      <div class="top"><span>Acme Agency</span><span class="r"><span class="pill"><span class="on">Voice</span><span>Chat</span></span><i></i><i></i></span></div>
+      <div class="scene" id="scene">
+        <div class="win side"><b>$412.8k</b>MRR · ↑ 6.2%<br><br><b>23</b>bookings today</div>
+        <div class="win main"><h3>Good morning, Maya.</h3><div class="ln"><i>01</i>Three accounts dipped</div><div class="ln"><i>02</i>Ads paused since Tuesday</div><div class="ln"><i>03</i>Missing calls after 5 PM</div></div>
+        <div class="win side side2"><b>61</b>done overnight<br><br><b>4</b>agents working now</div>
+        <div class="win dock"><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <h2 style="font-weight:400;font-size:20px;letter-spacing:-.02em;margin:0">Smaller ideas that work with any of them</h2>
+  <div class="ideas">
+    <div class="idea"><b>Time-of-day light</b><span>The room’s colour follows the real clock: cool dawn at 7, bright at noon, warm dusk after 5.</span></div>
+    <div class="idea"><b>The AI leans in</b><span>When you hover a thing, the wave or orb drifts toward it and a faint line connects them.</span></div>
+    <div class="idea"><b>Done = light</b><span>Each yes sends a small particle of light from the item into the stats line; the number ticks up.</span></div>
+    <div class="idea"><b>Sound design</b><span>A soft chime on done, a lower tone on later. Off by default, one toggle.</span></div>
+    <div class="idea"><b>Cursor glow</b><span>A faint light follows the cursor across the background, like a torch in a dark room.</span></div>
+    <div class="idea"><b>Spoken captions</b><span>Words light up as they’re said (karaoke), so voice and text feel like one thing.</span></div>
+  </div>
+  <p class="pickline">My pick: <b>01 Horizon</b> for the look (it’s futuristic without getting in the way of the words), with <b>The AI leans in</b> and <b>Done = light</b> on top. <b>03 Glass stack</b> if you want light mode to be the hero.</p>
+</div>
+<script>
+  // 06 · parallax: the panes follow the mouse a little.
+  const f6 = document.getElementById('f6'), sc = document.getElementById('scene')
+  f6.addEventListener('mousemove', (e) => { const r = f6.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; sc.style.transform = `rotateY(${x * 10}deg) rotateX(${-y * 8}deg)` })
+  f6.addEventListener('mouseleave', () => (sc.style.transform = ''))
+</script>
+</body>
+</html>

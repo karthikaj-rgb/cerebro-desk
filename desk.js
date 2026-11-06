@@ -2547,6 +2547,8 @@ function placeV2() {
 function setVersion(v) {
   // V3 (the Timeline concept) is its own app in v3/, built from cerebro-timeline. It keeps the same options.
   if (v === '3') { store.set('desk-version', '3'); location.href = 'v3/' + (inPhone ? '?phone=1' : ''); return }
+  // V2.1 (the morning as one conversation) is a second page in that app: v3/v21/.
+  if (v === '2.1') { store.set('desk-version', '2.1'); location.href = 'v3/v21/' + (inPhone ? '?phone=1' : ''); return }
   version = v
   store.set('desk-version', v)
   document.body.dataset.v = v

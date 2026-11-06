@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Your Desk Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f6f6f7; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.09); --green: #079455; --blue: #2f5fe0; --amber: #b54708; --violet: #6b5bd6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e7e7ea; color: var(--fg); font: 400 14px/1.4 Inter, system-ui, sans-serif; padding: 36px 16px 80px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; font-size: 10.5px; color: var(--fg3); }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  h1 { font-weight: 400; font-size: 26px; letter-spacing: -.02em; margin: 0 0 6px; }
+  .lede { color: var(--fg2); margin: 0 0 30px; max-width: 760px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
+  .opt h2 { font-size: 16px; font-weight: 500; margin: 0 0 4px; } .opt p { color: var(--fg2); margin: 0 0 12px; font-size: 13.5px; }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); margin-bottom: 8px; color: var(--fg2); }
+  .scene { position: relative; height: 640px; border-radius: 14px; overflow: hidden; background: linear-gradient(160deg, #eceef5, #f3f2f6); box-shadow: 0 0 0 1px var(--line); }
+  .scene::after { content: 'Good morning, Maya.'; position: absolute; left: 62%; top: 120px; transform: translateX(-50%); font-size: 30px; font-weight: 300; color: rgba(21,22,27,.25); white-space: nowrap; filter: blur(1px); }
+  .veil { position: absolute; inset: 0; background: rgba(21,22,27,.06); }
+  .panel { position: absolute; z-index: 2; background: var(--page); overflow: hidden; }
+  /* A: Pulse */
+  .a { left: 12px; top: 12px; bottom: 12px; width: 330px; border-radius: 20px; padding: 22px; box-shadow: 0 0 0 1px var(--line), 0 30px 60px -30px rgba(0,0,0,.35); }
+  .hero { margin: 14px 0 6px; } .hero b { font-size: 38px; font-weight: 300; letter-spacing: -.04em; } .hero small { color: var(--green); margin-left: 8px; font-size: 13px; }
+  .spark { width: 100%; height: 44px; margin: 4px 0 10px; }
+  .goal { height: 4px; border-radius: 2px; background: rgba(21,22,27,.07); overflow: hidden; } .goal i { display: block; height: 100%; width: 82%; background: linear-gradient(90deg, #6b5bd6, #2f8cff); border-radius: 2px; }
+  .goalt { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--fg3); margin: 6px 0 16px; }
+  .chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 18px; }
+  .chip { padding: 9px 10px; border-radius: 12px; background: #f6f6f8; } .chip b { display: block; font-size: 16px; font-weight: 500; } .chip span { font-size: 11px; color: var(--fg3); }
+  .tl { position: relative; padding-left: 18px; } .tl::before { content: ''; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 1px; background: var(--line); }
+  .ev { position: relative; padding: 6px 0; font-size: 13px; } .ev::before { content: ''; position: absolute; left: -18px; top: 11px; width: 9px; height: 9px; border-radius: 5px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--fg3); }
+  .ev.g::before { box-shadow: none; background: var(--green); } .ev.am::before { box-shadow: none; background: var(--amber); }
+  .ev .t { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--fg3); display: block; }
+  /* B: Your AI team */
+  .b { left: 12px; top: 12px; bottom: 12px; width: 330px; border-radius: 20px; padding: 22px; box-shadow: 0 0 0 1px var(--line), 0 30px 60px -30px rgba(0,0,0,.35); }
+  .nums { display: flex; justify-content: space-between; margin: 14px 0 18px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .nums div b { display: block; font-size: 19px; font-weight: 400; letter-spacing: -.02em; } .nums div span { font-size: 11px; color: var(--fg3); }
+  .agent { display: flex; gap: 12px; align-items: center; padding: 10px 0; }
+  .av { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; font-size: 15px; flex: none; }
+  .agent .tx { flex: 1; min-width: 0; } .agent .tx b { display: block; font-weight: 500; font-size: 13.5px; } .agent .tx span { font-size: 12px; color: var(--fg2); }
+  .live { width: 7px; height: 7px; border-radius: 4px; background: var(--green); box-shadow: 0 0 0 4px rgba(7,148,85,.12); animation: pulse 1.8s infinite; }
+  .idle { width: 7px; height: 7px; border-radius: 4px; background: rgba(21,22,27,.18); }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(7,148,85,0); } }
+  .foot { position: absolute; left: 22px; right: 22px; bottom: 18px; font-size: 12px; color: var(--fg3); }
+  /* C: Tabs card */
+  .c { left: 50%; top: 50%; width: 400px; transform: translate(-50%, -50%); border-radius: 22px; padding: 18px; box-shadow: 0 0 0 1px var(--line), 0 40px 80px -30px rgba(0,0,0,.4); }
+  .tabs { display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: #f1f1f3; margin: 12px 0 16px; }
+  .tabs span { flex: 1; text-align: center; padding: 7px 0; border-radius: 9px; font-size: 13px; color: var(--fg2); } .tabs span.on { background: #fff; color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .bars { display: flex; align-items: end; gap: 6px; height: 110px; padding: 0 2px; margin-bottom: 8px; }
+  .bars i { flex: 1; border-radius: 6px 6px 3px 3px; background: linear-gradient(180deg, #8f84ff, #c9c3ff); } .bars i.now { background: linear-gradient(180deg, #2f5fe0, #7fa2ff); }
+  .days { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--fg3); margin-bottom: 16px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .row2 div { padding: 12px; border-radius: 14px; background: #f6f6f8; } .row2 b { display: block; font-size: 20px; font-weight: 400; letter-spacing: -.02em; } .row2 span { font-size: 11.5px; color: var(--fg2); }
+  .x { position: absolute; right: 16px; top: 16px; width: 28px; height: 28px; border-radius: 14px; display: grid; place-items: center; color: var(--fg3); font-size: 18px; }
+  .pick { margin-top: 10px; font-size: 13px; color: var(--fg2); } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Your desk sheet · three directions</h1>
+  <p class="lede">All three fix the stark full-height slab: the panel floats with a margin and soft corners, so it feels like a layer on the room rather than a wall. They differ in what leads.</p>
+  <div class="grid">
+
+    <div class="opt">
+      <span class="tag">A · Pulse</span>
+      <h2>The numbers, then the day as a timeline</h2>
+      <p>One big number with its trend line and the October goal. Three small chips. Below, everything that happened as one timeline: overnight in grey, this morning in green, later in amber.</p>
+      <div class="scene"><div class="veil"></div>
+        <div class="panel a">
+          <span class="mono">Your desk · Mon Nov 2</span><span class="x" style="right:16px;top:14px;position:absolute">×</span>
+          <div class="hero"><b>$412.8k</b><small>↑ 6.2%</small></div>
+          <svg class="spark" viewBox="0 0 300 44" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6b5bd6" stop-opacity=".25"/><stop offset="1" stop-color="#6b5bd6" stop-opacity="0"/></linearGradient></defs><path d="M0 34 L30 30 L60 32 L90 25 L120 27 L150 20 L180 22 L210 15 L240 16 L270 9 L300 6 L300 44 L0 44Z" fill="url(#g)"/><path d="M0 34 L30 30 L60 32 L90 25 L120 27 L150 20 L180 22 L210 15 L240 16 L270 9 L300 6" fill="none" stroke="#6b5bd6" stroke-width="1.6"/></svg>
+          <div class="goal"><i></i></div><div class="goalt"><span>October goal</span><span>$412.8k of $420k</span></div>
+          <div class="chips"><div class="chip"><b>23</b><span>bookings</span></div><div class="chip"><b>27</b><span>AI agents</span></div><div class="chip"><b>77%</b><span>AI spend</span></div></div>
+          <span class="mono">Today</span>
+          <div class="tl" style="margin-top:8px">
+            <div class="ev am"><span class="t">Later</span>Ads paused since Tuesday</div>
+            <div class="ev g"><span class="t">9:41 AM</span>2 fixes ran · +$3.6k/mo</div>
+            <div class="ev"><span class="t">6:05 AM</span>Scheduled today’s social posts</div>
+            <div class="ev"><span class="t">2:14 AM</span>Booked Dr. Priya Nair for 11:00</div>
+            <div class="ev"><span class="t">11:48 PM</span>Replied to 18 new leads</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt">
+      <span class="tag">B · Your AI team</span>
+      <h2>Who’s working, and on what</h2>
+      <p>The numbers become one quiet row. The sheet is about the team: each agent, what it’s doing right now, with a live dot. Answers “what does this space do?” directly.</p>
+      <div class="scene"><div class="veil"></div>
+        <div class="panel b">
+          <span class="mono">Your AI team · 4 working</span><span class="x" style="position:absolute">×</span>
+          <div class="nums"><div><b>$412.8k</b><span>MRR</span></div><div><b>23</b><span>bookings</span></div><div><b>61</b><span>done overnight</span></div></div>
+          <div class="agent"><div class="av" style="background:#eef0ff;color:#4b4bd6">◎</div><div class="tx"><b>Ads</b><span>Watching 14 accounts · Harbor back on</span></div><i class="live"></i></div>
+          <div class="agent"><div class="av" style="background:#e9f8f0;color:#079455">✆</div><div class="tx"><b>Front desk</b><span>Answering calls after 5 · 3 today</span></div><i class="live"></i></div>
+          <div class="agent"><div class="av" style="background:#fff3e6;color:#b54708">★</div><div class="tx"><b>Reviews</b><span>41 replies drafted, in your voice</span></div><i class="live"></i></div>
+          <div class="agent"><div class="av" style="background:#f0f6ff;color:#2f5fe0">✉</div><div class="tx"><b>Follow-up</b><span>Chased 3 invoices · next run 2 PM</span></div><i class="live"></i></div>
+          <div class="agent"><div class="av" style="background:#f4f4f6;color:#52545f">✎</div><div class="tx"><b>Social</b><span>Next post at 4 PM</span></div><i class="idle"></i></div>
+          <div class="agent"><div class="av" style="background:#f4f4f6;color:#52545f">$</div><div class="tx"><b>Billing</b><span>Quiet · nothing due</span></div><i class="idle"></i></div>
+          <div class="foot">Later · 1 &nbsp;·&nbsp; Ads paused since Tuesday</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt">
+      <span class="tag">C · Card with tabs</span>
+      <h2>A floating card: Today · Numbers · Later</h2>
+      <p>Not a sidebar at all: a card that rises in the middle, with three tabs. Shown on Numbers: a week of revenue as soft bars, and four numbers. Most compact, most “app-like”.</p>
+      <div class="scene"><div class="veil" style="background:rgba(21,22,27,.12);backdrop-filter:blur(3px)"></div>
+        <div class="panel c">
+          <span class="mono">Your desk</span><span class="x">×</span>
+          <div class="tabs"><span>Today</span><span class="on">Numbers</span><span>Later · 1</span></div>
+          <div class="bars"><i style="height:48%"></i><i style="height:56%"></i><i style="height:52%"></i><i style="height:64%"></i><i style="height:60%"></i><i style="height:72%"></i><i class="now" style="height:86%"></i></div>
+          <div class="days"><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Today</span></div>
+          <div class="row2"><div><b>$412.8k</b><span>MRR · ↑ 6.2%</span></div><div><b>23</b><span>Bookings today</span></div><div><b>27</b><span>AI agents · 4 busy</span></div><div><b>$1,920</b><span>AI spend · 77%</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="pick">My pick: <b>A · Pulse</b>. It keeps the numbers glanceable and turns the lists into one story of the day, which is what this view is for.</p>
+</div>
+</body>
+</html>
