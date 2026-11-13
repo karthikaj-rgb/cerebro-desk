@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iPhone plan edits</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#f2f2f5; --page:#fff; --fg:#15161b; --fg2:#5c5e69; --fg3:#8a8c97; --line:rgba(21,22,27,.08); --chip:#f1f1f4; --ok:#1f9d5c; }
+* { box-sizing: border-box; }
+body { margin:0; background:#e9e9ee; color:var(--fg); font:400 14px/1.45 Inter, system-ui, sans-serif; -webkit-font-smoothing:antialiased; padding:40px 24px 60px; }
+h1 { font-weight:500; font-size:26px; margin:0 0 6px; text-align:center; } .lead { text-align:center; color:var(--fg2); margin:0 auto 32px; max-width:640px; font-size:15px; }
+.row { display:flex; gap:36px; justify-content:center; flex-wrap:wrap; }
+.col { display:flex; flex-direction:column; align-items:center; gap:14px; }
+.cap { font-size:14px; color:var(--fg2); max-width:300px; text-align:center; } .cap b { color:var(--fg); font-weight:500; display:block; font-size:15px; }
+.dev { width:340px; height:700px; border-radius:50px; background:#0c0c0f; padding:10px; box-shadow:0 40px 80px -40px rgba(0,0,0,.5); }
+.scr { position:relative; height:100%; border-radius:40px; overflow:hidden; background:rgba(0,0,0,.28); }
+.sheet { position:absolute; left:0; right:0; bottom:0; background:var(--page); border-radius:30px 30px 0 0; padding:10px 18px 28px; display:flex; flex-direction:column; gap:14px; }
+.grab { width:38px; height:5px; border-radius:3px; background:#d6d6dc; margin:0 auto 4px; }
+.hd { display:flex; align-items:center; gap:12px; } .face { width:44px; height:44px; border-radius:50%; flex:none; display:grid; place-items:center; font-size:12px; letter-spacing:3px; color:#15161b; }
+.k { font-size:12px; color:var(--fg3); font-weight:500; } .tt { font-size:19px; font-weight:600; letter-spacing:-.01em; line-height:24px; }
+.list { border-radius:16px; background:var(--chip); overflow:hidden; }
+.it { display:flex; align-items:center; gap:10px; padding:12px 14px; font-size:15px; min-height:48px; }
+.it + .it { border-top:1px solid var(--line); } .it .l { color:var(--fg2); width:92px; flex:none; } .it .v { flex:1; min-width:0; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.it .c { color:var(--fg3); font-size:17px; } .it.open { background:#e9e9ee; } .it.open .c { transform:rotate(90deg); display:inline-block; }
+.pick { background:var(--page); margin:0 8px 8px; border-radius:12px; overflow:hidden; } .pick div { display:flex; align-items:center; gap:10px; padding:11px 12px; font-size:15px; } .pick div + div { border-top:1px solid var(--line); }
+.pick small { color:var(--fg3); font-size:13px; margin-left:auto; } .pick .on { font-weight:500; } .pick .tick { color:var(--ok); width:16px; } .pick .add { color:var(--fg2); }
+.tg { margin-left:auto; width:44px; height:26px; border-radius:13px; background:#d9d9de; position:relative; flex:none; } .tg::after { content:''; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.2); } .tg.on { background:#15161b; } .tg.on::after { left:21px; }
+.msg { background:var(--page); margin:0 8px 8px; border-radius:12px; padding:10px 12px; font-size:14px; color:var(--fg2); } .msg b { display:block; color:var(--fg); font-weight:500; font-size:13px; margin-bottom:2px; } .msg .ed { margin-top:8px; display:flex; gap:8px; } .msg .ed span { font-size:13px; padding:5px 11px; border-radius:99px; background:var(--chip); color:var(--fg); }
+.soft { display:flex; justify-content:center; align-items:center; gap:18px; font-size:15px; color:var(--fg2); } .soft b { color:var(--fg); font-weight:500; }
+.slide { height:58px; border-radius:29px; background:#15161b; color:#fff; display:flex; align-items:center; padding:5px; font-size:16px; font-weight:500; } .slide i { width:48px; height:48px; border-radius:50%; background:#fff; color:#15161b; display:grid; place-items:center; font-style:normal; font-size:18px; } .slide span { flex:1; text-align:center; margin-right:48px; }
+.changed { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--ok); margin-left:7px; vertical-align:2px; font-size:0; }
+.note { max-width:760px; margin:40px auto 0; background:#fff; border-radius:18px; padding:20px 24px; font-size:15px; color:var(--fg2); } .note b { color:var(--fg); font-weight:500; } .note ul { margin:8px 0 0; padding-left:20px; } .note li { margin:4px 0; }
+</style></head><body>
+<h1>Change the details before you slide</h1>
+<p class="lead">Today the sheet shows two read-only tiles. Here they become a short list you can tap to change, like Change on desktop. Nothing runs until you slide.</p>
+<div class="row">
+
+<div class="col"><div class="dev"><div class="scr"><div class="sheet">
+  <div class="grab"></div>
+  <div class="hd"><span class="face" style="background:#f0a35e">••</span><div><div class="k">Ads agent</div><div class="tt">Switch to the new Visa ••4411?</div></div></div>
+  <div class="list">
+    <div class="it"><span class="l">Card</span><span class="v">Visa ••4411</span><span class="c">›</span></div>
+    <div class="it"><span class="l">Resume</span><span class="v">All 3 campaigns</span><span class="c">›</span></div>
+    <div class="it"><span class="l">Tell client</span><span class="v">Text Dr. Amy Chen</span><span class="c">›</span></div>
+  </div>
+  <div class="soft"><span>Undo any time</span><b>See the 4 steps</b></div>
+  <div class="slide"><i>→</i><span>Slide to switch</span></div>
+  <div class="soft"><span>Not now</span><span>Always do this</span></div>
+</div></div></div>
+<div class="cap"><b>1 · The plan, with its details</b>Each row is part of what will happen, and every one can be changed.</div></div>
+
+<div class="col"><div class="dev"><div class="scr"><div class="sheet">
+  <div class="grab"></div>
+  <div class="hd"><span class="face" style="background:#f0a35e">••</span><div><div class="k">Ads agent</div><div class="tt">Switch to the new Visa ••4411?</div></div></div>
+  <div class="list">
+    <div class="it open"><span class="l">Card</span><span class="v">Visa ••4411</span><span class="c">›</span></div>
+    <div class="pick">
+      <div class="on"><span class="tick">✓</span>Visa ••4411<small>Expires 08/29</small></div>
+      <div><span class="tick"></span>Mastercard ••2290<small>Expires 03/27</small></div>
+      <div class="add"><span class="tick">+</span>Ask Harbor for a card</div>
+    </div>
+    <div class="it"><span class="l">Resume</span><span class="v">All 3 campaigns</span><span class="c">›</span></div>
+    <div class="it"><span class="l">Tell client</span><span class="v">Text Dr. Amy Chen</span><span class="c">›</span></div>
+  </div>
+  <div class="slide"><i>→</i><span>Slide to switch</span></div>
+</div></div></div>
+<div class="cap"><b>2 · Tap a row to change it</b>It opens in place, no new screen. Pick, and it closes with the new value. The title updates to match.</div></div>
+
+<div class="col"><div class="dev"><div class="scr"><div class="sheet">
+  <div class="grab"></div>
+  <div class="hd"><span class="face" style="background:#e46aa6">••</span><div><div class="k">Marketing agent</div><div class="tt">Black Friday for 12 dental clients</div></div></div>
+  <div class="list">
+    <div class="it"><span class="l">Offer</span><span class="v">Free whitening<span class="changed">Changed</span></span><span class="c">›</span></div>
+    <div class="it"><span class="l">Who</span><span class="v">2,340 patients</span><span class="c">›</span></div>
+    <div class="it open"><span class="l">Messages</span><span class="v">2 emails, 1 text</span><span class="c">›</span></div>
+    <div class="msg"><b>Nov 24 · Email</b>Our biggest offer of the year: free whitening with any cleaning booked this week.<div class="ed"><span>Edit</span><span>Shorter</span><span>Friendlier</span></div></div>
+    <div class="it"><span class="l">When</span><span class="v">Nov 24 · 10 AM</span><span class="c">›</span></div>
+  </div>
+  <div class="slide"><i>→</i><span>Slide to schedule</span></div>
+</div></div></div>
+<div class="cap"><b>3 · Campaigns get the same rows as desktop</b>Offer, Who, Messages, When. Messages opens a preview you can edit, or ask for shorter or friendlier.</div></div>
+
+</div>
+
+<h1 style="margin-top:56px">Campaign, row by row</h1>
+<p class="lead">The same four rows as desktop’s Change links. Each opens in place; the estimate under the title updates as you change things.</p>
+<div class="row">
+
+<div class="col"><div class="dev"><div class="scr"><div class="sheet">
+  <div class="grab"></div>
+  <div class="hd"><span class="face" style="background:#e46aa6">••</span><div><div class="k">Marketing agent · est. 140 bookings</div><div class="tt">Black Friday for 12 dental clients</div></div></div>
+  <div class="list">
+    <div class="it open"><span class="l">Offer</span><span class="v">Free whitening</span><span class="c">›</span></div>
+    <div class="pick">
+      <div class="on"><span class="tick">✓</span>Free whitening<small>8.1% last year</small></div>
+      <div><span class="tick"></span>20% off a cleaning<small>6.4%</small></div>
+      <div><span class="tick"></span>Bring a friend, both save<small>5.2%</small></div>
+      <div class="add"><span class="tick">+</span>Write my own offer</div>
+    </div>
+    <div class="it"><span class="l">Who</span><span class="v">2,340 patients</span><span class="c">›</span></div>
+    <div class="it"><span class="l">Messages</span><span class="v">2 emails, 1 text</span><span class="c">›</span></div>
+    <div class="it"><span class="l">When</span><span class="v">Nov 24 · 10 AM</span><span class="c">›</span></div>
+  </div>
+  <div class="slide"><i>→</i><span>Slide to schedule</span></div>
+</div></div></div>
+<div class="cap"><b>Offer</b>Ranked by what worked last year, with the rate beside each. Or write your own.</div></div>
+
+<div class="col"><div class="dev"><div class="scr"><div class="sheet">
+  <div class="grab"></div>
+  <div class="hd"><span class="face" style="background:#e46aa6">••</span><div><div class="k">Marketing agent · est. 118 bookings</div><div class="tt">Black Friday for 12 dental clients</div></div></div>
+  <div class="list">
+    <div class="it"><span class="l">Offer</span><span class="v">Free whitening</span><span class="c">›</span></div>
+    <div class="it open"><span class="l">Who</span><span class="v">1,910 patients<span class="changed">Changed</span></span><span class="c">›</span></div>
+    <div class="pick">
+      <div>Due for a cleaning<small>1,120</small><span class="tg on"></span></div>
+      <div>Haven’t booked in a year<small>790</small><span class="tg on"></span></div>
+      <div>Booked in the last month<small>430</small><span class="tg"></span></div>
+    </div>
+    <div class="it"><span class="l">Messages</span><span class="v">2 emails, 1 text</span><span class="c">›</span></div>
+    <div class="it"><span class="l">When</span><span class="v">Nov 24 · 10 AM</span><span class="c">›</span></div>
+  </div>
+  <div class="slide"><i>→</i><span>Slide to schedule</span></div>
+</div></div></div>
+<div class="cap"><b>Who</b>Groups switch on or off. The count and the estimate update right away.</div></div>
+
+<div class="col"><div class="dev"><div class="scr"><div class="sheet">
+  <div class="grab"></div>
+  <div class="hd"><span class="face" style="background:#e46aa6">••</span><div><div class="k">Marketing agent · est. 118 bookings</div><div class="tt">Black Friday for 12 dental clients</div></div></div>
+  <div class="list">
+    <div class="it"><span class="l">Offer</span><span class="v">Free whitening</span><span class="c">›</span></div>
+    <div class="it"><span class="l">Who</span><span class="v">1,910 patients</span><span class="c">›</span></div>
+    <div class="it"><span class="l">Messages</span><span class="v">2 emails, 1 text</span><span class="c">›</span></div>
+    <div class="it open"><span class="l">When</span><span class="v">1 PM</span><span class="c">›</span></div>
+    <div class="pick" style="padding:10px 12px">
+      <div style="padding:0;gap:8px;border:0"><span style="padding:7px 14px;border-radius:99px;background:var(--chip)">10 AM</span><span style="padding:7px 14px;border-radius:99px;background:#15161b;color:#fff">1 PM</span><span style="padding:7px 14px;border-radius:99px;background:var(--chip)">6 PM</span></div>
+      <div style="padding:8px 0 0;border:0;font-size:13px;color:var(--fg3)">Sends Nov 24, 27 and 29, in each clinic’s time zone</div>
+    </div>
+  </div>
+  <div class="slide"><i>→</i><span>Slide to schedule</span></div>
+</div></div></div>
+<div class="cap"><b>When</b>Pick a send time. Dates stay the same; each clinic gets it in its own time zone.</div></div>
+
+</div>
+<p class="lead" style="margin-top:20px">After the slide: “Scheduled for 12 clients. Each clinic gets a preview to approve 3 days before.” With Undo.</p>
+<div class="note"><b>What changes in the app</b><ul>
+<li>The two grey tiles become a tappable list for every plan: Harbor card, Peak widget (which version to restore, test booking on or off), missed calls (which clinics, the text it sends), and the Black Friday campaign.</li>
+<li>Rows open in place; anything you change gets a small green dot, and the slider uses your choices.</li>
+<li>Undo any time and See the steps sit on one line, centred.</li>
+</ul></div>
+</body></html>
