@@ -293,6 +293,7 @@
     const b = document.body
     if (op.t === 'tone') { if (op.v === 'default') { if (bodySnap.tone) b.dataset.tone = bodySnap.tone; else delete b.dataset.tone } else b.dataset.tone = op.v; if (lastColor) apply({ t: 'color', hex: lastColor }) }
     if (op.t === 'color') { if (!op.hex) { lastColor = null; ['--a', '--b', '--c'].forEach((k) => b.style.removeProperty(k)); return } lastColor = op.hex; const [a, c2, c3] = pal(op.hex); b.style.setProperty('--a', a); b.style.setProperty('--b', c2); b.style.setProperty('--c', c3) }
+    if (op.t === 'vars') Object.entries(op.v || {}).forEach(([k, v]) => b.style.setProperty(k, v))
     if (op.t === 'font') { if (op.v === 'sans') delete b.dataset.hf; else b.dataset.hf = op.v }
     if (op.t === 'btn') b.dataset.btn = op.v
     if (op.t === 'hide') { const el = document.querySelector(SECT[op.key] || op.key); if (el) el.classList.toggle('ed-gone', !op.show) }

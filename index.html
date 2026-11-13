@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <script>try { var dv = localStorage.getItem('desk-version'); if (dv === '3' || dv === '2.1') location.replace((dv === '3' ? 'v3/' : 'v3/v21/') + (new URLSearchParams(location.search).has('phone') ? '?phone=1' : '')) } catch (e) {}</script>
+    <script>try { var dv = localStorage.getItem('desk-version'); if (dv === '3' || dv === '2.1' || dv === '2.2') location.replace((dv === '3' ? 'v3/' : dv === '2.2' ? 'v3/v22/' : 'v3/v21/') + (new URLSearchParams(location.search).has('phone') ? '?phone=1' : '')) } catch (e) {}</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cerebro · The Desk</title>
@@ -61,7 +61,7 @@
         <div class="pbox" id="pbox" hidden>
           <div class="pb-title"><span>Prototype</span><button type="button" class="pb-restart" id="pbRestart" title="Start the demo over: everything you fixed comes back, your options stay"><i class="ti ti-rotate"></i> Restart</button></div>
           <div class="pb-row"><span>Version</span>
-            <div class="seg small" role="tablist"><button data-version="1" role="tab">V1</button><button data-version="2" role="tab">V2</button><button data-version="2.1" role="tab">V2.1</button><button data-version="3" role="tab">V3</button></div></div>
+            <div class="seg small" role="tablist"><button data-version="1" role="tab">V1</button><button data-version="2" role="tab">V2</button><button data-version="2.1" role="tab">V2.1</button><button data-version="2.2" role="tab">V2.2</button><button data-version="3" role="tab">V3</button></div></div>
           <div class="pb-hint" id="pbHint0"></div>
           <div class="pb-row" id="pbDay" hidden><span>Day</span>
             <div class="seg small" role="tablist"><button data-day="busy" role="tab">Busy</button><button data-day="quiet" role="tab">Quiet</button></div></div>

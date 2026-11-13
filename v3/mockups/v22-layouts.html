@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V2.2 Layouts</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f6f6f7; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.13); --green: #079455; --amber: #d98a1c; --blue: #2f5fe0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ec; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 44px 16px 100px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; }
+  header p { color: var(--fg2); margin: 0 0 8px; max-width: 880px; }
+  .rules { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 44px; } .rules span { font-size: 12px; padding: 4px 10px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--fg2); }
+  .ver { margin-bottom: 70px; }
+  .vh { display: grid; grid-template-columns: 40px 1fr; gap: 2px 12px; margin-bottom: 16px; }
+  .vh .n { font-size: 11px; color: var(--fg3); padding-top: 6px; } .vh h2 { margin: 0; font-size: 21px; font-weight: 500; letter-spacing: -.02em; } .vh p { grid-column: 2; margin: 0; color: var(--fg2); font-size: 13.5px; max-width: 900px; }
+  .lbl { font-size: 11px; color: var(--fg3); margin: 18px 0 8px 52px; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 720; }
+  .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 720px; transform-origin: 0 0; background: var(--bg); border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.35); display: flex; }
+
+  /* Shared chrome */
+  .side { width: 220px; flex: none; background: var(--page); border-right: 1px solid var(--line); padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+  .brand { display: flex; align-items: center; gap: 8px; padding: 4px 8px 12px; font-weight: 500; } .brand i { width: 20px; height: 20px; border-radius: 6px; background: var(--fg); }
+  .new { padding: 7px 10px; border-radius: 9px; box-shadow: inset 0 0 0 1px var(--line2); margin-bottom: 8px; }
+  .sec { font-size: 10px; color: var(--fg3); padding: 12px 10px 4px; }
+  .h { padding: 6px 10px; border-radius: 8px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .h.on { background: #f1f1f3; color: var(--fg); }
+  .mem { margin-top: auto; border-top: 1px solid var(--line); padding-top: 8px; } .mem .m { padding: 4px 10px; color: var(--fg2); font-size: 12px; } .mem .more { padding: 6px 10px; font-size: 12px; color: var(--blue); }
+  .main { flex: 1; position: relative; display: flex; flex-direction: column; min-width: 0; }
+  .bar { height: 54px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 12px; color: var(--fg2); }
+  .bar .r { display: flex; gap: 12px; align-items: center; }
+  .seg { display: inline-flex; padding: 2px; border-radius: 9px; background: rgba(21,22,27,.06); } .seg span { padding: 3px 10px; border-radius: 7px; } .seg span.on { background: #fff; color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .av { width: 26px; height: 26px; border-radius: 13px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; }
+  .body { flex: 1; position: relative; overflow: hidden; }
+  .center { width: 700px; margin: 0 auto; }
+  .hi { font-size: 28px; font-weight: 300; letter-spacing: -.03em; margin: 30px 0 2px; } .sub { color: var(--fg2); font-size: 14px; margin-bottom: 20px; }
+  .input { height: 46px; border-radius: 23px; background: #fff; box-shadow: 0 0 0 1px var(--line2), 0 10px 30px -20px rgba(0,0,0,.3); display: flex; align-items: center; gap: 10px; padding: 0 6px 0 18px; color: var(--fg3); font-size: 14px; }
+  .input .sp { color: #7c83ff; } .input .mic { margin-left: auto; width: 34px; height: 34px; border-radius: 17px; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line2); font-size: 12px; } .input .send { width: 34px; height: 34px; border-radius: 17px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 12px; }
+  .input.dock { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); width: 620px; }
+
+  /* White cards: one dot of colour says what kind it is */
+  .dot { width: 7px; height: 7px; border-radius: 4px; display: inline-block; flex: none; }
+  .need { background: var(--amber); } .start { background: var(--green); } .info { background: #c4c6cf; }
+  .card { background: #fff; border-radius: 16px; padding: 14px 16px; box-shadow: 0 0 0 1px var(--line); display: flex; flex-direction: column; gap: 3px; }
+  .card .k { display: flex; align-items: center; gap: 7px; font-size: 10px; color: var(--fg3); }
+  .card b { font-weight: 500; font-size: 15px; letter-spacing: -.01em; line-height: 1.25; margin-top: 4px; }
+  .card span.s { font-size: 12.5px; color: var(--fg2); }
+  .card .num { font-size: 24px; font-weight: 300; letter-spacing: -.03em; margin-top: 2px; }
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 70px; gap: 10px; } .r2 { grid-row: span 2; } .r3 { grid-row: span 3; }
+  .pills { display: flex; gap: 6px; justify-content: center; margin: 2px 0 16px; flex-wrap: wrap; }
+  .pill { font-size: 12px; padding: 5px 11px 5px 9px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); display: inline-flex; align-items: center; gap: 6px; }
+  .pill.dn { color: var(--fg3); text-decoration: line-through; }
+
+  /* The short open state: one line, one question, answers. Everything else is behind "Details". */
+  .open { background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line), 0 20px 50px -30px rgba(0,0,0,.3); padding: 20px 22px; }
+  .open .t { font-size: 20px; font-weight: 500; letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
+  .open .meta { color: var(--fg2); font-size: 14px; margin-top: 4px; }
+  .open .q { font-size: 15px; font-weight: 500; margin-top: 16px; }
+  .acts { display: flex; gap: 6px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+  .act { font-size: 13px; padding: 7px 14px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); }
+  .act.pri { background: var(--fg); color: #fff; box-shadow: none; }
+  .link { font-size: 12.5px; color: var(--fg3); margin-left: 6px; }
+  .done { font-size: 13.5px; color: var(--green); display: flex; gap: 12px; align-items: center; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .done .steps { color: var(--fg3); font-size: 12.5px; } .done u { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--fg2); font-size: 12.5px; }
+  .me { display: inline-block; margin-top: 12px; background: #f1f1f3; border-radius: 12px; padding: 6px 12px; font-size: 13.5px; }
+
+  /* B · list */
+  .list { background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-top: 1px solid var(--line); font-size: 14.5px; }
+  .row:first-child { border-top: 0; } .row .rt { flex: 1; } .row .rm { font-size: 12.5px; color: var(--fg3); } .row .ch { color: var(--fg3); font-size: 12px; }
+  .row.opn { display: block; background: #fcfcfd; } .row.opn .open { box-shadow: none; padding: 4px 0 4px 19px; background: transparent; }
+  .grp { font-size: 10px; color: var(--fg3); padding: 14px 18px 4px; border-top: 1px solid var(--line); background: #fafafb; }
+
+  /* C · two lanes */
+  .lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 820px; margin: 0 auto; }
+  .lane h3 { font-size: 11px; font-weight: 400; color: var(--fg3); margin: 0 0 8px; display: flex; gap: 8px; align-items: center; }
+  .lane .card { margin-bottom: 8px; } .lane.dim { opacity: .4; }
+
+  /* D · one at a time */
+  .deck { position: relative; width: 560px; margin: 30px auto 0; height: 230px; }
+  .deck .open { position: absolute; left: 0; right: 0; top: 0; z-index: 3; min-height: 180px; }
+  .deck .ghost { position: absolute; left: 0; right: 0; height: 180px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+  .deck .g1 { top: 14px; transform: scale(.96); z-index: 2; } .deck .g2 { top: 28px; transform: scale(.92); z-index: 1; opacity: .7; }
+  .count { text-align: center; font-size: 11px; color: var(--fg3); margin-top: 14px; }
+  .dots { display: flex; gap: 6px; justify-content: center; margin-top: 8px; } .dots i { width: 6px; height: 6px; border-radius: 3px; background: rgba(21,22,27,.15); } .dots i.on { background: var(--fg); } .dots i.ok { background: var(--green); }
+  .then { width: 560px; margin: 0 auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+  /* Memory ideas */
+  .remember { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--fg2); padding: 8px 12px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); margin-top: 10px; }
+  .remember .ic { width: 22px; height: 22px; border-radius: 6px; background: #f1f1f3; display: grid; place-items: center; font-size: 12px; }
+  .remember b { color: var(--fg); font-weight: 500; } .remember .x { margin-left: auto; color: var(--fg3); display: flex; gap: 12px; }
+  .used { font-size: 11.5px; color: var(--fg3); margin-top: 8px; display: flex; gap: 6px; align-items: center; } .used span { padding: 2px 8px; border-radius: 99px; box-shadow: inset 0 0 0 1px var(--line2); color: var(--fg2); }
+  .bubble { background: #fff; border-radius: 14px; padding: 12px 14px; box-shadow: 0 0 0 1px var(--line); font-size: 14px; margin-top: 10px; }
+  .mine { margin-left: auto; width: fit-content; background: var(--fg); color: #fff; border-radius: 14px; padding: 8px 13px; font-size: 14px; margin-top: 10px; }
+  .msheet { position: absolute; right: 14px; top: 14px; bottom: 14px; width: 420px; background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line), 0 24px 60px -24px rgba(0,0,0,.3); padding: 18px 20px; overflow: hidden; }
+  .msheet h4 { margin: 0; font-size: 17px; font-weight: 500; } .msheet .ms { font-size: 12.5px; color: var(--fg3); margin: 2px 0 12px; }
+  .msearch { height: 34px; border-radius: 10px; background: #f4f4f6; display: flex; align-items: center; padding: 0 12px; color: var(--fg3); font-size: 13px; margin-bottom: 12px; }
+  .tabs { display: flex; gap: 16px; font-size: 13px; color: var(--fg3); border-bottom: 1px solid var(--line); margin-bottom: 6px; } .tabs span { padding-bottom: 8px; } .tabs .on { color: var(--fg); box-shadow: inset 0 -2px 0 var(--fg); }
+  .fact { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; } .fact .ft { flex: 1; } .fact small { display: block; color: var(--fg3); font-size: 11.5px; margin-top: 2px; } .fact .tg { width: 30px; height: 18px; border-radius: 9px; background: var(--fg); position: relative; flex: none; margin-top: 2px; } .fact .tg::after { content: ''; position: absolute; right: 2px; top: 2px; width: 14px; height: 14px; border-radius: 7px; background: #fff; } .fact .tg.off { background: #d7d8de; } .fact .tg.off::after { right: auto; left: 2px; }
+  .profile { width: 400px; background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line), 0 24px 60px -24px rgba(0,0,0,.3); padding: 18px 20px; }
+  .profile .ph { display: flex; align-items: center; gap: 12px; } .profile .lg { width: 40px; height: 40px; border-radius: 10px; background: #f1f1f3; display: grid; place-items: center; font-weight: 600; }
+  .profile h4 { margin: 0; font-size: 16px; font-weight: 500; } .profile .ms { font-size: 12px; color: var(--fg3); }
+  .kv { display: grid; grid-template-columns: 110px 1fr; gap: 6px 12px; font-size: 13px; margin-top: 14px; } .kv i { font-style: normal; color: var(--fg3); }
+  .learn { background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line), 0 20px 50px -30px rgba(0,0,0,.3); padding: 18px 20px; }
+  .learn .t { font-size: 16px; font-weight: 500; } .learn .meta { font-size: 13.5px; color: var(--fg2); margin-top: 4px; }
+  .dial { display: grid; grid-template-columns: 1fr 120px 120px; gap: 0; font-size: 13px; margin-top: 12px; } .dial div { padding: 9px 0; border-top: 1px solid var(--line); } .dial .hd { font-size: 10px; color: var(--fg3); border-top: 0; padding-bottom: 4px; } .dial .c { text-align: center; } .dial .sel { font-weight: 500; }
+  .pick { margin-top: 20px; color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>V2.2 · calmer cards, four layouts</h1>
+    <p>All cards are white now. The only colour is a small dot that tells you what kind of card it is: <b>amber</b> needs you, <b>green</b> is something to start, <b>grey</b> is information. When a card opens, it shows one line, one question and the answers. Everything else sits behind “Details”, and the steps it took collapse to one line.</p>
+    <div class="rules"><span><i class="dot need"></i> needs you</span><span><i class="dot start"></i> start something</span><span><i class="dot info"></i> information</span><span>Open = one line + one question + answers</span></div>
+  </header>
+  <div id="out"></div>
+  <p class="pick">My pick: <b>A · White bento</b> if you want Khoi’s concept as-is, or <b>D · One at a time</b> for the calmest morning (it’s V2.1’s “one thing at a time” with cards). <b>B · List</b> scales best when there are more than six things.</p>
+</div>
+<script>
+const side = (active, extra = '') => `<aside class="side"><div class="brand"><i></i>Acme Agency</div><div class="new">＋ New conversation</div>
+  <div class="sec mono">Today</div><div class="h on">${active}</div>${extra}
+  <div class="sec mono">Yesterday</div><div class="h">Glow Med Spa · signed</div><div class="h">Q4 pricing page</div><div class="h">Why did Lumen dip?</div>
+  <div class="mem"><div class="sec mono" style="padding-top:0">Memory</div><div class="m">Ask before spending over $500</div><div class="m">Lead with wins in reports</div><div class="more">Manage memory</div></div></aside>`
+const bar = (t) => `<div class="bar"><span>${t}</span><span class="r"><span class="mono" style="font-size:10px;color:var(--fg3)">$412.8k MRR · 61 done overnight</span><span class="seg"><span class="on">Type</span><span>Talk</span></span><span class="av">MA</span></span></div>`
+const stage = (inner, active = 'Morning brief', t = 'Monday, Nov 2', extra = '') => `<div class="fit"><div class="stage">${side(active, extra)}<div class="main">${bar(t)}<div class="body">${inner}</div></div></div></div>`
+const card = (kind, k, title, s, cls = '') => `<div class="card ${cls}"><span class="k mono"><i class="dot ${kind}"></i>${k}</span><b>${title}</b>${s ? `<span class="s">${s}</span>` : ''}</div>`
+const harborOpen = (after) => `<div class="open"><div class="t"><i class="dot need"></i>Harbor ads paused</div><div class="meta">Card expired Tuesday · −$2.4k/mo</div>
+  ${after ? `<div class="me">Yes, switch it</div><div class="done">✓ Live again on Visa ••4411 <span class="steps">▸ 4 steps · Ads agent</span><u>Undo</u></div>`
+  : `<div class="q">Switch to the new Visa ••4411?</div><div class="acts"><span class="act pri">Switch card</span><span class="act">Not now</span><span class="link">Details ⌄</span></div>`}</div>`
+const pills = (skip) => `<div class="pills">${[['need', 'Peak widget'], ['need', 'Calls after 5'], ['start', 'Glow Med Spa'], ['start', 'Black Friday'], ['info', '$412.8k MRR']].filter((p) => p[1] !== skip).map(([k, t]) => `<span class="pill"><i class="dot ${k}"></i>${t}</span>`).join('')}</div>`
+
+const V = [
+  { n: '01', name: 'White bento', why: 'Khoi’s concept with the colour taken out. Cards of different sizes; the size says how much it matters. Open a card and the rest fold into pills.',
+    home: `<div class="center"><div class="hi">Good morning, Maya.</div><div class="sub">Three things need you, and a few to start.</div>
+      <div class="bento">${card('need', 'Harbor Dental', 'Ads paused', '−$2.4k/mo', 'r2')}${card('start', 'Campaign', 'Black Friday in 24 days', '')}${card('need', 'Peak Fitness', 'Booking widget down', '−$1.6k/mo', 'r2')}${card('start', 'New client', 'Onboard Glow Med Spa', 'Signed yesterday', 'r2')}${card('need', 'Calls', 'Missed calls after 5 PM', '+18% this month', 'r2')}<div class="card"><span class="k mono"><i class="dot info"></i>MRR</span><span class="num">$412.8k</span></div></div>
+      <div class="input" style="margin-top:18px">${'<span class="sp">✦</span>Ask anything, or pick a card…<span class="mic">🎙</span><span class="send">↑</span>'}</div></div>`,
+    open: `<div class="center">${pills()}${harborOpen(false)}</div><div class="input dock"><span class="sp">✦</span>Reply about Harbor…<span class="mic">🎙</span><span class="send">↑</span></div>`,
+    after: `<div class="center">${pills()}${harborOpen(true)}</div><div class="input dock"><span class="sp">✦</span>Reply about Harbor…<span class="mic">🎙</span><span class="send">↑</span></div>` },
+  { n: '02', name: 'List', why: 'Like an inbox. Two groups: needs you, and start something. A row opens in place (accordion), so you never lose the list. The most compact; works with 3 things or 30.',
+    home: `<div class="center"><div class="hi">Good morning, Maya.</div><div class="sub">Three things need you, and a few to start.</div>
+      <div class="list"><div class="grp mono" style="border-top:0">Needs you · 3</div>
+        <div class="row"><i class="dot need"></i><span class="rt">Harbor ads paused</span><span class="rm">−$2.4k/mo</span><span class="ch">›</span></div>
+        <div class="row"><i class="dot need"></i><span class="rt">Peak booking widget down</span><span class="rm">−$1.6k/mo</span><span class="ch">›</span></div>
+        <div class="row"><i class="dot need"></i><span class="rt">Missed calls after 5 PM</span><span class="rm">+18%</span><span class="ch">›</span></div>
+        <div class="grp mono">Start something</div>
+        <div class="row"><i class="dot start"></i><span class="rt">Onboard Glow Med Spa</span><span class="rm">signed yesterday</span><span class="ch">›</span></div>
+        <div class="row"><i class="dot start"></i><span class="rt">Plan Black Friday</span><span class="rm">24 days out</span><span class="ch">›</span></div></div>
+      <div class="input" style="margin-top:16px"><span class="sp">✦</span>Ask anything…<span class="mic">🎙</span><span class="send">↑</span></div></div>`,
+    open: `<div class="center" style="padding-top:24px"><div class="list"><div class="grp mono" style="border-top:0">Needs you · 3</div>
+        <div class="row opn">${harborOpen(false)}</div>
+        <div class="row" style="opacity:.5"><i class="dot need"></i><span class="rt">Peak booking widget down</span><span class="rm">−$1.6k/mo</span></div>
+        <div class="row" style="opacity:.5"><i class="dot need"></i><span class="rt">Missed calls after 5 PM</span><span class="rm">+18%</span></div>
+        <div class="grp mono">Start something</div><div class="row" style="opacity:.5"><i class="dot start"></i><span class="rt">Onboard Glow Med Spa</span></div></div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask…<span class="mic">🎙</span><span class="send">↑</span></div>`,
+    after: `<div class="center" style="padding-top:24px"><div class="list"><div class="grp mono" style="border-top:0">Needs you · 2</div>
+        <div class="row"><span class="dot" style="background:var(--green)"></span><span class="rt" style="color:var(--fg3);text-decoration:line-through">Harbor ads paused</span><span class="rm" style="color:var(--green)">Live again · Undo</span></div>
+        <div class="row opn"><div class="open"><div class="t"><i class="dot need"></i>Peak booking widget down</div><div class="meta">Broke Sunday night · −$1.6k/mo</div><div class="q">Repair it now?</div><div class="acts"><span class="act pri">Repair</span><span class="act">Not now</span><span class="link">Details ⌄</span></div></div></div>
+        <div class="row" style="opacity:.5"><i class="dot need"></i><span class="rt">Missed calls after 5 PM</span></div></div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask…<span class="mic">🎙</span><span class="send">↑</span></div>` },
+  { n: '03', name: 'Two lanes', why: 'Reactive on the left, proactive on the right: the meeting’s point made visible. Opening a card dims the other lane, so you focus on one side at a time.',
+    home: `<div style="padding-top:6px"><div class="center" style="width:820px"><div class="hi">Good morning, Maya.</div><div class="sub">Three things need you, and a few to start.</div></div>
+      <div class="lanes"><div class="lane"><h3 class="mono"><i class="dot need"></i>Needs you · 3</h3>${card('need', 'Harbor Dental', 'Ads paused', '−$2.4k/mo')}${card('need', 'Peak Fitness', 'Booking widget down', '−$1.6k/mo')}${card('need', 'Calls', 'Missed calls after 5 PM', '+18%')}</div>
+        <div class="lane"><h3 class="mono"><i class="dot start"></i>Start something</h3>${card('start', 'New client', 'Onboard Glow Med Spa', 'Signed yesterday')}${card('start', 'Campaign', 'Plan Black Friday', '24 days out')}${card('start', 'Content', 'Next week’s posts', 'Not scheduled')}</div></div>
+      <div class="input dock"><span class="sp">✦</span>Ask anything…<span class="mic">🎙</span><span class="send">↑</span></div></div>`,
+    open: `<div style="padding-top:24px"><div class="lanes"><div class="lane"><h3 class="mono"><i class="dot need"></i>Needs you · 3</h3>${harborOpen(false)}<div style="height:8px"></div>${card('need', 'Peak Fitness', 'Booking widget down', '')}${card('need', 'Calls', 'Missed calls after 5 PM', '')}</div>
+        <div class="lane dim"><h3 class="mono"><i class="dot start"></i>Start something</h3>${card('start', 'New client', 'Onboard Glow Med Spa', '')}${card('start', 'Campaign', 'Plan Black Friday', '')}${card('start', 'Content', 'Next week’s posts', '')}</div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask…<span class="mic">🎙</span><span class="send">↑</span></div></div>`,
+    after: `<div style="padding-top:24px"><div class="lanes"><div class="lane dim"><h3 class="mono"><i class="dot" style="background:var(--green)"></i>All done · 3</h3><div class="card"><span class="s" style="color:var(--green)">✓ Harbor live · ✓ Peak fixed · ✓ Text-back on</span></div></div>
+        <div class="lane"><h3 class="mono"><i class="dot start"></i>What’s next?</h3><div class="open"><div class="t"><i class="dot start"></i>Onboard Glow Med Spa</div><div class="meta">Contacts, site, media kit, automations, calendar</div><div class="q">Set it all up now?</div><div class="acts"><span class="act pri">Start</span><span class="act">Later</span><span class="link">What I’ll do ⌄</span></div></div><div style="height:8px"></div>${card('start', 'Campaign', 'Plan Black Friday', '')}</div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask…<span class="mic">🎙</span><span class="send">↑</span></div></div>` },
+  { n: '04', name: 'One at a time', why: 'A deck: one card in front, the rest stacked behind it. Nothing to choose between, it’s already open. When the deck is empty, “what’s next?” offers what to start. V2.1’s calm, in cards.',
+    home: `<div class="center"><div class="hi" style="text-align:center">Good morning, Maya.</div><div class="sub" style="text-align:center">Three things need you. Here’s the first.</div>
+      <div class="deck"><div class="ghost g2"></div><div class="ghost g1"></div>${harborOpen(false)}</div><div class="count mono">1 of 3</div><div class="dots"><i class="on"></i><i></i><i></i></div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask anything…<span class="mic">🎙</span><span class="send">↑</span></div>`,
+    open: `<div class="center"><div class="hi" style="text-align:center">Good morning, Maya.</div><div class="sub" style="text-align:center">One down, two to go.</div>
+      <div class="deck"><div class="ghost g1"></div><div class="open"><div class="t"><i class="dot need"></i>Peak booking widget down</div><div class="meta">Broke Sunday night · −$1.6k/mo</div><div class="q">Repair it now?</div><div class="acts"><span class="act pri">Repair</span><span class="act">Not now</span><span class="link">Details ⌄</span></div></div></div><div class="count mono">2 of 3 · Harbor live again · Undo</div><div class="dots"><i class="ok"></i><i class="on"></i><i></i></div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask anything…<span class="mic">🎙</span><span class="send">↑</span></div>`,
+    after: `<div class="center"><div class="hi" style="text-align:center">All caught up.</div><div class="sub" style="text-align:center">+$6.0k a month back. What’s next?</div>
+      <div class="then" style="margin-top:26px">${card('start', 'New client', 'Onboard Glow Med Spa', 'Signed yesterday').replace('class="card ', 'style="width:270px" class="card ')}${card('start', 'Campaign', 'Plan Black Friday', '24 days out').replace('class="card ', 'style="width:270px" class="card ')}${card('start', 'Content', 'Next week’s posts', 'Not scheduled').replace('class="card ', 'style="width:270px" class="card ')}${card('info', 'Prep · 11:00', 'Brief for Priya', '').replace('class="card ', 'style="width:270px" class="card ')}</div></div>
+      <div class="input dock"><span class="sp">✦</span>What do you want to do next?<span class="mic">🎙</span><span class="send">↑</span></div>` },
+]
+document.getElementById('out').innerHTML = V.map((v) => `<section class="ver"><div class="vh"><span class="mono n">${v.n}</span><h2>${v.name}</h2><p>${v.why}</p></div>
+  <div class="lbl mono">Home</div>${stage(v.home)}
+  <div class="lbl mono">${v.n === '04' ? 'Next card' : 'A card open'}</div>${stage(v.open, 'Morning brief', 'Morning brief › Harbor')}
+  <div class="lbl mono">${v.n === '04' || v.n === '03' ? 'All done · what’s next' : 'After yes'}</div>${stage(v.after, 'Morning brief', 'Morning brief')}</section>`).join('')
+const fit = () => document.querySelectorAll('.fit').forEach((f) => (f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})`))
+fit(); addEventListener('resize', fit)
+
+// Memory: four ways to do it, beyond a list in the sidebar.
+const sideNoMem = (active) => side(active).replace(/<div class="mem">[\s\S]*<\/aside>/, '<div class="mem"><div class="h">🧠 Memory · 24</div></div></aside>')
+const mstage = (inner, active = 'Morning brief', t = 'Morning brief') => `<div class="fit"><div class="stage">${sideNoMem(active)}<div class="main">${bar(t)}<div class="body">${inner}</div></div></div></div>`
+const M = [
+  { n: 'M1', name: 'Memory in the conversation', why: 'When it learns something, one quiet line says so, right where it happened: <b>Remembered · Edit · Forget</b>. When it uses something it remembered, a small “Used” tag says what. You always know what it knows and why it acted.',
+    s: `<div class="center" style="padding-top:20px">${harborOpen(true)}
+      <div class="remember"><span class="ic">🧠</span><span>Remembered: <b>Harbor’s card on file ends 4411</b></span><span class="x"><span>Edit</span><span>Forget</span></span></div>
+      <div class="mine">Next time a client card expires, just switch it.</div>
+      <div class="bubble">Got it. I’ll switch expired cards on my own and tell you after, as long as the new card is already on file.<div class="used">Used memory <span>Ask before spending over $500</span></div></div>
+      <div class="remember"><span class="ic">🧠</span><span>New rule: <b>Switch expired cards automatically</b> · applies to all 1,284 sub-accounts</span><span class="x"><span>Edit</span><span>Undo</span></span></div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask…<span class="mic">🎙</span><span class="send">↑</span></div>` },
+  { n: 'M2', name: 'A memory page you can manage', why: 'Opened from the sidebar. Three tabs: <b>You</b> (your preferences), <b>Clients</b> (what it knows about each sub-account), <b>Rules</b> (what it may do on its own). Every fact shows where it came from, and can be switched off or forgotten.',
+    s: `<div class="center" style="width:520px;margin:0;padding:30px 0 0 40px;opacity:.35"><div class="hi">Good morning, Maya.</div><div class="sub">Three things need you.</div></div>
+      <div class="msheet"><h4>Memory</h4><div class="ms">24 things I remember · only you can see this</div><div class="msearch">Search memory…</div>
+      <div class="tabs"><span class="on">You · 8</span><span>Clients · 12</span><span>Rules · 4</span></div>
+      <div class="fact"><span class="ft">Ask before spending over $500<small>You said · Oct 12</small></span><span class="tg"></span></div>
+      <div class="fact"><span class="ft">Lead with wins in client reports<small>Learned from 6 report edits</small></span><span class="tg"></span></div>
+      <div class="fact"><span class="ft">You prefer short answers, no voice before 9 AM<small>Learned · this week</small></span><span class="tg"></span></div>
+      <div class="fact"><span class="ft">Priya Nair is a hot lead (Smile Studio)<small>From the 2:14 AM booking</small></span><span class="tg"></span></div>
+      <div class="fact"><span class="ft">Send review replies without asking<small>You turned this off · Oct 30</small></span><span class="tg off"></span></div></div>` },
+  { n: 'M3', name: 'Memory per client', why: 'Every sub-account has a profile the AI keeps up to date: people, preferences, what worked, what to avoid. It opens from any client name (hover or tap). For an agency with 50 clients, this is the memory that matters most.',
+    s: `<div class="center" style="padding-top:24px;position:relative">${pills()}<div style="display:flex;gap:18px;align-items:flex-start">
+      <div style="flex:1">${harborOpen(false).replace('Harbor ads paused', '<span><u style="text-decoration:none;border-bottom:1px dashed var(--fg3)">Harbor Dental</u> ads paused</span>')}</div>
+      <div class="profile"><div class="ph"><span class="lg">H</span><div><h4>Harbor Dental</h4><div class="ms">Client since 2023 · $1,240/mo · 2 clinics</div></div></div>
+        <div class="kv"><i>Contact</i>Dr. Amy Chen · prefers text<i>Goal</i>40 new patients a month<i>Works well</i>Before/after ads, Tuesday emails<i>Avoid</i>Discounts over 15%<i>Card</i>Visa ••4411 (new)<i>Last talk</i>Oct 20 · happy with leads</div>
+        <div class="used" style="margin-top:12px">Updated 2 min ago · <span>Edit</span><span>Forget</span></div></div></div></div>` },
+  { n: 'M4', name: 'Memory that turns into trust', why: 'It notices patterns in what you approve and offers to make them rules, client by client. Memory becomes a <b>dial of autonomy</b>: what it does alone, what it asks first. This is how 50 sub-accounts get easier over time.',
+    s: `<div class="center" style="padding-top:28px"><div class="hi">Good morning, Maya.</div><div class="sub">Before we start, one thing I noticed.</div>
+      <div class="learn"><div class="t">🧠 You’ve approved every card switch this month (7 of 7)</div><div class="meta">Want me to do these on my own and tell you after?</div><div class="acts"><span class="act pri">Yes, for all clients</span><span class="act">Only for some</span><span class="act">Keep asking</span></div>
+        <div class="dial"><div class="hd mono">What I do</div><div class="hd mono c">On my own</div><div class="hd mono c">Ask first</div>
+          <div>Switch expired cards</div><div class="c sel">● </div><div class="c">○</div>
+          <div>Reply to 4–5★ reviews</div><div class="c sel">●</div><div class="c">○</div>
+          <div>Repair broken widgets</div><div class="c">○</div><div class="c sel">●</div>
+          <div>Spend over $500</div><div class="c">○</div><div class="c sel">●</div></div></div></div>
+      <div class="input dock"><span class="sp">✦</span>Reply, or ask…<span class="mic">🎙</span><span class="send">↑</span></div>` },
+]
+document.getElementById('out').insertAdjacentHTML('beforeend', `<section class="ver"><div class="vh"><span class="mono n">M</span><h2>Memory · four ideas</h2><p>Instead of a list in the sidebar. They can work together: M1 is how you notice memory, M2 is where you manage it, M3 is memory per client, M4 turns memory into autonomy.</p></div>`
+  + M.map((m) => `<div class="vh" style="margin-top:26px"><span class="mono n">${m.n}</span><h2 style="font-size:17px">${m.name}</h2><p>${m.why}</p></div>${mstage(m.s)}`).join('') + '</section>')
+fit()
+</script>
+</body>
+</html>

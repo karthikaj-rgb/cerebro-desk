@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calm Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f5f5f7; --page: #fff; --fg: #15161b; --fg2: #555865; --fg3: #8a8d99; --line: rgba(21,22,27,.055); --line2: rgba(21,22,27,.1); --chip: #f2f2f5; --spark: #6b72ff; --green: #0a8a52; --green-bg: #e9f6ef; --red: #d0453a; --red-bg: #fdf0ee; --amber: #c27a12;
+    --shadow: 0 0 0 1px rgba(21,22,27,.04), 0 1px 2px rgba(21,22,27,.025), 0 6px 18px -14px rgba(21,22,27,.1); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ebebef; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 32px; max-width: 900px; }
+  .opt { margin-bottom: 56px; }
+  .cap { display: grid; grid-template-columns: 34px 1fr; gap: 2px 10px; margin-bottom: 14px; } .cap .n { font: 500 11px/1 Inter; color: var(--fg3); padding-top: 7px; letter-spacing: .05em; } .cap h2 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .cap p { grid-column: 2; margin: 0; color: var(--fg2); max-width: 900px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 1000; } .fit.short { aspect-ratio: 1200 / 760; }
+  .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 1000px; transform-origin: 0 0; background: var(--bg); border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.3); display: flex; } .short .stage { height: 760px; }
+  .side { width: 232px; flex: none; padding: 14px; } .isl { height: 100%; background: #fff; border-radius: 18px; box-shadow: var(--shadow); padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+  .isl .b { font-weight: 600; padding: 2px 8px 12px; display: flex; gap: 8px; align-items: center; } .isl .b i { width: 18px; height: 18px; border-radius: 6px; background: #7f8cff; }
+  .isl .h { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; color: var(--fg2); } .isl .h.on { background: var(--chip); color: var(--fg); } .isl .h em { margin-left: auto; font-style: normal; font-size: 11px; color: var(--amber); background: #fbf1e2; padding: 0 6px; border-radius: 99px; } .isl .s { font: 500 10px/14px Inter; letter-spacing: .045em; text-transform: uppercase; color: var(--fg3); padding: 12px 8px 4px; }
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; position: relative; }
+  .bar { height: 56px; display: flex; align-items: center; padding: 0 20px 0 8px; font-size: 13px; color: var(--fg2); flex: none; }
+  .col { width: 760px; margin: 0 auto; padding-top: 28px; display: flex; flex-direction: column; }
+  h1.d { font: 400 32px/40px Inter; letter-spacing: -.035em; margin: 0 0 6px; } .sub { font-size: 14px; line-height: 20px; color: var(--fg2); margin: 0 0 24px; }
+  .band { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 10px; } .band:not(:first-of-type) { margin-top: 28px; }
+  .lab { font: 500 10px/14px Inter; letter-spacing: .045em; text-transform: uppercase; color: var(--fg3); } .band .more { font-size: 12.5px; color: var(--fg2); }
+  .card { background: #fff; border-radius: 16px; box-shadow: var(--shadow); padding: 20px; display: flex; flex-direction: column; min-width: 0; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; } .grid3 .card { height: 156px; }
+  .top { display: flex; align-items: center; gap: 8px; } .top .pill { margin-left: auto; }
+  .dot { width: 6px; height: 6px; border-radius: 3px; flex: none; background: var(--red); } .dot.g { background: var(--green); }
+  .tt { font: 500 16px/22px Inter; letter-spacing: -.01em; margin-top: 8px; } .why { font-size: 13px; line-height: 18px; color: var(--fg2); margin-top: 2px; }
+  .pill { font: 500 11.5px/16px Inter; padding: 3px 8px; border-radius: 99px; white-space: nowrap; } .pill.r { color: var(--red); background: var(--red-bg); } .pill.g { color: var(--green); background: var(--green-bg); }
+  .ft { margin-top: auto; display: flex; align-items: center; gap: 8px; } .btn { font: 500 12.5px/16px Inter; padding: 7px 13px; border-radius: 99px; background: var(--fg); color: #fff; } .btn.o { background: #fff; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); font-weight: 400; }
+  .face { width: 26px; height: 26px; border-radius: 9px; position: relative; flex: none; margin-left: auto; } .face::before, .face::after { content: ''; position: absolute; top: 10px; width: 3px; height: 3px; border-radius: 2px; background: #1b1830; } .face::before { left: 7px; } .face::after { right: 7px; } .face.sm { width: 22px; height: 22px; border-radius: 7px; margin-left: 0; } .face.sm::before, .face.sm::after { top: 8px; } .face.sm::before { left: 6px; } .face.sm::after { right: 6px; }
+  .f1 { background: #f08a3c; } .f2 { background: #2bb3a3; } .f3 { background: #3fae6a; } .f4 { background: #e66fa8; } .f5 { background: #9d8cf0; } .f6 { background: #e3b13a; }
+  .sugg { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; } .sugg .card { flex-direction: row; gap: 14px; align-items: center; padding: 14px 18px; } .sugg .card > div { flex: 1; min-width: 0; } .sugg .tt { font-size: 15px; margin: 0; } .sugg .go { font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .make { display: flex; gap: 8px; flex-wrap: wrap; } .mk { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px 9px 10px; border-radius: 12px; background: #fff; box-shadow: var(--shadow); font-size: 13.5px; } .mk .ti { width: 26px; height: 26px; border-radius: 8px; background: var(--chip); display: grid; place-items: center; }
+  svg.i { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .remind { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-radius: 16px; background: #fff; box-shadow: var(--shadow); margin-bottom: 12px; font-size: 15px; } .remind .ic { width: 32px; height: 32px; border-radius: 10px; background: #f0efff; } .remind .t { flex: 1; } .remind .t small { display: block; font: 500 10px/14px Inter; letter-spacing: .045em; color: var(--fg3); text-transform: uppercase; } .remind em { font-style: normal; font-size: 13px; color: var(--fg2); }
+  .comp { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); width: 760px; min-height: 52px; border-radius: 26px; background: #fff; box-shadow: var(--shadow); display: flex; align-items: center; padding: 7px 7px 7px 16px; color: var(--fg3); font-size: 15px; gap: 10px; } .comp .tk { margin-left: auto; height: 38px; padding: 0 15px; border-radius: 19px; background: var(--fg); color: #fff; display: inline-flex; align-items: center; font-size: 13px; font-weight: 500; } .comp.focus { box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--fg) 25%, transparent), 0 10px 26px -18px rgba(0,0,0,.2); color: var(--fg); }
+  .caret { display: inline-block; width: 1.5px; height: 18px; background: var(--fg); animation: bl 1s steps(2) infinite; } @keyframes bl { 50% { opacity: 0 } }
+  .phone { width: 390px; height: 844px; border-radius: 40px; background: #1b1c20; padding: 12px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.5); margin: 0 auto; }
+  .ps { width: 100%; height: 100%; border-radius: 30px; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+  .ps .pb { height: 52px; display: flex; align-items: center; padding: 14px 18px 0; font-size: 13px; color: var(--fg2); gap: 10px; } .ps .pc { padding: 10px 16px 120px; display: flex; flex-direction: column; overflow: hidden; }
+  .ps h1.d { font-size: 26px; line-height: 32px; } .ps .card { padding: 16px; } .ps .stack .card { height: auto; margin-bottom: 10px; } .ps .stack .card .ft { margin-top: 14px; }
+  .ps .sugg { grid-template-columns: 1fr; gap: 10px; } .ps .make { gap: 6px; } .ps .mk { padding: 7px 11px 7px 8px; font-size: 13px; }
+  .ps .comp { width: calc(100% - 24px); bottom: 12px; font-size: 14px; }
+  .pick { color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="site" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5" /><path d="M3 9h18" /></symbol>
+  <symbol id="funnel" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z" /></symbol>
+  <symbol id="camp" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z" /><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" /></symbol>
+  <symbol id="agent" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" /></symbol>
+  <symbol id="onb" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5" /><path d="M3.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6" /></symbol>
+</svg>
+<style>
+  .dot.a { background: #d98a1c; } .dot.v { background: var(--spark); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .grid2 .card { height: 138px; } .grid3 .card { height: 150px; }
+  .slim { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; border-radius: 12px; background: #fff; box-shadow: var(--shadow); font-size: 13.5px; color: var(--fg2); margin-bottom: 26px; }
+  .slim .ic { width: 22px; height: 22px; border-radius: 7px; background: #f0efff; display: grid; place-items: center; color: var(--spark); font-size: 12px; } .slim b { color: var(--fg); font-weight: 500; } .slim .go { margin-left: auto; color: var(--fg); font-weight: 500; font-size: 13px; }
+  .band { margin: 0 0 10px; } .band.gap { margin-top: 26px; } .band .lab b { color: var(--fg2); font-weight: 500; }
+  .btn.o { background: #fff; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); font-weight: 400; }
+  .chg { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; } .chg div { background: #fff; border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow); } .chg h3 { margin: 0 0 8px; font-size: 15px; font-weight: 500; } .chg ul { margin: 0; padding-left: 18px; color: var(--fg2); font-size: 13.5px; line-height: 1.6; } .chg li b { color: var(--fg); font-weight: 500; }
+  @media (max-width: 760px) { .chg { grid-template-columns: 1fr; } }
+  .ps .grid2, .ps .grid3 { grid-template-columns: 1fr; gap: 10px; } .ps .grid2 .card, .ps .grid3 .card { height: auto; } .ps .card .ft { margin-top: 12px; } .ps .slim { margin-bottom: 18px; font-size: 13px; } .ps .band.gap { margin-top: 18px; }
+  .row1 { display: flex; flex-direction: row !important; align-items: center; gap: 12px; padding: 14px 16px !important; } .row1 > div { flex: 1; min-width: 0; } .row1 .tt { margin: 0; font-size: 15px; } .row1 .why { margin: 0; }
+  .ok { width: 22px; height: 22px; border-radius: 11px; background: var(--green-bg, #e9f6ef); color: var(--green); display: grid; place-items: center; font-size: 12px; }
+</style>
+<div class="wrap">
+  <header><h1>Home, calmer</h1><p>Same morning, fewer things competing. The page reads as <b>two groups</b>: what needs you, and what you can start when you're ready. Nine blocks become six, and it fits one screen.</p></header>
+
+  <div class="chg">
+    <div><h3>Removed or moved</h3><ul>
+      <li><b>Overnight strip:</b> the review that waits for you becomes a Needs you card; the finished runs live in the status menu (“Your work”).</li>
+      <li><b>MRR card:</b> one clause in the subtitle. The chart stays in the Classic dashboard.</li>
+      <li><b>“…and a few you might want to start”:</b> the labels say it now.</li></ul></div>
+    <div><h3>Shrunk or added</h3><ul>
+      <li><b>Lumen reminder:</b> one slim line until the day before the call.</li>
+      <li><b>“Make review replies automatic?”:</b> a normal card in the start row, not full width.</li>
+      <li><b>Two quiet labels:</b> “Needs you” and “When you're ready”.</li></ul></div>
+  </div>
+
+  <section class="opt"><div class="cap"><span class="n">1</span><h2>Desktop</h2><p>Needs you is a 2 × 2 grid so four cards don't get cramped; the start row stays three across.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="h">+ New</span><span class="h">Search</span><span class="h on">Today<em>4</em></span><span class="s">AI team</span><span class="h"><i class="face sm f5"></i>Cerebro</span><span class="h"><i class="face sm f1"></i>Ads agent</span><span class="h"><i class="face sm f2"></i>Sites agent</span><span class="h"><i class="face sm f4"></i>Marketing agent</span><span class="h"><i class="face sm f6"></i>Reputation agent</span><span class="s">Channels</span><span class="h"># harbor-dental</span><span class="h"># glow-med-spa</span></div></aside>
+      <div class="main"><div class="bar">Monday, Nov 2</div>
+        <div class="col" style="padding-top:34px">
+          <h1 class="d">Good morning, Maya.</h1><p class="sub">Four things need you. MRR is $412.8k, up 6.2% on September.</p>
+          <div class="slim"><span class="ic">◷</span><span><b>Thu 2:00 PM · Lumen call:</b> lead with their review numbers</span><span class="go">Prep ›</span></div>
+          <div class="band"><span class="lab">Needs you · 4</span></div>
+          <div class="grid2">
+            <div class="card"><div class="top"><i class="dot a"></i><span class="lab">Harbor Dental</span><span class="pill r">−$2.4k/mo</span></div><div class="tt">Harbor ads paused</div><div class="why">Card expired Tuesday</div><div class="ft"><span class="btn">Switch card</span><i class="face f1"></i></div></div>
+            <div class="card"><div class="top"><i class="dot a"></i><span class="lab">Peak Fitness</span><span class="pill r">−$1.6k/mo</span></div><div class="tt">Booking widget down</div><div class="why">Broke Sunday night</div><div class="ft"><span class="btn">Repair it</span><i class="face f2"></i></div></div>
+            <div class="card"><div class="top"><i class="dot a"></i><span class="lab">14 clinics</span><span class="pill r">+18% missed</span></div><div class="tt">Missed calls after 5 PM</div><div class="why">61 missed calls last week</div><div class="ft"><span class="btn">Set it up</span><i class="face f3"></i></div></div>
+            <div class="card"><div class="top"><i class="dot a"></i><span class="lab">Lumen Spa</span></div><div class="tt">A 1★ review needs your reply</div><div class="why">2 replied overnight · this one waits</div><div class="ft"><span class="btn">Reply</span><i class="face f6"></i></div></div>
+          </div>
+          <div class="band gap"><span class="lab">When you're ready · 3</span></div>
+          <div class="grid3">
+            <div class="card"><div class="top"><i class="dot v"></i><span class="lab">New client</span></div><div class="tt">Onboard Glow Med Spa</div><div class="why">Signed yesterday</div><div class="ft"><span class="btn o">Start</span><i class="face f5"></i></div></div>
+            <div class="card"><div class="top"><i class="dot v"></i><span class="lab">Campaign</span><span class="pill g">6.1% last year</span></div><div class="tt">Black Friday in 24 days</div><div class="why">12 dental clients</div><div class="ft"><span class="btn o">Draft it</span><i class="face f4"></i></div></div>
+            <div class="card"><div class="top"><i class="dot v"></i><span class="lab">From memory</span></div><div class="tt">Auto-reply to 3★ reviews?</div><div class="why">You approved 41 of 41</div><div class="ft"><span class="btn o">Turn on</span><i class="face f6"></i></div></div>
+          </div>
+        </div>
+        <div class="comp">Ask anything · @ a client · / to make<span class="tk">Talk</span></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">2</span><h2>Caught up, and on a phone</h2><p>When the four are done, <b>Needs you</b> shrinks to a single “done” line and the start row moves up. On a phone (right) the same two groups stack.</p></div>
+    <div class="two">
+      <div class="fit" style="aspect-ratio: 760/760"><div class="stage" style="width:760px;height:760px" data-w="760">
+        <div class="main"><div class="bar">Monday, Nov 2</div>
+          <div class="col" style="width:640px;padding-top:40px">
+            <h1 class="d">All caught up.</h1><p class="sub">+$6.0k a month back this morning. MRR is $412.8k, up 6.2%.</p>
+            <div class="band"><span class="lab">Needs you</span></div>
+            <div class="card row1" style="margin-bottom:0"><span class="ok">✓</span><div><div class="tt">All 4 done</div><div class="why">Harbor, Peak, missed calls, Lumen's review</div></div><span style="font-size:13px;color:var(--fg2)">See what changed ›</span></div>
+            <div class="band gap"><span class="lab">When you're ready · 3</span></div>
+            <div class="grid3">
+              <div class="card"><div class="top"><i class="dot v"></i><span class="lab">New client</span></div><div class="tt">Onboard Glow</div><div class="why">Signed yesterday</div><div class="ft"><span class="btn o">Start</span></div></div>
+              <div class="card"><div class="top"><i class="dot v"></i><span class="lab">Campaign</span></div><div class="tt">Black Friday</div><div class="why">In 24 days · 12 clients</div><div class="ft"><span class="btn o">Draft it</span></div></div>
+              <div class="card"><div class="top"><i class="dot v"></i><span class="lab">Memory</span></div><div class="tt">Auto-reply to 3★?</div><div class="why">41 of 41 approved</div><div class="ft"><span class="btn o">Turn on</span></div></div>
+            </div>
+          </div>
+          <div class="comp" style="width:640px">Ask anything · @ a client · / to make<span class="tk">Talk</span></div>
+        </div></div></div>
+      <div class="phone"><div class="ps"><div class="pb">☰ <span>Monday, Nov 2</span></div>
+        <div class="pc"><h1 class="d">Good morning, Maya.</h1><p class="sub" style="margin-bottom:14px">Four things need you. MRR $412.8k, up 6.2%.</p>
+          <div class="slim"><span class="ic">◷</span><span><b>Thu · Lumen call</b></span><span class="go">Prep ›</span></div>
+          <div class="band"><span class="lab">Needs you · 4</span></div>
+          <div class="grid2">
+            <div class="card"><div class="top"><i class="dot a"></i><span class="lab">Harbor Dental</span><span class="pill r">−$2.4k/mo</span></div><div class="tt">Harbor ads paused</div><div class="why">Card expired Tuesday</div><div class="ft"><span class="btn">Switch card</span><i class="face f1"></i></div></div>
+            <div class="card"><div class="top"><i class="dot a"></i><span class="lab">Peak Fitness</span><span class="pill r">−$1.6k/mo</span></div><div class="tt">Booking widget down</div><div class="why">Broke Sunday night</div><div class="ft"><span class="btn">Repair it</span><i class="face f2"></i></div></div>
+          </div>
+        </div>
+        <div class="comp">Ask anything…<span class="tk">Talk</span></div></div></div>
+    </div></section>
+
+  <p class="pick">Everything on the current page is still one tap away: the routines in the status menu, MRR in the subtitle and Classic, the reminder in the slim line. If you like it, I'll add it as a <b>“Calm”</b> Home option next to Bento and List so you can switch between them.</p>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => { const s = f.firstElementChild; const w = +(s.dataset.w || 1200); s.style.transform = `scale(${f.clientWidth / w})` })
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

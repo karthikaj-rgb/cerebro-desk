@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Home Layout Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* The system every option uses: 8pt grid, 5 text sizes, one radius family, one border, one shadow. */
+  :root {
+    --bg: #f5f5f7; --page: #fff; --fg: #15161b; --fg2: #555865; --fg3: #8a8d99; --line: rgba(21,22,27,.06); --line2: rgba(21,22,27,.1); --chip: #f2f2f5;
+    --red: #d0453a; --red-bg: #fdf0ee; --green: #0a8a52; --green-bg: #ebf7f1; --amber: #c27a12; --spark: #6b72ff;
+    --r-card: 16px; --r-ctl: 10px; --pad: 20px; --gap: 12px;
+    --shadow: 0 0 0 1px rgba(21,22,27,.05), 0 1px 2px rgba(21,22,27,.04), 0 8px 24px -16px rgba(21,22,27,.18);
+    --t-display: 400 32px/40px Inter; --t-title: 500 16px/22px Inter; --t-body: 400 14px/20px Inter; --t-meta: 400 12px/16px Inter; --t-label: 500 10.5px/14px 'Geist Mono';
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e8e8ec; color: var(--fg); font: var(--t-body); font-family: Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 28px; max-width: 900px; }
+  .spec { display: grid; grid-template-columns: 1.1fr 1fr; gap: 16px; margin-bottom: 48px; }
+  .box { background: #fff; border-radius: 18px; box-shadow: var(--shadow); padding: 20px 22px; }
+  .box h3 { margin: 0 0 12px; font-size: 14px; font-weight: 500; }
+  .box ul { margin: 0; padding-left: 18px; color: var(--fg2); } .box li { margin: 4px 0; } .box li b { color: var(--fg); font-weight: 500; }
+  .scale { display: flex; flex-direction: column; gap: 10px; }
+  .scale div { display: grid; grid-template-columns: 92px 1fr; align-items: baseline; gap: 12px; } .scale .k { font: var(--t-label); letter-spacing: .06em; text-transform: uppercase; color: var(--fg3); }
+  .tokens { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; } .tokens span { font: var(--t-meta); padding: 4px 10px; border-radius: 99px; background: var(--chip); color: var(--fg2); }
+  .opt { margin-bottom: 60px; }
+  .cap { display: grid; grid-template-columns: 40px 1fr; gap: 2px 12px; margin-bottom: 14px; } .cap .n { font: var(--t-label); color: var(--fg3); padding-top: 6px; } .cap h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+  .cap p { grid-column: 2; margin: 0; color: var(--fg2); max-width: 920px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 780; }
+  .stage { position: absolute; inset: 0 auto auto 0; width: 1200px; height: 780px; transform-origin: 0 0; background: var(--bg); border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.3); display: flex; }
+  /* shared chrome */
+  .side { width: 232px; flex: none; padding: 14px; } .isl { height: 100%; background: #fff; border-radius: 18px; box-shadow: var(--shadow); padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; font: var(--t-body); font-size: 13px; }
+  .isl .b { font-weight: 600; padding: 2px 8px 12px; display: flex; gap: 8px; align-items: center; } .isl .b i { width: 18px; height: 18px; border-radius: 6px; background: #7f8cff; }
+  .isl .nc { padding: 7px 10px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line2); margin-bottom: 6px; } .isl .s { font: var(--t-label); letter-spacing: .06em; color: var(--fg3); padding: 12px 8px 4px; text-transform: uppercase; }
+  .isl .h { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; color: var(--fg2); } .isl .h.on { background: var(--chip); color: var(--fg); }
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .bar { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px 0 8px; font: var(--t-meta); font-size: 13px; color: var(--fg2); flex: none; }
+  .bar .pill { display: flex; gap: 6px; align-items: center; padding: 5px 12px 5px 6px; border-radius: 99px; background: #fff; box-shadow: var(--shadow); color: var(--fg); }
+  .col { width: 760px; margin: 0 auto; padding-top: 24px; display: flex; flex-direction: column; gap: var(--gap); }
+  .hi h1 { font: var(--t-display); letter-spacing: -.035em; margin: 0; } .hi p { margin: 4px 0 12px; color: var(--fg2); font-size: 15px; }
+  .comp { margin: auto auto 16px; width: 760px; height: 48px; border-radius: 24px; background: #fff; box-shadow: var(--shadow); display: flex; align-items: center; padding: 0 8px 0 18px; color: var(--fg3); font-size: 14px; gap: 10px; } .comp i { margin-left: auto; width: 32px; height: 32px; border-radius: 16px; background: #dcdce2; }
+  /* atoms */
+  .card { background: var(--page); border-radius: var(--r-card); box-shadow: var(--shadow); padding: var(--pad); display: flex; flex-direction: column; min-width: 0; }
+  .lab { font: var(--t-label); letter-spacing: .06em; text-transform: uppercase; color: var(--fg3); display: flex; align-items: center; gap: 7px; }
+  .dot { width: 6px; height: 6px; border-radius: 3px; background: var(--amber); flex: none; } .dot.g { background: var(--green); } .dot.n { background: #c4c6cf; }
+  .tt { font: var(--t-title); letter-spacing: -.01em; margin-top: 8px; } .why { font: var(--t-meta); font-size: 13px; color: var(--fg2); margin-top: 2px; }
+  .imp { font: 500 12px/16px 'Geist Mono'; padding: 3px 8px; border-radius: 99px; white-space: nowrap; } .imp.r { color: var(--red); background: var(--red-bg); } .imp.g { color: var(--green); background: var(--green-bg); }
+  .btn { font: 500 13px/16px Inter; padding: 8px 14px; border-radius: 99px; background: var(--fg); color: #fff; white-space: nowrap; } .btn.o { background: #fff; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); font-weight: 400; } .btn.s { padding: 6px 12px; font-size: 12.5px; }
+  .ft { margin-top: auto; padding-top: 16px; display: flex; align-items: center; gap: 8px; }
+  .face { width: 22px; height: 22px; border-radius: 7px; position: relative; flex: none; } .face::before, .face::after { content: ''; position: absolute; top: 9px; width: 3px; height: 3px; border-radius: 2px; background: #1b1830; } .face::before { left: 6px; } .face::after { right: 6px; }
+  .f1 { background: #f08a3c; } .f2 { background: #2bb3a3; } .f3 { background: #e66fa8; } .f4 { background: #e3b13a; } .f5 { background: #3fae6a; } .f6 { background: #7f8cff; }
+  .agent { margin-left: auto; display: flex; align-items: center; gap: 6px; font: var(--t-meta); color: var(--fg3); }
+  .num { font: 300 30px/36px Inter; letter-spacing: -.03em; margin-top: 6px; }
+  .spark { height: 32px; margin-top: auto; } .spark path { fill: none; stroke: var(--spark); stroke-width: 1.6; }
+  .remind { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 14px; background: #fff; box-shadow: var(--shadow); font-size: 14px; } .remind .ic { width: 28px; height: 28px; border-radius: 8px; background: #f0efff; } .remind .t { flex: 1; } .remind .t small { display: block; font: var(--t-label); letter-spacing: .06em; color: var(--fg3); text-transform: uppercase; } .remind em { font-style: normal; font-size: 13px; color: var(--fg2); }
+  /* A */
+  .gA { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 176px; gap: var(--gap); }
+  .gA .top { display: flex; align-items: center; } .gA .top .imp { margin-left: auto; }
+  /* B */
+  .gB1 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); } .gB1 .card { height: 196px; }
+  .gB1 .money { font: 300 28px/34px Inter; letter-spacing: -.03em; color: var(--red); margin-top: 10px; }
+  .secl { font: var(--t-label); letter-spacing: .06em; color: var(--fg3); text-transform: uppercase; margin: 10px 0 -2px; display: flex; justify-content: space-between; }
+  .gB2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); } .gB2 .card { height: 104px; padding: 16px; } .gB2 .tt { font-size: 14px; line-height: 20px; margin-top: 6px; }
+  .strip { display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border-radius: 14px; box-shadow: var(--shadow); } .strip div { padding: 12px 16px; display: flex; flex-direction: column; } .strip div + div { box-shadow: -1px 0 0 var(--line); } .strip b { font: 400 20px/26px Inter; letter-spacing: -.02em; } .strip small { font: var(--t-meta); color: var(--fg3); }
+  /* C */
+  .gC { display: grid; grid-template-columns: 1fr 300px; gap: 16px; width: 920px; margin: 0 auto; }
+  .list { background: #fff; border-radius: var(--r-card); box-shadow: var(--shadow); overflow: hidden; }
+  .lh { padding: 14px 18px 8px; font: var(--t-label); letter-spacing: .06em; color: var(--fg3); text-transform: uppercase; display: flex; justify-content: space-between; }
+  .row { display: grid; grid-template-columns: 22px 1fr auto auto; align-items: center; gap: 12px; height: 64px; padding: 0 18px; border-top: 1px solid var(--line); }
+  .row b { font: var(--t-title); font-size: 14.5px; display: block; } .row small { font: var(--t-meta); color: var(--fg3); }
+  .panel { display: flex; flex-direction: column; gap: var(--gap); } .panel .card { padding: 16px 18px; }
+  .ag { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; } .ag span { flex: 1; } .ag em { font-style: normal; font: var(--t-meta); color: var(--spark); } .ag em.d { color: var(--fg3); }
+  /* D */
+  .hero { display: grid; grid-template-columns: 1fr auto; gap: 24px; padding: 24px 26px; border-radius: 20px; background: #fff; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--red); }
+  .hero .tt { font: 500 22px/30px Inter; letter-spacing: -.02em; } .hero .why { font-size: 14px; } .hero .big { font: 300 40px/44px Inter; letter-spacing: -.035em; color: var(--red); text-align: right; } .hero .big small { display: block; font: var(--t-meta); color: var(--fg3); letter-spacing: 0; }
+  .hero .acts { display: flex; gap: 8px; margin-top: 18px; }
+  .gD { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); } .gD .card { height: 132px; padding: 16px; } .gD .tt { font-size: 14px; line-height: 20px; margin-top: 6px; }
+  .pick { color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Today’s page · layout options</h1><p>Four directions for the home page, all on one design system, so whichever you pick, every size, gap and font is decided once and used everywhere.</p></header>
+
+  <div class="spec">
+    <div class="box"><h3>What’s off in the current page (your screenshot)</h3><ul>
+      <li><b>Uneven card heights.</b> Bento spans leave big empty areas (Onboard Glow, review replies) and a gap bottom-right.</li>
+      <li><b>Money wraps on its own line</b> (“· −$2.4k/mo”). It should be a pill that never wraps.</li>
+      <li><b>Too many text sizes</b> (30, 17, 15, 14, 13, 11 mono) with no clear order; the mono labels are wide and loud.</li>
+      <li><b>No next step on the card.</b> In Flat there’s no button, so cards read as notes, not things to act on.</li>
+      <li><b>The reminder is heavier than the cards</b> and the MRR number uses a different style from everything else.</li>
+      <li><b>No sign of the AI team</b>: who would do the work isn’t shown.</li>
+    </ul></div>
+    <div class="box"><h3>The system (used by every option)</h3>
+      <div class="scale">
+        <div><span class="k">Display</span><span style="font: var(--t-display); letter-spacing: -.035em">32 / 40</span></div>
+        <div><span class="k">Title</span><span style="font: var(--t-title)">16 / 22 · 500</span></div>
+        <div><span class="k">Body</span><span style="font: var(--t-body)">14 / 20</span></div>
+        <div><span class="k">Meta</span><span style="font: var(--t-meta); color: var(--fg2)">12 / 16 · secondary</span></div>
+        <div><span class="k">Label</span><span class="lab">10.5 mono · .06em</span></div>
+      </div>
+      <div class="tokens"><span>8pt grid</span><span>Card padding 20</span><span>Gap 12</span><span>Radius 16 / 10 / pill</span><span>1 border: 5% ink</span><span>1 shadow, layered</span><span>Money = mono pill</span><span>Equal heights per row</span></div>
+    </div>
+  </div>
+
+  <section class="opt"><div class="cap"><span class="n">A</span><h2>Even grid</h2><p>The fix with the least change: <b>3 × 2 equal cards</b> (176px), label and money pill on top, title and one-line reason, then <b>action bottom-left and the agent’s face bottom-right</b>. Calm, scannable, nothing empty.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="nc">+ New conversation</span><span class="h on">✦ Today</span><span class="s">AI team</span><span class="h"><i class="face f1" style="width:18px;height:18px"></i>Ads agent</span><span class="h"><i class="face f2" style="width:18px;height:18px"></i>Sites agent</span><span class="h"><i class="face f3" style="width:18px;height:18px"></i>Marketing agent</span></div></aside>
+      <div class="main"><div class="bar"><span>Monday, Nov 2</span><span class="pill"><i class="face f6" style="width:18px;height:18px"></i>Ready</span></div>
+        <div class="col">
+          <div class="hi"><h1>Good morning, Maya.</h1><p>Three things need you, and a few you might want to start.</p></div>
+          <div class="gA">
+            <div class="card"><div class="top"><span class="lab"><i class="dot"></i>Harbor Dental</span><span class="imp r">−$2.4k/mo</span></div><div class="tt">Harbor ads paused</div><div class="why">Card expired Tuesday</div><div class="ft"><span class="btn s">Switch card</span><span class="agent"><i class="face f1"></i></span></div></div>
+            <div class="card"><div class="top"><span class="lab"><i class="dot"></i>Peak Fitness</span><span class="imp r">−$1.6k/mo</span></div><div class="tt">Booking widget down</div><div class="why">Broke Sunday night</div><div class="ft"><span class="btn s">Repair it</span><span class="agent"><i class="face f2"></i></span></div></div>
+            <div class="card"><div class="top"><span class="lab"><i class="dot"></i>14 clinics</span><span class="imp r">+18%</span></div><div class="tt">Missed calls after 5 PM</div><div class="why">61 missed last week</div><div class="ft"><span class="btn s">Set it up</span><span class="agent"><i class="face f5"></i></span></div></div>
+            <div class="card"><div class="top"><span class="lab"><i class="dot g"></i>New client</span></div><div class="tt">Onboard Glow Med Spa</div><div class="why">Signed yesterday</div><div class="ft"><span class="btn o s">Start</span><span class="agent"><i class="face f6"></i></span></div></div>
+            <div class="card"><div class="top"><span class="lab"><i class="dot g"></i>Campaign</span><span class="imp g">6.1% last year</span></div><div class="tt">Black Friday in 24 days</div><div class="why">12 dental clients</div><div class="ft"><span class="btn o s">Draft it</span><span class="agent"><i class="face f3"></i></span></div></div>
+            <div class="card"><div class="top"><span class="lab"><i class="dot n"></i>MRR</span><span class="imp g">+6.2%</span></div><div class="num">$412.8k</div><svg class="spark" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M0 26 L20 24 L40 25 L60 20 L80 21 L100 16 L120 17 L140 12 L160 13 L180 8 L200 6" /></svg></div>
+          </div>
+        </div>
+        <div class="comp">✦ Ask anything · @ a client · / to make<i></i></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">B</span><h2>Needs you, then the rest</h2><p>Hierarchy by size: <b>three tall “needs you” cards</b> with the money big and red, then <b>four small “start something” tiles</b>, then a <b>numbers strip</b>. The eye goes money → action → everything else.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="nc">+ New conversation</span><span class="h on">✦ Today</span></div></aside>
+      <div class="main"><div class="bar"><span>Monday, Nov 2</span><span class="pill"><i class="face f6" style="width:18px;height:18px"></i>Ready</span></div>
+        <div class="col" style="width:820px">
+          <div class="hi"><h1>Good morning, Maya.</h1><p>$5.6k a month is at risk. Three fixes, about 2 minutes.</p></div>
+          <div class="gB1">
+            <div class="card"><span class="lab"><i class="dot"></i>Harbor Dental</span><div class="money">−$2.4k<span style="font-size:14px;color:var(--fg3)">/mo</span></div><div class="tt" style="margin-top:4px">Ads paused</div><div class="why">Card expired Tuesday</div><div class="ft"><span class="btn s">Switch card</span><span class="agent"><i class="face f1"></i>Ads</span></div></div>
+            <div class="card"><span class="lab"><i class="dot"></i>Peak Fitness</span><div class="money">−$1.6k<span style="font-size:14px;color:var(--fg3)">/mo</span></div><div class="tt" style="margin-top:4px">Booking widget down</div><div class="why">Broke Sunday night</div><div class="ft"><span class="btn s">Repair it</span><span class="agent"><i class="face f2"></i>Sites</span></div></div>
+            <div class="card"><span class="lab"><i class="dot"></i>14 clinics</span><div class="money">61<span style="font-size:14px;color:var(--fg3)"> missed</span></div><div class="tt" style="margin-top:4px">Calls after 5 PM</div><div class="why">+18% this month</div><div class="ft"><span class="btn s">Set it up</span><span class="agent"><i class="face f5"></i>Voice</span></div></div>
+          </div>
+          <div class="secl"><span>Start something</span><span>4</span></div>
+          <div class="gB2">
+            <div class="card"><span class="lab"><i class="dot g"></i>New client</span><div class="tt">Onboard Glow Med Spa</div></div>
+            <div class="card"><span class="lab"><i class="dot g"></i>Campaign</span><div class="tt">Black Friday in 24 days</div></div>
+            <div class="card"><span class="lab"><i class="dot g"></i>From memory</span><div class="tt">Make review replies automatic?</div></div>
+            <div class="card"><span class="lab"><i class="dot g"></i>Website</span><div class="tt">Harbor’s site is from 2019</div></div>
+          </div>
+          <div class="strip"><div><small>MRR</small><b>$412.8k</b></div><div><small>Bookings today</small><b>23</b></div><div><small>Agents working</small><b>4</b></div><div><small>Done overnight</small><b>61</b></div></div>
+        </div>
+        <div class="comp" style="width:820px">✦ Ask anything · @ a client · / to make<i></i></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">C</span><h2>Inbox and glance panel</h2><p>Work as a <b>clean list</b> (64px rows: face, title, money, action), and a <b>right panel</b> for the glance: MRR with a sparkline, what the agents are doing right now, and what ran overnight. Feels like a modern mail or Linear inbox.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="nc">+ New conversation</span><span class="h on">✦ Today</span></div></aside>
+      <div class="main"><div class="bar"><span>Monday, Nov 2</span><span class="pill"><i class="face f6" style="width:18px;height:18px"></i>Working on 2</span></div>
+        <div style="padding: 24px 0 0"><div class="gC">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="hi"><h1>Good morning, Maya.</h1><p>Three things need you.</p></div>
+            <div class="list">
+              <div class="lh"><span>Needs you</span><span>3</span></div>
+              <div class="row"><i class="face f1"></i><div><b>Harbor ads paused</b><small>Harbor Dental · card expired Tuesday</small></div><span class="imp r">−$2.4k/mo</span><span class="btn s">Switch card</span></div>
+              <div class="row"><i class="face f2"></i><div><b>Booking widget down</b><small>Peak Fitness · broke Sunday night</small></div><span class="imp r">−$1.6k/mo</span><span class="btn s">Repair it</span></div>
+              <div class="row"><i class="face f5"></i><div><b>Missed calls after 5 PM</b><small>14 clinics · 61 last week</small></div><span class="imp r">+18%</span><span class="btn s">Set it up</span></div>
+              <div class="lh" style="border-top:1px solid var(--line);padding-top:14px"><span>Start something</span><span>3</span></div>
+              <div class="row"><i class="face f6"></i><div><b>Onboard Glow Med Spa</b><small>New client · signed yesterday</small></div><span></span><span class="btn o s">Start</span></div>
+              <div class="row"><i class="face f3"></i><div><b>Black Friday in 24 days</b><small>12 dental clients</small></div><span class="imp g">6.1%</span><span class="btn o s">Draft it</span></div>
+              <div class="row"><i class="face f4"></i><div><b>Make review replies automatic?</b><small>You approved 41 of 41</small></div><span></span><span class="btn o s">Turn on</span></div>
+            </div>
+          </div>
+          <div class="panel" style="padding-top:8px">
+            <div class="card"><span class="lab">MRR · October</span><div class="num">$412.8k</div><span class="imp g" style="align-self:flex-start;margin-top:4px">+6.2% on Sep</span><svg class="spark" style="margin-top:12px" viewBox="0 0 200 32" preserveAspectRatio="none"><path d="M0 26 L20 24 L40 25 L60 20 L80 21 L100 16 L120 17 L140 12 L160 13 L180 8 L200 6" /></svg></div>
+            <div class="card"><span class="lab">AI team · now</span>
+              <div class="ag" style="margin-top:8px"><i class="face f1"></i><span>Ads agent</span><em>Working</em></div>
+              <div class="ag"><i class="face f4"></i><span>Reputation agent</span><em>Working</em></div>
+              <div class="ag"><i class="face f2"></i><span>Sites agent</span><em class="d">Idle</em></div></div>
+            <div class="card"><span class="lab">Overnight</span><div class="why" style="margin-top:8px;font-size:13px;line-height:20px">61 jobs · 18 leads answered · 9 reminders · 3 invoices chased</div></div>
+          </div>
+        </div></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">D</span><h2>Spotlight</h2><p>One thing at a time: the <b>most urgent item as a hero</b> (big money, the reason, Fix / Not now), then the rest as <b>four even tiles</b>, then the numbers. The most focused and “agentic”: the AI tells you what matters first.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="nc">+ New conversation</span><span class="h on">✦ Today</span></div></aside>
+      <div class="main"><div class="bar"><span>Monday, Nov 2</span><span class="pill"><i class="face f6" style="width:18px;height:18px"></i>Ready</span></div>
+        <div class="col">
+          <div class="hi"><h1>Good morning, Maya.</h1><p>Start here. Two more after this.</p></div>
+          <div class="hero"><div><span class="lab"><i class="dot"></i>Harbor Dental · 1 of 3</span><div class="tt" style="margin-top:10px">Harbor’s ads stopped Tuesday. The card on file expired.</div><div class="why">There’s a new Visa ••4411 on file. I’ll switch it and resume the 3 campaigns.</div><div class="acts"><span class="btn">Switch card</span><span class="btn o">Not now</span><span class="agent" style="margin-left:8px"><i class="face f1"></i>Ads agent</span></div></div><div class="big">−$2.4k<small>a month at risk</small></div></div>
+          <div class="gD">
+            <div class="card"><span class="lab"><i class="dot"></i>Peak Fitness</span><div class="tt">Booking widget down</div><div class="ft"><span class="imp r">−$1.6k/mo</span></div></div>
+            <div class="card"><span class="lab"><i class="dot"></i>14 clinics</span><div class="tt">Missed calls after 5 PM</div><div class="ft"><span class="imp r">+18%</span></div></div>
+            <div class="card"><span class="lab"><i class="dot g"></i>New client</span><div class="tt">Onboard Glow Med Spa</div><div class="ft"><span class="why">Signed yesterday</span></div></div>
+            <div class="card"><span class="lab"><i class="dot g"></i>Campaign</span><div class="tt">Black Friday in 24 days</div><div class="ft"><span class="imp g">6.1%</span></div></div>
+          </div>
+          <div class="strip"><div><small>MRR</small><b>$412.8k</b></div><div><small>Bookings today</small><b>23</b></div><div><small>Agents working</small><b>4</b></div><div><small>Done overnight</small><b>61</b></div></div>
+        </div>
+        <div class="comp">✦ Ask anything · @ a client · / to make<i></i></div>
+      </div></div></div></section>
+
+  <p class="pick">My pick: <b>A · Even grid</b> as the default (smallest change, fixes every issue), with <b>C · Inbox</b> as the List option for agencies with lots of clients. <b>D</b> is great for the voice/Talk flow. Whatever you pick, I’d apply the system above across chat, cards, canvas and sheets.</p>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => (f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})`))
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chat Box Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f5f5f7; --page: #fff; --fg: #15161b; --fg2: #555865; --fg3: #8a8d99; --line: rgba(21,22,27,.06); --line2: rgba(21,22,27,.1); --chip: #f2f2f5; --spark: #6b72ff; --green: #0a8a52; --amber: #c27a12;
+    --shadow: 0 0 0 1px rgba(21,22,27,.06), 0 1px 2px rgba(21,22,27,.04), 0 10px 28px -18px rgba(21,22,27,.22); }
+  body.dark { --bg: #0e0f12; --page: #17191e; --fg: #ececf1; --fg2: #a4a6b1; --fg3: #6e717d; --line: rgba(255,255,255,.07); --line2: rgba(255,255,255,.12); --chip: rgba(255,255,255,.06); --shadow: 0 0 0 1px rgba(255,255,255,.08), 0 14px 30px -18px rgba(0,0,0,.7); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; transition: background .3s, color .3s; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 30px; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0; max-width: 700px; }
+  .seg { display: flex; padding: 3px; border-radius: 99px; background: var(--page); box-shadow: var(--shadow); } .seg button { border: 0; background: transparent; color: var(--fg2); font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 99px; cursor: pointer; } .seg button.on { background: var(--fg); color: var(--bg); }
+  .now { display: flex; align-items: center; gap: 10px; color: var(--fg2); margin-bottom: 40px; }
+  .opt { margin-bottom: 52px; }
+  .cap { display: grid; grid-template-columns: 34px 1fr; gap: 2px 10px; margin-bottom: 14px; } .cap .n { font: 500 11px/1 'Geist Mono'; color: var(--fg3); padding-top: 6px; } .cap h2 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .cap h2 small { font-size: 12px; color: var(--fg3); font-weight: 400; margin-left: 6px; }
+  .cap p { grid-column: 2; margin: 0; color: var(--fg2); } .cap p b { color: var(--fg); font-weight: 500; }
+  .states { display: grid; gap: 14px; }
+  .st { display: grid; grid-template-columns: 90px 1fr; gap: 14px; align-items: center; } .st > .mono { font-size: 10px; color: var(--fg3); }
+  svg.i { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .ib { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; color: var(--fg2); flex: none; } .ib:hover { background: var(--chip); }
+  .send { width: 32px; height: 32px; border-radius: 16px; display: grid; place-items: center; background: var(--fg); color: var(--bg); flex: none; } .send.off { background: var(--chip); color: var(--fg3); }
+  .chipc { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 4px 6px 4px 8px; border-radius: 8px; background: var(--chip); color: var(--fg); white-space: nowrap; } .chipc .x { color: var(--fg3); }
+  .face { width: 18px; height: 18px; border-radius: 6px; position: relative; flex: none; } .face::before, .face::after { content: ''; position: absolute; top: 7px; width: 2.5px; height: 2.5px; border-radius: 2px; background: #1b1830; } .face::before { left: 5px; } .face::after { right: 5px; }
+  .f1 { background: #f08a3c; } .f6 { background: #8b90ff; } .f2 { background: #2bb3a3; }
+  .ph { color: var(--fg3); } .typed { color: var(--fg); } .caret { display: inline-block; width: 1.5px; height: 18px; background: var(--fg); vertical-align: -3px; margin-left: 1px; animation: bl 1s steps(2) infinite; } @keyframes bl { 50% { opacity: 0 } }
+  .tool { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg2); padding: 6px 10px; border-radius: 99px; white-space: nowrap; } .tool:hover { background: var(--chip); color: var(--fg); } .tool.on { background: color-mix(in srgb, var(--spark) 12%, transparent); color: var(--spark); }
+  .wave { display: inline-flex; gap: 2px; align-items: center; height: 18px; } .wave i { width: 2.5px; border-radius: 2px; background: var(--spark); animation: wv .9s ease-in-out infinite; } .wave i:nth-child(2n) { animation-delay: -.3s } .wave i:nth-child(3n) { animation-delay: -.6s } @keyframes wv { 0%,100% { height: 4px } 50% { height: 16px } }
+  /* A · Claude: a roomy box, text on top, tools along the bottom */
+  .A { background: var(--page); border-radius: 22px; box-shadow: var(--shadow); padding: 14px 14px 10px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .A .txt { font-size: 15px; min-height: 44px; line-height: 22px; } .A .row { display: flex; align-items: center; gap: 4px; } .A .grow { flex: 1; }
+  .A .who { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg2); padding: 6px 10px; border-radius: 10px; } .A .who:hover { background: var(--chip); }
+  /* B · ChatGPT: one pill, + on the left, voice on the right */
+  .B { background: var(--page); border-radius: 28px; box-shadow: var(--shadow); padding: 8px 8px 8px 10px; display: flex; align-items: center; gap: 6px; }
+  .B .txt { flex: 1; font-size: 15px; padding: 0 6px; min-width: 0; white-space: nowrap; overflow: hidden; }
+  .B .vm { height: 36px; padding: 0 14px; border-radius: 18px; background: var(--fg); color: var(--bg); display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+  .Bmenu { margin: 0 0 8px 10px; width: 260px; background: var(--page); border-radius: 16px; box-shadow: var(--shadow); padding: 6px; } .Bmenu div { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; font-size: 13.5px; } .Bmenu div:hover, .Bmenu div.on { background: var(--chip); } .Bmenu small { margin-left: auto; color: var(--fg3); font-size: 12px; }
+  /* C · Perplexity / Cursor: context on top, a mode switch */
+  .C { background: var(--page); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+  .C .ctx { display: flex; gap: 6px; align-items: center; padding: 10px 12px 0; flex-wrap: wrap; } .C .ctx .add { font-size: 12.5px; color: var(--fg3); padding: 4px 8px; border-radius: 8px; box-shadow: inset 0 0 0 1px var(--line2); }
+  .C .txt { font-size: 15px; padding: 10px 16px 6px; min-height: 42px; }
+  .C .bot { display: flex; align-items: center; gap: 6px; padding: 6px 10px 10px; }
+  .modes { display: flex; padding: 2px; border-radius: 10px; background: var(--chip); } .modes span { font-size: 12.5px; padding: 4px 10px; border-radius: 8px; color: var(--fg2); } .modes span.on { background: var(--page); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
+  .C .hint { margin-left: auto; font: 400 11.5px 'Geist Mono'; color: var(--fg3); }
+  /* D · Agentic: who it goes to, what's running, and smart suggestions */
+  .D { display: flex; flex-direction: column; gap: 8px; }
+  .sugg { display: flex; gap: 6px; flex-wrap: wrap; } .sugg span { font-size: 13px; padding: 6px 12px; border-radius: 99px; background: var(--page); box-shadow: var(--shadow); color: var(--fg); } .sugg span b { font-weight: 500; }
+  .Dbox { background: var(--page); border-radius: 20px; box-shadow: var(--shadow); padding: 10px 10px 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .Dtop { display: flex; align-items: center; gap: 8px; } .to { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--fg2); padding: 4px 8px 4px 5px; border-radius: 8px; background: var(--chip); } .to b { color: var(--fg); font-weight: 500; }
+  .runchip { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--spark); } .spin { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--spark) 25%, transparent); border-top-color: var(--spark); animation: sp .7s linear infinite; } @keyframes sp { to { transform: rotate(360deg) } }
+  .Drow { display: flex; align-items: center; gap: 4px; } .Drow .txt { flex: 1; font-size: 15px; padding: 0 6px; }
+  .pick { color: var(--fg2); } .pick b { color: var(--fg); font-weight: 500; }
+  .src { color: var(--fg3); font-size: 12.5px; margin-top: 30px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+  <symbol id="clip" viewBox="0 0 24 24"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6L15 7" /></symbol>
+  <symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></symbol>
+  <symbol id="up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6" /></symbol>
+  <symbol id="spark" viewBox="0 0 24 24"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" /></symbol>
+  <symbol id="at" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M16 12v1.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-3.5 7.1" /></symbol>
+  <symbol id="slash" viewBox="0 0 24 24"><path d="M15 4 9 20" /></symbol>
+  <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></symbol>
+  <symbol id="site" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5" /><path d="M3 9h18" /></symbol>
+  <symbol id="brain" viewBox="0 0 24 24"><path d="M12 5a3 3 0 1 0-6 .1A4 4 0 0 0 3.5 11a4 4 0 0 0 .5 6.5A4 4 0 1 0 12 18z" /><path d="M12 5a3 3 0 1 1 6 .1 4 4 0 0 1 2.5 5.9 4 4 0 0 1-.5 6.5A4 4 0 1 1 12 18z" /></symbol>
+  <symbol id="down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+  <symbol id="wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4" /></symbol>
+</svg>
+<div class="wrap">
+  <header><div><h1>Chat box · options</h1><p>Four directions, drawn from Claude, ChatGPT, Perplexity / Cursor, and an agent-first one of our own. Each shown empty, while typing, and while talking. Nothing in the app is changed yet.</p></div>
+    <div class="seg" id="theme"><button class="on" data-t="light">Light</button><button data-t="dark">Dark</button></div></header>
+  <div class="now"><span class="mono" style="font-size:10px">Today</span>One pill: a spark, the placeholder, send. @ and / work, but nothing shows they exist; no attach, no voice in the box, no sense of who you’re talking to.</div>
+
+  <section class="opt"><div class="cap"><span class="n">A</span><h2>Roomy box, tools below <small>like Claude</small></h2><p>Two lines of room, the text on top and the tools along the bottom: <b>+ attach</b>, <b>Make</b> (the / list), <b>who you’re talking to</b> (Cerebro or an agent, with its face), mic and send. Context you add (a client) shows as a chip.</p></div>
+    <div class="states">
+      <div class="st"><span class="mono">Empty</span><div class="A"><div class="txt ph">Ask anything, or tell Cerebro what to do…</div><div class="row"><span class="ib"><svg class="i"><use href="#plus" /></svg></span><span class="tool"><svg class="i"><use href="#site" /></svg>Make</span><span class="grow"></span><span class="who"><i class="face f6"></i>Cerebro<svg class="i" style="width:14px"><use href="#down" /></svg></span><span class="ib"><svg class="i"><use href="#mic" /></svg></span><span class="send off"><svg class="i"><use href="#up" /></svg></span></div></div></div>
+      <div class="st"><span class="mono">Typing</span><div class="A"><div class="row" style="gap:6px"><span class="chipc"><i class="face f1"></i>Harbor Dental<span class="x">×</span></span><span class="chipc">📎 offer.pdf<span class="x">×</span></span></div><div class="txt"><span class="typed">Use this offer for their spring ads and send me the plan</span><span class="caret"></span></div><div class="row"><span class="ib"><svg class="i"><use href="#plus" /></svg></span><span class="tool"><svg class="i"><use href="#site" /></svg>Make</span><span class="grow"></span><span class="who"><i class="face f1"></i>Ads agent<svg class="i" style="width:14px"><use href="#down" /></svg></span><span class="ib"><svg class="i"><use href="#mic" /></svg></span><span class="send"><svg class="i"><use href="#up" /></svg></span></div></div></div>
+    </div></section>
+
+  <section class="opt"><div class="cap"><span class="n">B</span><h2>One pill, + menu, voice mode <small>like ChatGPT</small></h2><p>Stays slim. <b>+ opens a menu</b> (attach, make, mention a client, memory), and on the right a <b>voice mode button</b> that turns the whole pill into a live talk bar. Closest to what we have, with more inside.</p></div>
+    <div class="states">
+      <div class="st"><span class="mono">+ menu</span><div><div class="Bmenu"><div><svg class="i"><use href="#clip" /></svg>Attach a file</div><div class="on"><svg class="i"><use href="#site" /></svg>Make something<small>/</small></div><div><svg class="i"><use href="#at" /></svg>Mention a client<small>@</small></div><div><svg class="i"><use href="#brain" /></svg>Use memory</div></div>
+        <div class="B"><span class="ib"><svg class="i"><use href="#plus" /></svg></span><span class="txt ph">Ask anything</span><span class="ib"><svg class="i"><use href="#mic" /></svg></span><span class="vm"><svg class="i"><use href="#wave" /></svg>Talk</span></div></div></div>
+      <div class="st"><span class="mono">Talking</span><div class="B"><span class="ib"><i class="face f6"></i></span><span class="txt"><span class="typed">“switch Harbor to the new card…”</span></span><span class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="vm" style="background:var(--chip);color:var(--fg)">End</span></div></div>
+    </div></section>
+
+  <section class="opt"><div class="cap"><span class="n">C</span><h2>Context on top, a mode switch <small>like Perplexity / Cursor</small></h2><p>What the AI will use sits <b>above the text as chips</b> (client, memory, a file), and a small <b>Ask / Do / Plan</b> switch says how far it may go: answer, act, or draft a plan for approval. Hints for @ and / along the bottom.</p></div>
+    <div class="states">
+      <div class="st"><span class="mono">Empty</span><div class="C"><div class="ctx"><span class="add">+ Add context</span></div><div class="txt ph">Ask, or tell it what to do…</div><div class="bot"><div class="modes"><span>Ask</span><span class="on">Do</span><span>Plan</span></div><span class="hint">@ client · / make</span><span class="ib"><svg class="i"><use href="#mic" /></svg></span><span class="send off"><svg class="i"><use href="#up" /></svg></span></div></div></div>
+      <div class="st"><span class="mono">Typing</span><div class="C"><div class="ctx"><span class="chipc"><i class="face f1"></i>Harbor Dental<span class="x">×</span></span><span class="chipc"><svg class="i" style="width:14px"><use href="#brain" /></svg>Ask before spending over $500<span class="x">×</span></span><span class="add">+</span></div><div class="txt"><span class="typed">Plan a spring whitening campaign</span><span class="caret"></span></div><div class="bot"><div class="modes"><span>Ask</span><span>Do</span><span class="on">Plan</span></div><span class="hint">Drafts a plan · you approve</span><span class="ib"><svg class="i"><use href="#mic" /></svg></span><span class="send"><svg class="i"><use href="#up" /></svg></span></div></div></div>
+    </div></section>
+
+  <section class="opt"><div class="cap"><span class="n">D</span><h2>Agent-first <small>our own</small></h2><p>The box knows it’s talking to a team. <b>“To:”</b> picks Cerebro, an agent or a channel; a <b>running chip</b> shows work in progress (and lets you stop it); <b>suggestions</b> above change with where you are. Fits the AI team and channels we just built.</p></div>
+    <div class="states">
+      <div class="st"><span class="mono">Home</span><div class="D"><div class="sugg"><span><b>Fix</b> Harbor’s ads</span><span><b>Plan</b> Black Friday</span><span><b>Ask</b> who’s at risk this month</span></div>
+        <div class="Dbox"><div class="Dtop"><span class="to">To <i class="face f6"></i><b>Cerebro</b><svg class="i" style="width:13px"><use href="#down" /></svg></span><span class="runchip"><span class="spin"></span>Ads agent · 2 of 4 · Stop</span></div>
+          <div class="Drow"><span class="ib"><svg class="i"><use href="#plus" /></svg></span><span class="txt ph">Ask anything · @ a client or agent · / to make</span><span class="ib"><svg class="i"><use href="#mic" /></svg></span><span class="send off"><svg class="i"><use href="#up" /></svg></span></div></div></div></div>
+      <div class="st"><span class="mono">Channel</span><div class="D"><div class="Dbox"><div class="Dtop"><span class="to">To <b>#harbor-dental</b> · <i class="face f1"></i><i class="face f2"></i><i class="face f6"></i></span></div>
+          <div class="Drow"><span class="ib"><svg class="i"><use href="#plus" /></svg></span><span class="txt"><span class="chipc" style="margin-right:4px"><i class="face f2"></i>Sites agent</span><span class="typed">add a booking button to the header</span><span class="caret"></span></span><span class="ib"><svg class="i"><use href="#mic" /></svg></span><span class="send"><svg class="i"><use href="#up" /></svg></span></div></div></div></div>
+    </div></section>
+
+  <p class="pick">My pick: <b>D · Agent-first</b>, built on <b>A</b>’s roomy two-line box. It shows who you’re talking to and what’s running, which no general chat app needs but Cerebro does. From <b>C</b>, I’d take the context chips (client, memory) and maybe the Ask / Do / Plan switch later.</p>
+  <p class="src">References: Claude (two-line box, tools below, model picker), ChatGPT (+ menu, voice mode button), Perplexity and Cursor (context chips, modes, @ mentions).</p>
+</div>
+<script>
+document.querySelectorAll('#theme button').forEach((b) => b.onclick = () => { document.body.classList.toggle('dark', b.dataset.t === 'dark'); document.querySelectorAll('#theme button').forEach((x) => x.classList.toggle('on', x === b)) })
+</script>
+</body>
+</html>

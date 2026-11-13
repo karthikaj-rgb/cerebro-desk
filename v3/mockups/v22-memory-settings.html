@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Memory Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f9f9fa; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; --spark: #6b72ff; --amber: #d98a1c; --green: #079455; --shadow: 0 0 0 1px rgba(21,22,27,.06), 0 1px 2px rgba(21,22,27,.03); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ebebef; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1260px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 28px; max-width: 900px; } header b { color: var(--fg); font-weight: 500; }
+  .opt { margin-bottom: 52px; } .cap { display: grid; grid-template-columns: 34px 1fr; gap: 2px 10px; margin-bottom: 14px; } .cap .n { font: 500 11px/1 Inter; color: var(--fg3); padding-top: 7px; } .cap h2 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .cap p { grid-column: 2; margin: 0; color: var(--fg2); max-width: 920px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1280 / 820; } .stage { position: absolute; left: 0; top: 0; width: 1280px; height: 820px; transform-origin: 0 0; background: var(--bg); border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.3); display: flex; }
+  .side { width: 232px; flex: none; padding: 14px; } .isl { height: 100%; background: #fff; border-radius: 18px; box-shadow: var(--shadow); padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+  .isl .b { font-weight: 600; padding: 2px 8px 12px; display: flex; gap: 8px; align-items: center; } .isl .b i { width: 18px; height: 18px; border-radius: 6px; background: #7f8cff; }
+  .isl .h { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 8px; color: var(--fg2); } .isl .h.on { background: var(--chip); color: var(--fg); } .isl .h em { margin-left: auto; font-style: normal; font-size: 11px; color: var(--amber); background: #fbf1e2; padding: 0 6px; border-radius: 99px; } .isl .sp { flex: 1; }
+  .main { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 28px; padding: 40px 36px 0 28px; align-content: start; }
+  .col { display: flex; flex-direction: column; min-width: 0; }
+  h3.t { margin: 0 0 18px; font-size: 32px; line-height: 40px; font-weight: 400; letter-spacing: -.035em; }
+  .ask { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 7px 6px 18px; border-radius: 26px; background: #fff; box-shadow: 0 0 0 1px var(--line2), 0 8px 24px -18px rgba(21,22,27,.2); font-size: 15px; color: var(--fg3); } .ask span { flex: 1; } .ask .go { flex: none; width: 38px; height: 38px; border-radius: 19px; background: var(--chip); display: grid; place-items: center; }
+  .sug { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 0; } .sug span { font-size: 13px; padding: 6px 12px; border-radius: 99px; background: #fff; box-shadow: var(--shadow); color: var(--fg2); }
+  .tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); margin: 26px 0 14px; font-size: 14px; color: var(--fg3); } .tabs span { padding-bottom: 10px; } .tabs span.on { color: var(--fg); box-shadow: inset 0 -2px 0 var(--fg); } .tabs em { font-style: normal; font-size: 12px; color: var(--amber); background: #fbf1e2; padding: 0 6px; border-radius: 99px; margin-left: 4px; }
+  .card { background: #fff; border-radius: 16px; box-shadow: var(--shadow); }
+  .row { display: flex; align-items: center; gap: 10px; padding: 13px 18px; } .row + .row { border-top: 1px solid var(--line); }
+  .row .tx { flex: 1; min-width: 0; } .row .tx b { display: block; font-weight: 400; font-size: 14px; } .row .tx small { font-size: 12px; color: var(--fg3); } .row .tx small i { font-style: normal; color: var(--spark); }
+  .dots { color: var(--fg3); font-size: 16px; } .btn { font-size: 13px; padding: 7px 14px; border-radius: 99px; background: var(--fg); color: #fff; white-space: nowrap; } .btn.o { background: #fff; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); }
+  .sw { position: relative; margin-bottom: 12px; z-index: 3; }
+  .swb { width: 100%; display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 14px; border: 0; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px var(--line2), 0 0 0 4px rgba(107,114,255,.08); font: inherit; text-align: left; }
+  .swb b { font-weight: 500; font-size: 15px; } .swb small { color: var(--fg3); font-size: 12.5px; flex: 1; } .swb .car { color: var(--fg2); }
+  .lg { width: 28px; height: 28px; border-radius: 8px; background: #e6eef7; color: #1f3a5f; display: grid; place-items: center; font-weight: 600; font-size: 12px; flex: none; }
+  .swm { position: absolute; left: 0; right: 0; top: 58px; background: #fff; border-radius: 16px; padding: 8px; box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(21,22,27,.3); }
+  .sws { display: flex; align-items: center; gap: 8px; height: 38px; border-radius: 10px; background: var(--chip); padding: 0 12px; color: var(--fg3); font-size: 13.5px; margin-bottom: 4px; }
+  .swl { font: 500 10px/14px Inter; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); padding: 8px 10px 4px; } .swl:last-child { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--fg2); padding: 8px 10px 4px; }
+  .swi { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; } .swi.on { background: var(--chip); } .swi > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; } .swi b { font-weight: 500; font-size: 14px; } .swi small { font-size: 12px; color: var(--fg3); } .swi .ck { color: var(--fg); }
+  section.opt:nth-of-type(2) .two { grid-template-columns: 1fr; }
+  /* settings panel */
+  .panel { display: flex; flex-direction: column; gap: 14px; }
+  .ph { display: flex; justify-content: space-between; align-items: baseline; margin: 6px 2px 0; } .ph b { font-size: 15px; font-weight: 500; } .ph small { font-size: 12px; color: var(--fg3); }
+  .pc { background: #fff; border-radius: 16px; box-shadow: var(--shadow); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .pl { display: flex; justify-content: space-between; align-items: baseline; font: 500 10px/14px Inter; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); } .pl a { font: 400 12.5px Inter; letter-spacing: 0; text-transform: none; color: var(--fg2); text-decoration: none; }
+  .src { display: flex; align-items: center; gap: 10px; font-size: 13.5px; } .src .ic { width: 26px; height: 26px; border-radius: 8px; background: var(--chip); display: grid; place-items: center; font-size: 12px; color: var(--fg2); flex: none; } .src span { flex: 1; } .src small { font-size: 12px; color: var(--fg3); }
+  .tog { width: 34px; height: 20px; border-radius: 10px; background: var(--fg); position: relative; flex: none; } .tog::after { content: ''; position: absolute; right: 2px; top: 2px; width: 16px; height: 16px; border-radius: 8px; background: #fff; } .tog.off { background: var(--chip); } .tog.off::after { right: auto; left: 2px; box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+  .split { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--chip); } .split i { display: block; height: 100%; } .split i.a { background: var(--spark); } .split i.b { background: #c7c9d4; }
+  .leg { display: flex; justify-content: space-between; font-size: 13px; color: var(--fg2); } .leg b { color: var(--fg); font-weight: 500; } .leg i { display: inline-block; width: 8px; height: 8px; border-radius: 4px; margin-right: 6px; vertical-align: 1px; }
+  .rule { display: flex; align-items: center; gap: 8px; font-size: 13.5px; } .rule span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .rule em { font-style: normal; font-size: 11.5px; padding: 2px 8px; border-radius: 99px; background: var(--chip); color: var(--fg2); white-space: nowrap; } .rule em.on { background: rgba(7,148,85,.1); color: var(--green); }
+  .face { width: 20px; height: 20px; border-radius: 6px; flex: none; position: relative; } .face::before, .face::after { content: ''; position: absolute; top: 7px; width: 2.5px; height: 2.5px; border-radius: 2px; background: #1b1830; } .face::before { left: 5px; } .face::after { right: 5px; }
+  .chg { display: flex; align-items: center; gap: 8px; font-size: 13px; } .chg .k { width: 18px; color: var(--fg3); text-align: center; flex: none; } .chg span { flex: 1; min-width: 0; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .chg u { color: var(--fg2); text-decoration-color: var(--line2); text-underline-offset: 3px; font-size: 12.5px; }
+  .note { font-size: 12px; color: var(--fg3); }
+  /* phone */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  .phone { width: 360px; margin: 0 auto; border-radius: 44px; background: #111; padding: 10px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); } .ps { border-radius: 34px; background: var(--bg); padding: 46px 16px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .ps h3.t { font-size: 26px; margin: 0; } .ps .pc { padding: 12px 14px; }
+  .why { background: #fff; border-radius: 14px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(0,0,0,.05); } .why h3 { margin: 0 0 8px; font-size: 15px; font-weight: 500; } .why ul { margin: 0; padding-left: 18px; color: var(--fg2); font-size: 13.5px; line-height: 1.65; } .why b { color: var(--fg); font-weight: 500; }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Memory, with settings always in view</h1><p>No modal, no hidden drawer. The page has <b>two columns</b>: what Cerebro knows on the left, <b>how memory works</b> on the right as a short summary you can change in one tap. Everything at a glance.</p></header>
+
+  <section class="opt"><div class="cap"><span class="n">1</span><h2>Desktop</h2><p>The right panel answers four questions: <b>where does it learn from</b>, <b>who sees what</b>, <b>what may agents do alone</b>, and <b>what changed recently</b>. Each block shows its state and changes in place; “All” links open the full list.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="h">+ New</span><span class="h">Search</span><span class="h">Today</span><span class="sp"></span><span class="h on">Memory<em>3</em></span></div></aside>
+      <div class="main">
+        <div class="col">
+          <h3 class="t">Memory</h3>
+          <div class="ask"><span>Ask what I know, or tell me to remember something…</span><span class="go">↑</span></div>
+          <div class="sug"><span>What does Harbor Dental care about?</span><span>What do you know about me?</span><span>What did Lumen say?</span></div>
+          <div class="tabs"><span>To review<em>3</em></span><span class="on">About you</span><span>Clients</span></div>
+          <div class="card">
+            <div class="row"><div class="tx"><b>Lead with their review numbers on the Lumen call</b><small>From a chat · Friday · forgets Thu</small></div><span class="dots">⋯</span></div>
+            <div class="row"><div class="tx"><b>Send me a recap every Friday at 5 PM</b><small>You said · Oct 12</small></div><span class="dots">⋯</span></div>
+            <div class="row"><div class="tx"><b>Lead with wins in client reports</b><small>Learned from 6 report edits · <i>shared with your team</i></small></div><span class="dots">⋯</span></div>
+            <div class="row"><div class="tx"><b>Short answers; no voice before 9 AM</b><small>Learned this week</small></div><span class="dots">⋯</span></div>
+            <div class="row"><div class="tx"><b>Show client revenue as monthly, not yearly</b><small>Learned from 3 of your edits</small></div><span class="dots">⋯</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph"><b>How memory works</b><small>Changes apply now</small></div>
+          <div class="pc"><div class="pl">Learns from <a>Sources ›</a></div>
+            <div class="src"><span class="ic">💬</span><span>Chats</span><small>9 facts</small><i class="tog"></i></div>
+            <div class="src"><span class="ic">☏</span><span>Calls</span><small>4 facts</small><i class="tog"></i></div>
+            <div class="src"><span class="ic">✉</span><span>Emails</span><small>3 facts</small><i class="tog"></i></div>
+            <div class="src"><span class="ic">✎</span><span>Notes</span><small>2 facts</small><i class="tog off"></i></div>
+          </div>
+          <div class="pc"><div class="pl">Who sees what <a>Sharing ›</a></div>
+            <div class="split"><i class="a" style="width:62%"></i><i class="b" style="width:38%"></i></div>
+            <div class="leg"><span><i style="background:var(--spark)"></i>Team · <b>8</b></span><span><i style="background:#c7c9d4"></i>Only you · <b>5</b></span></div>
+            <div class="note">Client facts are shared with Sam, Dev and Ali. New ones wait for your review.</div>
+          </div>
+          <div class="pc"><div class="pl">Agents may do alone <a>AI team ›</a></div>
+            <div class="rule"><i class="face" style="background:#f0c03a"></i><span>Reply to 4–5★ reviews</span><em class="on">On its own</em></div>
+            <div class="rule"><i class="face" style="background:#f08a3c"></i><span>Switch expired cards</span><em>Asks first</em></div>
+            <div class="rule"><i class="face" style="background:#4fd9c4"></i><span>Repair broken widgets</span><em>Asks first</em></div>
+            <div class="rule"><i class="face" style="background:#f08a3c"></i><span>Spend over $500 at once</span><em>Asks first</em></div>
+          </div>
+          <div class="pc"><div class="pl">Recent changes <a>All history ›</a></div>
+            <div class="chg"><span class="k">+</span><span>Learned “Lead with wins in reports”</span><u>Undo</u></div>
+            <div class="chg"><span class="k">⚙</span><span>Reply to 3★ reviews → ask first</span><u>Undo</u></div>
+            <div class="chg"><span class="k">−</span><span>Didn't keep “Peak wants 5 AM”</span><u>Undo</u></div>
+          </div>
+        </div>
+      </div>
+    </div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">2</span><h2>Clients tab, and on a phone</h2><p>Switch clients from the top of the tab: <b>Harbor Dental ▾</b> opens a searchable list, recent clients first. The panel stays the same whatever tab you're on. On a narrow screen it moves <b>below</b> the list as the same four compact blocks.</p></div>
+    <div class="two">
+      <div class="fit" style="aspect-ratio:1280/820"><div class="stage">
+        <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="h">+ New</span><span class="h">Search</span><span class="h">Today</span><span class="sp"></span><span class="h on">Memory<em>3</em></span></div></aside>
+        <div class="main">
+          <div class="col">
+            <h3 class="t">Memory</h3>
+            <div class="ask"><span>Ask what I know…</span><span class="go">↑</span></div>
+            <div class="tabs"><span>To review<em>3</em></span><span>About you</span><span class="on">Clients</span></div>
+            <div class="sw"><button class="swb"><span class="lg">H</span><b>Harbor Dental</b><small>2 clinics · $1,240/mo</small><span class="car">▾</span></button>
+              <div class="swm"><div class="sws">⌕ <span>Search 1,284 clients</span></div><div class="swl">Recent</div>
+                <div class="swi on"><span class="lg">H</span><span><b>Harbor Dental</b><small>7 learned</small></span><span class="ck">✓</span></div>
+                <div class="swi"><span class="lg" style="background:#efe6d6;color:#2c3a2e">G</span><span><b>Glow Med Spa</b><small>3 learned · signed yesterday</small></span></div>
+                <div class="swi"><span class="lg" style="background:#fdf0ee;color:#8a3b2e">L</span><span><b>Lumen Spa</b><small>5 learned · 1 to review</small></span></div>
+                <div class="swi"><span class="lg" style="background:#e1f4f1;color:#16524a">P</span><span><b>Peak Fitness</b><small>4 learned</small></span></div>
+                <div class="swl">All clients · A–Z ›</div></div></div>
+            <div class="card" style="padding:14px 18px;margin-bottom:12px;opacity:.35"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-weight:500;font-size:16px">Harbor Dental</b><span style="font-size:12px;color:#1f6feb">From HighLevel · live</span></div><div style="display:grid;grid-template-columns:96px 1fr;gap:6px 12px;margin-top:10px;font-size:13.5px"><span style="color:var(--fg3)">Contact</span><span>Dr. Amy Chen</span><span style="color:var(--fg3)">Plan</span><span>$1,240/mo · 2 clinics</span><span style="color:var(--fg3)">Card</span><span>Visa ••4411</span></div></div>
+            <div class="card">
+              <div class="row"><div class="tx"><b>Amy prefers text over email</b><small>Tuesday's call</small></div><span class="btn o" style="font-size:12px;padding:4px 10px">Save to contact</span></div>
+              <div class="row"><div class="tx"><b>Goal: 40 new patients a month</b><small>Amy's email · Sep</small></div><span class="btn o" style="font-size:12px;padding:4px 10px">Save as goal</span></div>
+              <div class="row"><div class="tx"><b>Before/after ads work best</b><small>3 months of ad results</small></div><span class="dots">⋯</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><b>How memory works</b><small>Changes apply now</small></div>
+            <div class="pc"><div class="pl">Learns from <a>Sources ›</a></div><div class="src"><span class="ic">💬</span><span>Chats</span><small>9</small><i class="tog"></i></div><div class="src"><span class="ic">☏</span><span>Calls</span><small>4</small><i class="tog"></i></div><div class="src"><span class="ic">✉</span><span>Emails</span><small>3</small><i class="tog"></i></div><div class="src"><span class="ic">✎</span><span>Notes</span><small>2</small><i class="tog off"></i></div></div>
+            <div class="pc"><div class="pl">Who sees what</div><div class="split"><i class="a" style="width:62%"></i><i class="b" style="width:38%"></i></div><div class="leg"><span>Team · <b>8</b></span><span>Only you · <b>5</b></span></div></div>
+            <div class="pc"><div class="pl">Recent changes <a>All ›</a></div><div class="chg"><span class="k">+</span><span>Saved “prefers text” to HighLevel</span><u>Undo</u></div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="phone"><div class="ps">
+        <h3 class="t">Memory</h3>
+        <div class="ask" style="font-size:14px"><span>Ask what I know…</span><span class="go">↑</span></div>
+        <div class="tabs" style="margin:6px 0 0"><span class="on">To review<em>3</em></span><span>You</span><span>Clients</span></div>
+        <div class="card"><div class="row" style="flex-wrap:wrap"><div class="tx" style="flex-basis:100%"><b>Harbor caps ad spend at $700/week</b><small>From Amy's email · Ads agent</small></div><span class="btn">Keep</span><span class="btn o">Not true</span></div></div>
+        <div class="ph"><b>How memory works</b></div>
+        <div class="pc"><div class="pl">Learns from</div><div class="src"><span class="ic">💬</span><span>Chats</span><i class="tog"></i></div><div class="src"><span class="ic">☏</span><span>Calls</span><i class="tog"></i></div><div class="src"><span class="ic">✎</span><span>Notes</span><i class="tog off"></i></div></div>
+        <div class="pc"><div class="pl">Who sees what</div><div class="split"><i class="a" style="width:62%"></i><i class="b" style="width:38%"></i></div><div class="leg"><span>Team · <b>8</b></span><span>Only you · <b>5</b></span></div></div>
+      </div></div>
+    </div></section>
+
+  <div class="two">
+    <div class="why"><h3>Why not a modal or a drawer</h3><ul><li>A <b>modal</b> blocks the list you're checking against.</li><li>A <b>drawer</b> hides the state: you can't see that Notes is off without opening it.</li><li>The panel <b>shows the state</b> and changes in one tap, so it's both the summary and the control.</li></ul></div>
+    <div class="why"><h3>What moved where</h3><ul><li><b>Learns from</b> → switches with a count of facts each source gave.</li><li><b>Sharing</b> → one bar: team vs only you.</li><li><b>Rules</b> → the 4 most important, with “AI team ›” for the rest.</li><li><b>History</b> → last 3 with Undo; “All history ›” for the full log.</li></ul></div>
+  </div>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => { f.firstElementChild.style.transform = `scale(${f.clientWidth / 1280})` })
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

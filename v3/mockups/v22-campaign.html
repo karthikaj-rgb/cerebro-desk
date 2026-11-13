@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Campaign Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f6f6f7; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; --green: #079455; --amber: #d98a1c; --spark: #6b72ff; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ec; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 44px 16px 100px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 40px; max-width: 880px; }
+  .opt { margin-bottom: 64px; }
+  .cap { display: grid; grid-template-columns: 40px 1fr; gap: 2px 12px; margin-bottom: 14px; } .cap .n { font-size: 11px; color: var(--fg3); padding-top: 6px; } .cap h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+  .cap p { grid-column: 2; margin: 0; color: var(--fg2); font-size: 13.5px; max-width: 920px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 720; }
+  .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 720px; transform-origin: 0 0; background: var(--bg); border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.35); display: flex; }
+  svg.ic { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .side { width: 236px; flex: none; padding: 14px; }
+  .island { height: 100%; background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line); padding: 12px 10px; font-size: 12.5px; display: flex; flex-direction: column; gap: 2px; }
+  .island .brand { display: flex; gap: 8px; align-items: center; font-weight: 600; font-size: 13px; padding: 2px 8px 12px; } .island .brand i { width: 18px; height: 18px; border-radius: 6px; background: #7f8cff; } .island .brand em { font-style: normal; font-family: 'Geist Mono'; font-size: 9.5px; color: var(--fg3); font-weight: 400; }
+  .island .nc { padding: 7px 10px; border-radius: 9px; box-shadow: inset 0 0 0 1px var(--line2); margin-bottom: 8px; }
+  .island .h { padding: 6px 8px; border-radius: 8px; color: var(--fg2); display: flex; gap: 8px; align-items: center; } .island .h.on { background: var(--chip); color: var(--fg); }
+  .dot { width: 7px; height: 7px; border-radius: 4px; display: inline-block; flex: none; background: var(--green); }
+  .main { flex: 1; position: relative; display: flex; flex-direction: column; min-width: 0; }
+  .bar { height: 54px; display: flex; align-items: center; padding: 0 18px 0 8px; font-size: 13px; flex: none; justify-content: space-between; }
+  .bar .t { display: flex; gap: 8px; align-items: center; } .bar .t span { color: var(--fg3); }
+  .col { width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; padding-top: 6px; }
+  .composer { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); width: 640px; height: 46px; border-radius: 23px; background: #fff; box-shadow: 0 0 0 1px var(--line2); display: flex; align-items: center; padding: 0 6px 0 16px; gap: 10px; color: var(--fg3); }
+  .composer .send { margin-left: auto; width: 34px; height: 34px; border-radius: 17px; background: #d8d9de; }
+  .ai { font-size: 15px; line-height: 1.5; } .ai b { font-weight: 500; }
+  .me { align-self: flex-end; background: #fff; box-shadow: 0 0 0 1px var(--line2); padding: 6px 12px; border-radius: 14px 14px 4px 14px; font-size: 13.5px; }
+  .card { background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line); }
+  .btn { font-size: 13px; padding: 7px 14px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; } .btn.p { background: var(--fg); color: #fff; box-shadow: none; } .btn.l { box-shadow: none; color: var(--fg3); padding: 7px 6px; }
+  .acts { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .lbl { font-size: 9.5px; color: var(--fg3); }
+  .est { font-family: 'Geist Mono'; font-size: 11px; color: var(--green); }
+
+  /* A · one living card */
+  .live { padding: 0; overflow: hidden; }
+  .lh { display: flex; align-items: center; gap: 10px; padding: 14px 16px 12px; }
+  .lh b { font-weight: 500; font-size: 15px; } .lh .lbl { margin-left: auto; }
+  .steps { display: flex; gap: 4px; padding: 0 16px 14px; } .steps span { flex: 1; height: 3px; border-radius: 2px; background: var(--chip); } .steps .d { background: var(--green); } .steps .r { background: var(--fg); }
+  .row { display: grid; grid-template-columns: 96px 1fr auto; gap: 12px; align-items: center; padding: 11px 16px; border-top: 1px solid var(--line); font-size: 13.5px; }
+  .row .k { color: var(--fg3); font-size: 12.5px; } .row .v b { font-weight: 500; } .row .v small { color: var(--fg3); margin-left: 6px; }
+  .row.cur { background: #fafafb; align-items: start; } .row.next .v { color: var(--fg3); }
+  .pick { display: flex; flex-direction: column; gap: 6px; }
+  .po { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line); background: #fff; }
+  .po.on { box-shadow: inset 0 0 0 1.5px var(--fg); } .po i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line2); flex: none; } .po.on i { box-shadow: inset 0 0 0 4.5px var(--fg); }
+  .po b { font-weight: 500; } .po .est { margin-left: auto; }
+  .bars { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; margin-left: 8px; } .bars u { width: 4px; border-radius: 1px; background: var(--green); opacity: .8; }
+
+  /* B · canvas */
+  .split { display: flex; gap: 16px; padding: 0 16px 16px; height: calc(100% - 54px); }
+  .split .chat { width: 400px; display: flex; flex-direction: column; gap: 10px; padding-top: 6px; position: relative; }
+  .split .chat .composer { position: absolute; left: 0; bottom: 0; transform: none; width: 400px; }
+  .cv { flex: 1; background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line); display: flex; flex-direction: column; overflow: hidden; }
+  .cvt { display: flex; gap: 4px; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--fg3); }
+  .cvt span { padding: 5px 10px; border-radius: 8px; display: flex; gap: 6px; align-items: center; } .cvt span.on { background: var(--chip); color: var(--fg); } .cvt .ck { color: var(--green); }
+  .cvb { padding: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .offerHero { grid-column: 1 / -1; border-radius: 14px; padding: 22px; background: linear-gradient(135deg, #e9f3ef, #f3f0fb); display: flex; justify-content: space-between; align-items: flex-end; }
+  .offerHero b { font-size: 26px; font-weight: 500; letter-spacing: -.02em; display: block; } .offerHero small { color: var(--fg2); }
+  .big { font-size: 34px; font-weight: 300; letter-spacing: -.03em; }
+  .tile { border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .donut { width: 84px; height: 84px; }
+  .tl { display: flex; flex-direction: column; gap: 8px; } .tl div { display: grid; grid-template-columns: 50px 18px 1fr; gap: 8px; align-items: center; font-size: 13px; } .tl .mono { font-size: 10px; color: var(--fg3); } .tl em { width: 8px; height: 8px; border-radius: 4px; background: var(--fg); justify-self: center; }
+
+  /* C · compact chat with summary chips */
+  .sum { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sum span { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px; padding: 5px 10px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); } .sum span .lbl { font-size: 9px; } .sum span svg { color: var(--green); }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .chipo { padding: 12px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px var(--line); display: flex; flex-direction: column; gap: 4px; }
+  .chipo.on { box-shadow: 0 0 0 1.5px var(--fg); } .chipo b { font-weight: 500; font-size: 13.5px; line-height: 1.3; }
+  .meter { height: 4px; border-radius: 2px; background: var(--chip); overflow: hidden; } .meter i { display: block; height: 100%; background: var(--green); }
+
+  /* D · draft first */
+  .draft { padding: 0; overflow: hidden; }
+  .dh { padding: 16px 18px; display: flex; gap: 14px; align-items: center; border-bottom: 1px solid var(--line); }
+  .dh .ico { width: 40px; height: 40px; border-radius: 12px; background: var(--chip); display: grid; place-items: center; color: var(--spark); }
+  .dh b { font-weight: 500; font-size: 16px; display: block; } .dh small { color: var(--fg2); }
+  .dg { display: grid; grid-template-columns: 1fr 1fr; }
+  .dc { padding: 14px 18px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; } .dc:nth-child(odd) { border-right: 1px solid var(--line); } .dc:nth-child(-n+2) { border-top: 0; }
+  .dc .top { display: flex; justify-content: space-between; } .dc b { font-weight: 500; font-size: 14px; } .dc small { color: var(--fg3); font-size: 12px; } .dc a { font-size: 12px; color: var(--fg2); text-decoration: underline; text-underline-offset: 3px; }
+  .df { padding: 12px 18px; display: flex; align-items: center; gap: 10px; background: #fafafb; border-top: 1px solid var(--line); } .df .est { margin-right: auto; font-size: 12px; }
+  .pick2 { margin-top: 26px; color: var(--fg2); max-width: 900px; } .pick2 b { color: var(--fg); font-weight: 500; }
+  .bug { background: #fff; border-radius: 12px; box-shadow: 0 0 0 1px var(--line); padding: 14px 18px; color: var(--fg2); margin-bottom: 40px; } .bug b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="ck" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" /></symbol>
+  <symbol id="camp" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z" /><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" /></symbol>
+  <symbol id="spark" viewBox="0 0 24 24"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" /></symbol>
+  <symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3.5 6.5 8.5 6 8.5-6" /></symbol>
+</svg>
+<div class="wrap">
+  <header><h1>Campaign · less text, same information</h1><p>Today every stage adds a paragraph, a steps row and three big cards, and nothing ever shrinks. Four ways to fix it. All keep the numbers (est. rate, bookings, audience size) visible.</p></header>
+  <div class="bug"><b>Also a bug in your screenshot:</b> “Picked up again” replays the whole intro, plan bar and offers a second time. Whatever option you pick, resuming will continue from where it stopped instead of starting over.</div>
+
+  <section class="opt"><div class="cap"><span class="mono n">A</span><h2>One living card</h2><p>The whole campaign is <b>one card that updates in place</b>. Each stage is a row: finished rows shrink to one line with an Edit link, the current row opens to show its choice, later rows wait in grey. The chat stays short. You can always see the whole plan at once.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="island"><div class="brand"><i></i>Cerebro <em>Acme Agency</em></div><span class="nc">+ New conversation</span><span class="h on"><span class="dot"></span>Black Friday campaign</span></div></aside>
+      <div class="main"><div class="bar"><span class="t">Black Friday in 24 days</span></div>
+        <div class="col">
+          <div class="me">Plan Black Friday for my dental clients</div>
+          <div class="ai">Let’s build it together. I picked the best offer from last year; change anything.</div>
+          <div class="card live">
+            <div class="lh"><svg class="ic" style="color:var(--spark)"><use href="#camp" /></svg><b>Black Friday · 12 dental clinics</b><span class="lbl mono">2 of 4</span></div>
+            <div class="steps"><span class="d"></span><span class="r"></span><span></span><span></span></div>
+            <div class="row"><span class="k">Offer</span><span class="v"><b>Free whitening with a cleaning</b><small>est. 7.4% · 160 bookings</small></span><span class="btn l">Edit</span></div>
+            <div class="row cur"><span class="k" style="padding-top:8px">Audience</span>
+              <div class="pick">
+                <div class="po on"><i></i><b>Lapsed 6+ months</b><span style="color:var(--fg3)">2,140 patients</span><span class="bars"><u style="height:14px"></u></span></div>
+                <div class="po"><i></i><b>Everyone</b><span style="color:var(--fg3)">8,900</span><span class="bars"><u style="height:6px"></u></span></div>
+                <div class="po"><i></i><b>New leads only</b><span style="color:var(--fg3)">640</span><span class="bars"><u style="height:4px"></u></span></div>
+              </div><span></span></div>
+            <div class="row next"><span class="k">Messages</span><span class="v">3 per clinic, in each clinic’s voice</span><span></span></div>
+            <div class="row next"><span class="k">Schedule</span><span class="v">Nov 24 → Nov 29</span><span></span></div>
+          </div>
+          <div class="acts"><span class="btn p">Next: messages</span><span class="btn">Do the rest for me</span></div>
+        </div>
+        <div class="composer"><svg class="ic" style="color:var(--spark)"><use href="#spark" /></svg>Reply, or change something…<span class="send"></span></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">B</span><h2>Build it on the canvas</h2><p>Same pattern as the website: <b>the chat holds one line per stage</b>, and the campaign takes shape on the canvas as a visual brief: the offer as a hero, the audience as a number and ring, the sequence as a timeline. Choices are made in the chat; the canvas shows the result.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side" style="width:200px"><div class="island"><div class="brand"><i></i>Cerebro</div><span class="nc">+ New</span><span class="h on"><span class="dot"></span>Black Friday</span></div></aside>
+      <div class="main"><div class="bar"><span class="t">Black Friday in 24 days</span></div>
+        <div class="split">
+          <div class="chat">
+            <div class="me">Plan Black Friday for my dental clients</div>
+            <div class="ai">Best offer last year: <b>free whitening with a cleaning</b>.</div>
+            <div class="acts"><span class="btn" style="box-shadow:inset 0 0 0 1.5px var(--fg)">Free whitening</span><span class="btn">20% off Invisalign</span><span class="btn">$99 exam</span></div>
+            <div class="ai">Sending to <b>2,140 lapsed patients</b> across 12 clinics.</div>
+            <div class="acts"><span class="btn p">Looks right</span><span class="btn">Change audience</span></div>
+            <div class="composer"><svg class="ic" style="color:var(--spark)"><use href="#spark" /></svg>Reply…<span class="send"></span></div>
+          </div>
+          <div class="cv">
+            <div class="cvt"><span><svg class="ic ck"><use href="#ck" /></svg>Offer</span><span class="on"><i class="mono" style="font-style:normal;font-size:9px">●</i>Audience</span><span>Messages</span><span>Schedule</span></div>
+            <div class="cvb">
+              <div class="offerHero"><div><span class="lbl mono">The offer</span><b>Free whitening<br />with a cleaning</b><small>Best for returning patients</small></div><div style="text-align:right"><div class="big">7.4%</div><span class="est">est. 160 bookings</span></div></div>
+              <div class="tile"><span class="lbl mono">Audience</span><div style="display:flex;align-items:center;gap:16px"><svg class="donut" viewBox="0 0 42 42"><circle cx="21" cy="21" r="16" fill="none" stroke="#f1f1f3" stroke-width="6" /><circle cx="21" cy="21" r="16" fill="none" stroke="#079455" stroke-width="6" stroke-dasharray="24 100" transform="rotate(-90 21 21)" /></svg><div><div class="big">2,140</div><small style="color:var(--fg2)">lapsed 6+ months · 24% of patients</small></div></div></div>
+              <div class="tile"><span class="lbl mono">Sequence</span><div class="tl"><div><span class="mono">Nov 24</span><em></em>Email · the offer</div><div><span class="mono">Nov 27</span><em style="background:var(--fg3)"></em>SMS · reminder</div><div><span class="mono">Nov 29</span><em style="background:var(--fg3)"></em>Email · last day</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">C</span><h2>Short chat, decisions collapse</h2><p>Keep the chat, but trim it hard: <b>one short line per stage</b>, compact choice tiles with a bar showing the expected result, and once you choose, the whole stage <b>collapses into a chip</b> at the top. The plan bar becomes those chips.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="island"><div class="brand"><i></i>Cerebro <em>Acme Agency</em></div><span class="nc">+ New conversation</span><span class="h on"><span class="dot"></span>Black Friday campaign</span></div></aside>
+      <div class="main"><div class="bar"><span class="t">Black Friday in 24 days</span></div>
+        <div class="col">
+          <div class="sum"><span><svg class="ic"><use href="#ck" /></svg><span class="lbl mono">Offer</span>Free whitening</span><span><svg class="ic"><use href="#ck" /></svg><span class="lbl mono">Audience</span>2,140 lapsed</span><span style="background:var(--fg);color:#fff;box-shadow:none"><span class="lbl mono" style="color:#aaa">Messages</span>now</span><span style="color:var(--fg3)"><span class="lbl mono">Schedule</span></span></div>
+          <div class="ai">Three messages, written in each clinic’s voice. Pick a tone.</div>
+          <div class="seg">
+            <div class="chipo on"><span class="lbl mono">Friendly</span><b>“Your smile’s Black Friday treat”</b><div class="meter"><i style="width:82%"></i></div><span class="est">opens 41%</span></div>
+            <div class="chipo"><span class="lbl mono">Urgent</span><b>“48 hours: free whitening”</b><div class="meter"><i style="width:70%"></i></div><span class="est">opens 36%</span></div>
+            <div class="chipo"><span class="lbl mono">Plain</span><b>“Book your cleaning, whitening on us”</b><div class="meter"><i style="width:58%"></i></div><span class="est">opens 30%</span></div>
+          </div>
+          <div class="acts"><span class="btn p">Use friendly</span><span class="btn">Preview all 3</span></div>
+        </div>
+        <div class="composer"><svg class="ic" style="color:var(--spark)"><use href="#spark" /></svg>Reply, or change something…<span class="send"></span></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">D</span><h2>Draft first, then tweak</h2><p>The most agentic: the AI <b>drafts the whole campaign in one go</b> and shows a single summary card (offer, audience, messages, schedule), each with its number and a Change link. <b>One decision</b>: schedule it. You only open what you want to change.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="island"><div class="brand"><i></i>Cerebro <em>Acme Agency</em></div><span class="nc">+ New conversation</span><span class="h on"><span class="dot"></span>Black Friday campaign</span></div></aside>
+      <div class="main"><div class="bar"><span class="t">Black Friday in 24 days</span></div>
+        <div class="col">
+          <div class="me">Plan Black Friday for my dental clients</div>
+          <div class="ai">Drafted from what worked last year. Change any part, or schedule it.</div>
+          <div class="card draft">
+            <div class="dh"><span class="ico"><svg class="ic" style="width:18px;height:18px"><use href="#camp" /></svg></span><div><b>Black Friday · 12 dental clinics</b><small>Nov 24 – 29 · email + SMS</small></div><span class="est" style="margin-left:auto;font-size:12px">est. 160 bookings</span></div>
+            <div class="dg">
+              <div class="dc"><div class="top"><span class="lbl mono">Offer</span><a>Change</a></div><b>Free whitening with a cleaning</b><small>Best last year · 7.4%</small></div>
+              <div class="dc"><div class="top"><span class="lbl mono">Audience</span><a>Change</a></div><b>2,140 lapsed patients</b><small>Not seen in 6+ months · 86 opted out</small></div>
+              <div class="dc"><div class="top"><span class="lbl mono">Messages</span><a>Preview</a></div><b>3 per clinic, in their voice</b><small>2 emails · 1 SMS</small></div>
+              <div class="dc"><div class="top"><span class="lbl mono">Schedule</span><a>Change</a></div><b>Nov 24, 27, 29 · 10 AM</b><small>Each clinic’s time zone</small></div>
+            </div>
+            <div class="df"><span class="est">Costs $0 · within your $500 limit</span><span class="btn p">Schedule all 12</span><span class="btn">Review one clinic</span></div>
+          </div>
+        </div>
+        <div class="composer"><svg class="ic" style="color:var(--spark)"><use href="#spark" /></svg>Change something, e.g. “make it 15% off”…<span class="send"></span></div>
+      </div></div></div></section>
+
+  <p class="pick2">My pick: <b>D · Draft first</b> as the default. It’s the least text, the most “AI does the work, you stay in charge”, and still shows every number. <b>A</b> is the best fallback when someone wants to go stage by stage. <b>B</b> fits if you want campaigns to feel like the website flow.</p>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => (f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})`))
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

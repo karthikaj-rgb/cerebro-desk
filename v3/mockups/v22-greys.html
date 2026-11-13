@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Canvas Greys</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root { --fg: #15161b; --fg2: #52545f; --fg3: #858896; --spark: #6b72ff; --amber: #d98a1c; --red: #d0453a; --red-bg: #fdf0ee; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ec; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 80px; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  h1 { font-weight: 400; font-size: 30px; letter-spacing: -0.03em; margin: 0 0 8px; } .lead { color: var(--fg2); margin: 0 0 28px; max-width: 860px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; }
+  .opt h2 { margin: 0; font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px; } .opt h2 em { font-style: normal; font-size: 11px; font-weight: 500; color: var(--spark); background: #eef0ff; padding: 2px 8px; border-radius: 99px; }
+  .opt p { margin: 4px 0 12px; color: var(--fg2); font-size: 13px; } .opt p code { font: 500 12px Inter; color: var(--fg); background: #fff; padding: 1px 6px; border-radius: 6px; }
+  .shot { border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,.06), 0 20px 40px -28px rgba(0,0,0,.35); display: flex; height: 300px; background: var(--bg); }
+  .side { width: 120px; flex: none; background: var(--side); padding: 12px 8px; display: flex; flex-direction: column; gap: 4px; border-right: 1px solid rgba(21,22,27,.06); }
+  .side .b { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 11px; padding: 0 6px 8px; } .side .b i { width: 12px; height: 12px; border-radius: 4px; background: #7f8cff; }
+  .side span { font-size: 10.5px; padding: 5px 7px; border-radius: 7px; color: var(--fg2); } .side span.on { background: var(--chip); color: var(--fg); }
+  .side small { font: 500 8px Inter; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); padding: 8px 7px 2px; }
+  .main { flex: 1; padding: 22px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .main h3 { margin: 0; font-weight: 400; font-size: 19px; letter-spacing: -0.03em; } .main .sub { font-size: 10.5px; color: var(--fg2); margin-top: -6px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .card { background: #fff; border-radius: 10px; padding: 11px; box-shadow: 0 0 0 1px rgba(21,22,27,.06); min-height: 92px; display: flex; flex-direction: column; }
+  .card .t { display: flex; align-items: center; gap: 5px; font: 500 7.5px Inter; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); } .card .t i { width: 5px; height: 5px; border-radius: 3px; background: var(--amber); }
+  .card .t b { margin-left: auto; font: 500 8px Inter; color: var(--red); background: var(--red-bg); padding: 1px 5px; border-radius: 99px; letter-spacing: 0; text-transform: none; }
+  .card .tt { font-size: 11.5px; font-weight: 500; margin-top: 6px; } .card .w { font-size: 9.5px; color: var(--fg2); }
+  .card .btn { margin-top: auto; align-self: flex-start; font-size: 9px; padding: 4px 9px; border-radius: 99px; background: var(--fg); color: #fff; }
+  .chip { align-self: flex-start; font-size: 10px; padding: 4px 10px; border-radius: 99px; background: var(--chip); color: var(--fg); }
+  .comp { margin-top: auto; height: 30px; border-radius: 15px; background: #fff; box-shadow: 0 0 0 1px rgba(21,22,27,.07); font-size: 10px; color: var(--fg3); display: flex; align-items: center; padding: 0 12px; }
+  .sw { display: flex; gap: 6px; margin-top: 10px; font-size: 11px; color: var(--fg2); flex-wrap: wrap; } .sw span { display: inline-flex; align-items: center; gap: 5px; } .sw i { width: 14px; height: 14px; border-radius: 4px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+  .tog { display: inline-flex; align-items: center; gap: 4px; padding: 4px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.06); margin-bottom: 22px; font-size: 13px; }
+  .tog span { color: var(--fg3); padding: 0 8px 0 6px; font: 500 10px Inter; letter-spacing: .05em; text-transform: uppercase; }
+  .tog button { border: 0; background: transparent; font: inherit; padding: 6px 12px; border-radius: 8px; color: var(--fg2); cursor: pointer; } .tog button[aria-pressed='true'] { background: var(--fg); color: #fff; }
+  body.same .side { background: var(--bg); border-right-color: transparent; } body.same .side span.on { background: var(--chip); }
+  .pick { margin-top: 32px; color: var(--fg2); max-width: 860px; } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Canvas grey options</h1>
+  <p class="lead">Same screen, six greys. White cards stay the same; only the canvas grey and the matching chip grey change. Look at how clearly the cards separate from the background, and whether the grey feels cool, neutral or warm next to the periwinkle.</p>
+  <div class="tog"><span>Sidebar</span><button type="button" data-v="white">White</button><button type="button" data-v="same" aria-pressed="true">Same grey as canvas</button></div>
+  <div class="grid" id="g"></div>
+  <p class="pick">My pick is <b>B · Cool</b>: clear card separation without feeling grey, and a faint blue that sits under the brand. <b>C · Deeper</b> if you want the cards to pop more; <b>A</b> is what you have now.</p>
+</div>
+<script>
+  const opts = [
+    { k: 'A · Current', hex: '#F6F6F7', chip: '#F1F1F3', side: '#FFFFFF', note: 'Neutral, very light. Cards lean on borders to separate.' },
+    { k: 'B · Cool', hex: '#F4F4F7', chip: '#ECECF1', side: '#FFFFFF', note: 'A touch deeper, faint blue under the periwinkle. Clear cards, still calm.', tag: 'Recommended' },
+    { k: 'C · Deeper cool', hex: '#F0F1F5', chip: '#E7E8EE', side: '#FFFFFF', note: 'Cards pop the most. Feels more like a dashboard.' },
+    { k: 'D · Apple neutral', hex: '#F5F5F7', chip: '#EDEDF0', side: '#FFFFFF', note: 'The macOS / iOS grouped background. Very familiar, neutral.' },
+    { k: 'E · Warm', hex: '#F7F7F5', chip: '#EFEFEC', side: '#FFFFFF', note: 'Paper-like, Notion-style. Softer, but fights the cool brand a little.' },
+    { k: 'F · Slate', hex: '#F3F4F6', chip: '#E9EBEF', side: '#FFFFFF', note: 'Tailwind gray-100. Slightly blue-green; common in SaaS.' },
+  ]
+  document.getElementById('g').innerHTML = opts.map((o) => `
+    <div class="opt" style="--bg:${o.hex};--chip:${o.chip};--side:${o.side}">
+      <h2>${o.k}${o.tag ? `<em>${o.tag}</em>` : ''}</h2>
+      <p><code>${o.hex}</code> canvas · <code>${o.chip}</code> chip. ${o.note}</p>
+      <div class="shot">
+        <div class="side"><div class="b"><i></i>Cerebro</div><span>+ New</span><span>Search</span><span class="on">Today</span><small>AI team</small><span>Ads agent</span><span>Sites agent</span><small>Channels</small><span># harbor-dental</span></div>
+        <div class="main"><h3>Good morning, Maya.</h3><div class="sub">Four things need you. MRR is $412.8k, up 6.2%.</div>
+          <div class="cards">
+            <div class="card"><div class="t"><i></i>Harbor Dental<b>−$2.4k/mo</b></div><div class="tt">Harbor ads paused</div><div class="w">Card expired Tuesday</div><span class="btn">Switch card</span></div>
+            <div class="card"><div class="t"><i></i>Peak Fitness<b>−$1.6k/mo</b></div><div class="tt">Booking widget down</div><div class="w">Broke Sunday night</div><span class="btn">Repair it</span></div>
+          </div>
+          <span class="chip">Switch both</span>
+          <div class="comp">Ask anything · @ a client · / to make</div>
+        </div>
+      </div>
+      <div class="sw"><span><i style="background:${o.hex}"></i>Canvas</span><span><i style="background:${o.chip}"></i>Chip / selected</span><span><i style="background:#fff"></i>Cards</span></div>
+    </div>`).join('')
+  document.body.classList.add('same')
+  document.querySelectorAll('.tog button').forEach((b) => b.onclick = () => { document.querySelectorAll('.tog button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); document.body.classList.toggle('same', b.dataset.v === 'same') })
+</script>
+</body>
+</html>

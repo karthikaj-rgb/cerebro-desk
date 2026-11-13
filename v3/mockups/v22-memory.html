@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Central Memory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f9f9fa; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; --spark: #6b72ff; --amber: #d98a1c; --green: #079455; --blue: #2f5fe0;
+    --shadow: 0 0 0 1px rgba(21,22,27,.06), 0 1px 2px rgba(21,22,27,.03); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ebebef; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 28px; max-width: 900px; }
+  .opt { margin-bottom: 56px; } .cap { display: grid; grid-template-columns: 34px 1fr; gap: 2px 10px; margin-bottom: 14px; } .cap .n { font: 500 11px/1 Inter; color: var(--fg3); padding-top: 7px; } .cap h2 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .cap p { grid-column: 2; margin: 0; color: var(--fg2); max-width: 920px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 690; } .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 690px; transform-origin: 0 0; background: var(--bg); border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.3); display: flex; }
+  .lab { font: 500 10px/14px Inter; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); }
+  /* memory page layout */
+  .mnav { width: 250px; flex: none; padding: 22px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; background: var(--bg); }
+  .mnav h3 { margin: 0 8px 14px; font-size: 18px; font-weight: 500; letter-spacing: -.02em; }
+  .mnav .it { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; color: var(--fg2); font-size: 14px; } .mnav .it.on { background: #ececf1; color: var(--fg); } .mnav .it em { margin-left: auto; font-style: normal; font-size: 12px; color: var(--fg3); } .mnav .it em.am { color: var(--amber); background: #fbf1e2; padding: 0 7px; border-radius: 99px; }
+  .mnav .sec { padding: 16px 10px 6px; } .ic { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; background: var(--chip); font-size: 12px; flex: none; }
+  .mmain { flex: 1; min-width: 0; padding: 28px 40px; overflow: hidden; }
+  .ask { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 16px; border-radius: 14px; background: #fff; box-shadow: var(--shadow); color: var(--fg3); font-size: 14px; margin-bottom: 24px; } .ask b { color: var(--fg); font-weight: 400; }
+  .card { background: #fff; border-radius: 16px; box-shadow: var(--shadow); }
+  .row { display: flex; align-items: center; gap: 12px; padding: 13px 18px; } .row + .row { border-top: 1px solid var(--line); }
+  .row .tx { flex: 1; min-width: 0; } .row .tx b { display: block; font-weight: 400; font-size: 14px; } .row .tx small { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; color: var(--fg3); margin-top: 2px; }
+  .src { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--fg2); }
+  .use { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--fg2); background: var(--chip); padding: 1px 7px; border-radius: 99px; }
+  .vis { font-size: 11.5px; padding: 1px 7px; border-radius: 99px; box-shadow: inset 0 0 0 1px var(--line2); color: var(--fg2); } .vis.team { color: var(--spark); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--spark) 35%, transparent); }
+  .hl { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; color: #1f6feb; background: #eaf2ff; padding: 1px 7px; border-radius: 99px; }
+  .btn { font-size: 13px; padding: 6px 12px; border-radius: 99px; background: var(--fg); color: #fff; white-space: nowrap; } .btn.o { background: #fff; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); }
+  .dots { color: var(--fg3); font-size: 16px; padding: 0 4px; }
+  .grp { display: flex; justify-content: space-between; align-items: baseline; margin: 22px 2px 8px; } .grp .more { font-size: 12.5px; color: var(--fg2); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .kv { display: grid; grid-template-columns: 110px 1fr; gap: 8px 14px; padding: 16px 18px; font-size: 13.5px; } .kv i { font-style: normal; color: var(--fg3); font-size: 12.5px; }
+  .ph { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; } .ph .lg { width: 44px; height: 44px; border-radius: 12px; background: #e6eef7; color: #1f3a5f; display: grid; place-items: center; font-weight: 600; font-size: 18px; } .ph h4 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -.02em; } .ph small { color: var(--fg2); font-size: 13px; } .ph .sp { margin-left: auto; display: flex; gap: 8px; }
+  .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--line); margin-bottom: 18px; font-size: 13.5px; color: var(--fg3); } .tabs span { padding-bottom: 9px; } .tabs span.on { color: var(--fg); box-shadow: inset 0 -2px 0 var(--fg); }
+  /* answer */
+  .ans { padding: 18px 20px; } .ans p { margin: 0 0 10px; font-size: 16px; line-height: 1.5; } .ans .srcs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .srcc { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 4px 10px; border-radius: 99px; background: var(--chip); color: var(--fg2); }
+  /* flow diagram */
+  .flow { display: grid; grid-template-columns: 1fr 120px 1fr 120px 1fr; align-items: center; gap: 0; }
+  .fbox { background: #fff; border-radius: 14px; box-shadow: var(--shadow); padding: 16px 18px; } .fbox h5 { margin: 0 0 8px; font-size: 14px; font-weight: 500; } .fbox ul { margin: 0; padding-left: 16px; color: var(--fg2); font-size: 13px; line-height: 1.6; }
+  .arr { text-align: center; color: var(--fg3); font-size: 12px; } .arr b { display: block; font-size: 22px; color: var(--spark); font-weight: 400; }
+  .keep { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; } .keep div { background: #fff; border-radius: 14px; box-shadow: var(--shadow); padding: 16px 18px; } .keep h3 { margin: 0 0 8px; font-size: 15px; font-weight: 500; } .keep ul { margin: 0; padding-left: 18px; color: var(--fg2); font-size: 13.5px; line-height: 1.6; } .keep li b { color: var(--fg); font-weight: 500; }
+  @media (max-width: 860px) { .keep { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Memory as HighLevel's memory</h1><p>Memory stops being a list of AI notes and becomes one place for <b>everything HighLevel knows</b> about you, your agency, each client and each contact. What already lives in HighLevel is shown live from HighLevel. What the AI learns from calls, emails and edits is added on top, with its source. Every agent and product reads from the same memory.</p></header>
+
+  <section class="opt"><div class="cap"><span class="n">0</span><h2>How it works</h2><p>Three layers, one memory. Facts come in from everywhere in HighLevel, are kept per <b>agency → client → contact</b>, and every AI product uses them.</p></div>
+    <div class="flow">
+      <div class="fbox"><h5>Comes in from</h5><ul><li>Contacts, custom fields, notes</li><li>Conversations: SMS, email, DMs</li><li>Call recordings and Voice AI</li><li>Calendars, pipelines, invoices</li><li>Brand boards, sites, forms</li><li>What you say and edit in Cerebro</li></ul></div>
+      <div class="arr"><b>→</b>learned, with a source</div>
+      <div class="fbox"><h5>Kept as one memory</h5><ul><li><b style="font-weight:500;color:var(--fg)">You:</b> how you like to work</li><li><b style="font-weight:500;color:var(--fg)">Agency:</b> brand, pricing, playbooks, team</li><li><b style="font-weight:500;color:var(--fg)">Each client:</b> goals, brand, contacts, what works</li><li><b style="font-weight:500;color:var(--fg)">Each contact:</b> preferences, history</li></ul></div>
+      <div class="arr"><b>→</b>permission-aware</div>
+      <div class="fbox"><h5>Used by</h5><ul><li>Cerebro and the AI team</li><li>Conversation AI and Voice AI</li><li>Content AI, Reviews AI</li><li>Workflows and reports</li><li>Writes back to HighLevel fields</li></ul></div>
+    </div></section>
+
+  <section class="opt"><div class="cap"><span class="n">1</span><h2>Memory home</h2><p>A full page, not a side sheet. One box to ask what Cerebro knows. <b>To review</b> first, then what's new this week, then the places memory lives. Rules move to the AI team (they're permissions, not memory).</p></div>
+    <div class="fit"><div class="stage">
+      <div class="mnav"><h3>Memory</h3>
+        <span class="it on"><span class="ic">✦</span>Overview</span>
+        <span class="it"><span class="ic">◷</span>To review<em class="am">3</em></span>
+        <div class="sec lab">What it knows</div>
+        <span class="it"><span class="ic">◍</span>You<em>5</em></span>
+        <span class="it"><span class="ic">▣</span>Acme Agency<em>12</em></span>
+        <span class="it"><span class="ic">▤</span>Clients<em>1,284</em></span>
+        <span class="it"><span class="ic">◉</span>Contacts<em>48k</em></span>
+        <div class="sec lab">Settings</div>
+        <span class="it"><span class="ic">⇢</span>Sources<em>7 on</em></span>
+        <span class="it"><span class="ic">⚿</span>Who sees what</span>
+        <span class="it"><span class="ic">↺</span>History</span>
+      </div>
+      <div class="mmain">
+        <div class="ask">⌕ <b>Ask what Cerebro knows…</b>&nbsp;&nbsp;e.g. “What does Harbor Dental care about?”</div>
+        <div class="grp"><span class="lab">To review · 3</span><span class="more">Approve all ›</span></div>
+        <div class="card">
+          <div class="row"><span class="ic" style="background:#fbf1e2">★</span><div class="tx"><b>Lumen Spa: sign review replies “— Jen”</b><small><span class="src">Noticed in 6 of Jen's replies</span>·<span>Reputation agent</span></small></div><span class="btn">Keep</span><span class="btn o">Not true</span></div>
+          <div class="row"><span class="ic" style="background:#fde9e1">$</span><div class="tx"><b>Harbor Dental caps ad spend at $700 a week</b><small><span class="src">From Amy's email · Oct 30</span>·<span>Ads agent</span>·<span class="hl">Save to Harbor's budget field</span></small></div><span class="btn">Keep</span><span class="btn o">Not true</span></div>
+          <div class="row"><span class="ic" style="background:#e1f4f1">▦</span><div class="tx"><b>Peak Fitness wants 6 AM classes at the top of the site</b><small><span class="src">Asked twice on calls with Marco</span>·<span>Sites agent</span></small></div><span class="btn">Keep</span><span class="btn o">Not true</span></div>
+        </div>
+        <div class="two" style="margin-top:22px">
+          <div><div class="grp" style="margin-top:0"><span class="lab">Learned this week · 9</span><span class="more">All ›</span></div>
+            <div class="card">
+              <div class="row"><div class="tx"><b>Dr. Amy Chen prefers text over email</b><small><span class="src">☏ Tuesday's call</span><span class="use">Voice AI · Conversation AI</span></small></div><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Glow Med Spa books in Acuity, 3 calendars</b><small><span class="src">✎ Signing notes</span><span class="hl">In HighLevel</span></small></div><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Lead with wins in client reports</b><small><span class="src">✦ 6 of your edits</span><span class="vis team">Team</span></small></div><span class="dots">⋯</span></div>
+            </div></div>
+          <div><div class="grp" style="margin-top:0"><span class="lab">Most used</span><span class="more">By agent ›</span></div>
+            <div class="card">
+              <div class="row"><div class="tx"><b>Each client's brand voice</b><small>Used 214 times this week · Content AI, Reviews AI</small></div></div>
+              <div class="row"><div class="tx"><b>Lumen Spa: no discounts over 15%</b><small>Used 12 times · Marketing agent</small></div></div>
+              <div class="row"><div class="tx"><b>Spend over $500 asks first</b><small>Rule · lives in AI team ›</small></div></div>
+            </div></div>
+        </div>
+      </div>
+    </div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">2</span><h2>A client's memory: HighLevel data plus what was learned</h2><p>Open any client. <b>From HighLevel</b> shows the live record (no copies to keep in sync). <b>Learned</b> shows what the AI picked up, each with its source and where it's used, and one tap saves it back into a HighLevel field.</p></div>
+    <div class="fit"><div class="stage">
+      <div class="mnav"><h3>Memory</h3>
+        <span class="it"><span class="ic">✦</span>Overview</span><span class="it"><span class="ic">◷</span>To review<em class="am">3</em></span>
+        <div class="sec lab">What it knows</div><span class="it"><span class="ic">◍</span>You<em>5</em></span><span class="it"><span class="ic">▣</span>Acme Agency<em>12</em></span><span class="it on"><span class="ic">▤</span>Clients<em>1,284</em></span><span class="it"><span class="ic">◉</span>Contacts<em>48k</em></span>
+      </div>
+      <div class="mmain">
+        <div class="ph"><span class="lg">H</span><div><h4>Harbor Dental</h4><small>Client since 2023 · $1,240/mo · 2 clinics</small></div><div class="sp"><span class="btn o">Open in HighLevel ↗</span><span class="btn">Ask about Harbor</span></div></div>
+        <div class="tabs"><span class="on">Overview</span><span>Learned · 7</span><span>Contacts · 3,812</span><span>History</span></div>
+        <div class="two">
+          <div><div class="grp" style="margin-top:0"><span class="lab">From HighLevel · live</span><span class="hl">Synced</span></div>
+            <div class="card kv"><i>Main contact</i><span>Dr. Amy Chen · (555) 010-2231</span><i>Plan</i><span>$1,240/mo · renews Mar 1</span><i>Brand</i><span>Navy and white · “Gentle care, every visit”</span><i>Calendars</i><span>2 clinics · online booking on</span><i>Pipeline</i><span>New patients · 38 open</span><i>Card</i><span>Visa ••4411 (new)</span></div></div>
+          <div><div class="grp" style="margin-top:0"><span class="lab">Learned · 7</span><span class="more">All ›</span></div>
+            <div class="card">
+              <div class="row"><div class="tx"><b>Amy prefers text over email</b><small><span class="src">☏ Tuesday's call</span><span class="use">Voice AI</span><span class="hl">Save as preferred channel</span></small></div><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Goal: 40 new patients a month</b><small><span class="src">✉ Amy's email · Sep</span><span class="use">Reports</span></small></div><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Before/after ads work best</b><small><span class="src">✦ 3 months of ad results</span><span class="use">Ads agent</span></small></div><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Avoid calls before 10 AM</b><small><span class="src">☏ Oct 20 call</span><span class="use">Voice AI · Workflows</span></small></div><span class="dots">⋯</span></div>
+            </div></div>
+        </div>
+        <div class="grp"><span class="lab">Ask about Harbor</span></div>
+        <div class="card ans"><p><b style="font-weight:500">What does Harbor care about most?</b><br />New patients, about 40 a month, and they want texts, not emails. Before/after ads have worked best, and they cap ad spend at $700 a week.</p>
+          <div class="srcs"><span class="srcc">☏ Tuesday's call</span><span class="srcc">✉ Amy's email · Sep</span><span class="srcc">▤ Ad results · 3 mo</span><span class="srcc">◷ Pending: $700 cap</span></div></div>
+      </div>
+    </div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">3</span><h2>What changes from today's Memory sheet</h2><p>Less to manage, more that's useful.</p></div>
+    <div class="keep">
+      <div><h3>Remove or move</h3><ul>
+        <li><b>Rules tab</b> → AI team. They're permissions for agents, not things to remember.</li>
+        <li><b>On/off switch on every row</b> → gone. Keep, edit or forget is enough; “paused” facts confuse.</li>
+        <li><b>All / Team / Only you filter</b> → one visibility chip per fact, edited from ⋯.</li>
+        <li><b>“Learns from” chips</b> → Sources, in settings.</li>
+        <li><b>Changes tab</b> → History, per fact and in settings.</li></ul></div>
+      <div><h3>Keep</h3><ul>
+        <li><b>To review</b> first: nothing new is shared until you keep it.</li>
+        <li><b>Source on every fact</b> (call, email, edit, note).</li>
+        <li><b>You vs team</b> visibility.</li>
+        <li><b>Search</b>, now as a question (“What does Harbor care about?”).</li>
+        <li><b>The memory chip</b> in chats (“Used memory · …” and “Why?”).</li></ul></div>
+      <div><h3>Add</h3><ul>
+        <li><b>From HighLevel · live</b>: contacts, plans, brand, calendars, shown not copied.</li>
+        <li><b>Agency → client → contact</b> levels, with 1,284 clients searchable.</li>
+        <li><b>Used by</b>: which agents and products rely on a fact.</li>
+        <li><b>Save to HighLevel</b>: turn a learned fact into a real field.</li>
+        <li><b>Sources and who-sees-what</b> settings for the agency.</li></ul></div>
+    </div></section>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => { const s = f.firstElementChild; s.style.transform = `scale(${f.clientWidth / 1200})` })
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V2.2 Next</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f6f6f7; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; --green: #079455; --amber: #d98a1c; --red: #d0453a; --blue: #2f5fe0; --violet: #6b5bd6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ec; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 44px 16px 100px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 40px; max-width: 880px; }
+  .opt { margin-bottom: 60px; }
+  .cap { display: grid; grid-template-columns: 40px 1fr; gap: 2px 12px; margin-bottom: 14px; } .cap .n { font-size: 11px; color: var(--fg3); padding-top: 6px; } .cap h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+  .cap p { grid-column: 2; margin: 0; color: var(--fg2); font-size: 13.5px; max-width: 920px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 700; }
+  .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 700px; transform-origin: 0 0; background: var(--bg); border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.35); display: flex; }
+  svg.ic { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  /* shared chrome */
+  .side { width: 236px; flex: none; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .brand { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1px var(--line); font-weight: 600; font-size: 13px; width: fit-content; } .brand i { width: 18px; height: 18px; border-radius: 6px; background: #7f8cff; } .brand em { font-style: normal; font-family: 'Geist Mono'; font-size: 9.5px; color: var(--fg3); font-weight: 400; }
+  .island { flex: 1; background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line); padding: 10px; display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; }
+  .island .nc { padding: 7px 10px; border-radius: 9px; box-shadow: inset 0 0 0 1px var(--line2); margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+  .island .sec { font-size: 9.5px; color: var(--fg3); padding: 10px 8px 4px; } .island .h { padding: 6px 8px; border-radius: 8px; color: var(--fg2); display: flex; gap: 8px; align-items: center; } .island .h.on { background: var(--chip); color: var(--fg); }
+  .island .mem { margin-top: auto; border-top: 1px solid var(--line); padding: 8px; display: flex; gap: 8px; align-items: center; color: var(--fg); }
+  .dot { width: 7px; height: 7px; border-radius: 4px; display: inline-block; flex: none; } .need { background: var(--red); } .start { background: var(--green); } .info { background: #c4c6cf; }
+  .main { flex: 1; position: relative; display: flex; flex-direction: column; min-width: 0; }
+  .bar { height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px 0 8px; font-size: 13px; color: var(--fg2); flex: none; }
+  .bar .r { display: flex; gap: 8px; align-items: center; } .seg { display: flex; padding: 2px; border-radius: 10px; background: #fff; box-shadow: 0 0 0 1px var(--line); font-size: 12px; } .seg span { padding: 4px 10px; border-radius: 8px; } .seg span.on { background: var(--fg); color: #fff; }
+  .ib { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; color: var(--fg2); }
+  .av { width: 28px; height: 28px; border-radius: 14px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; }
+  .col { width: 660px; margin: 0 auto; }
+  .composer { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); width: 660px; height: 46px; border-radius: 23px; background: #fff; box-shadow: 0 0 0 1px var(--line2); display: flex; align-items: center; padding: 0 6px 0 16px; gap: 10px; color: var(--fg3); }
+  .composer .send { margin-left: auto; width: 34px; height: 34px; border-radius: 17px; background: #d8d9de; }
+  .composer .at { font-size: 12.5px; padding: 3px 9px; border-radius: 99px; background: var(--chip); color: var(--fg); display: flex; gap: 6px; align-items: center; }
+  .card { background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line); padding: 14px 16px; display: flex; flex-direction: column; gap: 3px; }
+  .card .k { display: flex; align-items: center; gap: 7px; font-size: 9.5px; color: var(--fg3); } .card b { font-weight: 500; font-size: 15px; margin-top: 3px; } .card .s { font-size: 12px; font-family: 'Geist Mono'; color: var(--red); } .card .s.g { font-family: Inter; color: var(--fg2); font-size: 12.5px; }
+  .card .q { margin-top: auto; align-self: flex-start; font-size: 12.5px; padding: 6px 13px; border-radius: 99px; background: var(--fg); color: #fff; }
+  .acts { display: flex; gap: 6px; flex-wrap: wrap; } .acts span { font-size: 13px; padding: 6px 13px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); } .acts span.p { background: var(--fg); color: #fff; box-shadow: none; }
+
+  /* 1 calmer home */
+  .home h1 { font-size: 28px; font-weight: 300; letter-spacing: -.03em; margin: 30px 0 2px; } .home .sub { color: var(--fg2); margin-bottom: 16px; }
+  .remind { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px var(--line); margin-bottom: 12px; font-size: 13.5px; } .remind .ic2 { width: 30px; height: 30px; border-radius: 9px; background: var(--chip); display: grid; place-items: center; color: var(--violet); } .remind .t { flex: 1; } .remind .t .mono { display: block; font-size: 9px; color: var(--fg3); } .remind em { font-style: normal; color: var(--fg2); font-size: 12.5px; }
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 46px; gap: 10px; } .r2 { grid-row: span 3; } .r1 { grid-row: span 2; }
+  /* 2 presence + tray */
+  .presence { display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 6px; border-radius: 99px; background: #fff; box-shadow: 0 0 0 1px var(--line); font-size: 12.5px; color: var(--fg); }
+  .orb { width: 20px; height: 20px; border-radius: 50%; background: #15161b; position: relative; } .orb::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid rgba(107,91,214,.45); animation: pr 1.6s ease-out infinite; } @keyframes pr { from { transform: scale(.8); opacity: 1 } to { transform: scale(1.35); opacity: 0 } }
+  .orb i { position: absolute; inset: 5px; border-radius: 50%; background: #9d8cff; animation: br 1.6s ease-in-out infinite; } @keyframes br { 50% { transform: scale(.7) } }
+  .tray { position: absolute; right: 70px; top: 52px; width: 380px; background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line), 0 24px 50px -28px rgba(0,0,0,.35); padding: 8px; z-index: 5; }
+  .tray .th { display: flex; justify-content: space-between; padding: 8px 10px 6px; font-size: 12px; color: var(--fg2); } .tray .th b { color: var(--fg); font-weight: 500; }
+  .task { display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; padding: 10px; border-radius: 12px; } .task:hover { background: var(--chip); }
+  .task b { font-weight: 500; font-size: 13.5px; display: block; } .task small { font-size: 12px; color: var(--fg2); } .task .pb { grid-column: 2 / 4; height: 3px; border-radius: 2px; background: var(--chip); overflow: hidden; } .task .pb i { display: block; height: 100%; background: var(--fg); }
+  .task .st { font-size: 11px; color: var(--fg3); } .task .st.n { color: var(--amber); } .task .st.d { color: var(--green); }
+  .spin { width: 14px; height: 14px; border-radius: 50%; border: 1.6px solid var(--line2); border-top-color: var(--fg); animation: sp .7s linear infinite; } @keyframes sp { to { transform: rotate(360deg) } }
+  /* 3 morph storyboard */
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; width: 100%; height: 100%; }
+  .frame { position: relative; border-right: 1px solid var(--line); padding: 26px 22px; display: flex; flex-direction: column; gap: 10px; } .frame:last-child { border-right: 0; }
+  .frame .lbl { font-size: 10px; color: var(--fg3); }
+  .ghost { border-radius: 16px; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+  .stream span { opacity: .25 } .stream span.on { opacity: 1 }
+  /* 4 icons */
+  .icons { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; padding: 30px; width: 100%; align-content: start; }
+  .ico { background: #fff; border-radius: 14px; box-shadow: 0 0 0 1px var(--line); padding: 16px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .ico .before { font-size: 18px; color: var(--fg3); } .ico .after { width: 36px; height: 36px; border-radius: 10px; background: var(--chip); display: grid; place-items: center; color: var(--fg); } .ico .after svg { width: 18px; height: 18px; } .ico b { font-weight: 500; font-size: 13px; } .ico small { color: var(--fg3); font-size: 11px; }
+  .row-demo { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  /* 5 command bar */
+  .veil { position: absolute; inset: 0; background: rgba(21,22,27,.18); z-index: 4; }
+  .cmd { position: absolute; left: 50%; top: 90px; transform: translateX(-50%); width: 600px; background: #fff; border-radius: 18px; box-shadow: 0 0 0 1px var(--line), 0 40px 80px -30px rgba(0,0,0,.45); z-index: 5; overflow: hidden; }
+  .cmd .in { display: flex; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid var(--line); font-size: 16px; } .cmd .in .k { margin-left: auto; font-family: 'Geist Mono'; font-size: 10px; color: var(--fg3); padding: 2px 6px; border-radius: 5px; box-shadow: inset 0 0 0 1px var(--line2); }
+  .cmd .gr { padding: 8px; } .cmd .gl { font-size: 9.5px; color: var(--fg3); padding: 6px 10px 4px; }
+  .cmd .it { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; font-size: 13.5px; } .cmd .it.on { background: var(--chip); } .cmd .it small { color: var(--fg3); margin-left: auto; font-size: 12px; }
+  .cmd .it .b2 { width: 26px; height: 26px; border-radius: 8px; background: var(--chip); display: grid; place-items: center; color: var(--fg2); }
+  .cmd .foot { display: flex; gap: 14px; padding: 10px 18px; border-top: 1px solid var(--line); font-size: 11px; color: var(--fg3); }
+  /* 6 campaign companion */
+  .camp { width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; padding-bottom: 90px; }
+  .plan { display: flex; gap: 6px; } .plan div { flex: 1; display: flex; flex-direction: column; gap: 5px; font-size: 11.5px; color: var(--fg3); } .plan div i { height: 4px; border-radius: 2px; background: var(--line2); } .plan .d { color: var(--fg); } .plan .d i { background: var(--green); } .plan .r { color: var(--fg); } .plan .r i { background: var(--fg); }
+  .me { align-self: flex-end; background: #fff; box-shadow: 0 0 0 1px var(--line2); padding: 7px 13px; border-radius: 14px 14px 4px 14px; font-size: 14px; }
+  .ai { font-size: 15px; line-height: 1.5; } .q { font-weight: 500; font-size: 15px; }
+  .offers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; } .offer { background: #fff; border-radius: 12px; box-shadow: 0 0 0 1px var(--line); padding: 12px; display: flex; flex-direction: column; gap: 4px; } .offer.on { box-shadow: 0 0 0 1.5px var(--fg); } .offer b { font-weight: 500; font-size: 14px; } .offer small { color: var(--fg2); font-size: 12px; } .offer .pr { font-family: 'Geist Mono'; font-size: 10.5px; color: var(--green); }
+  .aud { display: flex; gap: 6px; flex-wrap: wrap; } .aud span { font-size: 12.5px; padding: 5px 10px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); } .aud span b { font-weight: 500; }
+  .seq { background: #fff; border-radius: 14px; box-shadow: 0 0 0 1px var(--line); overflow: hidden; } .seq .s1 { display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); align-items: center; font-size: 13px; } .seq .s1:first-child { border-top: 0; } .seq .s1 .mono { font-size: 9.5px; color: var(--fg3); } .seq .s1 em { font-style: normal; font-size: 11px; color: var(--fg3); padding: 2px 7px; border-radius: 99px; background: var(--chip); }
+  .pick { margin-top: 26px; color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3v.2A3 3 0 0 0 4 10a3 3 0 0 0 1 2.2A3 3 0 0 0 6 17a3 3 0 0 0 3 3h0V4z" /><path d="M15 4a3 3 0 0 1 3 3v.2A3 3 0 0 1 20 10a3 3 0 0 1-1 2.2A3 3 0 0 1 18 17a3 3 0 0 1-3 3h0V4z" /></symbol>
+  <symbol id="i-site" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5" /><path d="M3 9h18M7 6.5h.01M10 6.5h.01" /></symbol>
+  <symbol id="i-funnel" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z" /></symbol>
+  <symbol id="i-campaign" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z" /><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" /></symbol>
+  <symbol id="i-agent" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" /><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z" /></symbol>
+  <symbol id="i-onboard" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5" /><path d="M3.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6" /></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" /><path d="m20 20-4.2-4.2" /></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18l-1 3 3.5-1.5A8.5 8.5 0 1 0 5 18z" /></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><path d="m8.5 12 2.5 2.5 4.5-5" /></symbol>
+</svg>
+<div class="wrap">
+  <header><h1>V2.2 · next round · mockups</h1><p>The five UX upgrades from the review, plus Harsh’s gap: the AI as a companion for work you start yourself, shown as a real campaign flow.</p></header>
+
+  <section class="opt"><div class="cap"><span class="mono n">01</span><h2>Calmer home</h2><p>Less at once: the AI’s line above the chat box goes, the stats strip moves into the Classic dashboard, and the reminder and cards carry the page. Icons replace emoji. The chat box gets <b>@client</b> and <b>/</b> hints.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><span class="brand"><i></i>Cerebro <em>Acme Agency</em></span><div class="island"><span class="nc"><svg class="ic"><use href="#i-plus" /></svg>New conversation</span><span class="sec mono">Yesterday</span><span class="h"><span class="dot start"></span>Glow Med Spa signed</span><span class="h"><span class="dot start"></span>Q4 pricing page</span><span class="h"><span class="dot info"></span>Why did Lumen dip?</span><span class="mem"><svg class="ic"><use href="#i-brain" /></svg>Memory<span style="margin-left:auto;font-size:11px;color:var(--fg3)">15</span></span></div></aside>
+      <div class="main"><div class="bar"><span>Monday, Nov 2</span><span class="r"><span class="seg"><span class="on">Type</span><span>Talk</span></span><span class="ib"><svg class="ic"><use href="#i-search" /></svg></span><span class="av">MA</span></span></div>
+        <div class="col home"><h1>Good morning, Maya.</h1><div class="sub">Three things need you, and a few you might want to start.</div>
+          <div class="remind"><span class="ic2"><svg class="ic"><use href="#i-brain" /></svg></span><span class="t"><span class="mono">Remembered for you · Thu 2:00 PM</span><b style="font-weight:500">Lumen call:</b> lead with their review numbers.</span><em>Prep the call ›</em></div>
+          <div class="bento">
+            <div class="card r2"><span class="k mono"><span class="dot need"></span>Harbor Dental</span><b>Harbor ads paused</b><span class="s">Card expired · −$2.4k/mo</span><span class="q">Switch card</span></div>
+            <div class="card r2"><span class="k mono"><span class="dot need"></span>Peak Fitness</span><b>Booking widget down</b><span class="s">−$1.6k/mo</span><span class="q">Repair it</span></div>
+            <div class="card r2"><span class="k mono"><span class="dot need"></span>14 clinics</span><b>Missed calls after 5 PM</b><span class="s">+18% this month</span><span class="q">Set it up</span></div>
+            <div class="card r1"><span class="k mono"><span class="dot start"></span>New client</span><b>Onboard Glow Med Spa</b><span class="s g">Signed yesterday</span></div>
+            <div class="card r1"><span class="k mono"><span class="dot start"></span>Campaign</span><b>Black Friday in 24 days</b><span class="s g">Last year 6.1%</span></div>
+            <div class="card r1"><span class="k mono"><span class="dot start"></span>From memory</span><b>Make review replies automatic?</b></div>
+          </div></div>
+        <div class="composer"><svg class="ic" style="color:#6b72ff"><use href="#i-agent" /></svg>Ask anything · <b style="font-weight:500;color:var(--fg2)">@</b> a client · <b style="font-weight:500;color:var(--fg2)">/</b> to make<span class="send"></span></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">02</span><h2>The agent feels alive · a “running” tray</h2><p>A small <b>presence</b> in the top bar shows what the AI is doing: idle, listening, working, or needs you. Click it for the <b>tray</b>: every task running in the background, with progress, and the ones waiting on you. Work keeps going while you’re elsewhere.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><span class="brand"><i></i>Cerebro <em>Acme Agency</em></span><div class="island"><span class="nc"><svg class="ic"><use href="#i-plus" /></svg>New conversation</span><span class="sec mono">Today</span><span class="h on"><span class="dot need"></span>Missed calls after 5 PM</span><span class="h"><span class="dot start"></span>Onboard Glow Med Spa<span style="margin-left:auto"><span class="spin" style="display:inline-block;width:10px;height:10px"></span></span></span><span class="h"><span class="dot start"></span>Black Friday campaign</span><span class="mem"><svg class="ic"><use href="#i-brain" /></svg>Memory</span></div></aside>
+      <div class="main"><div class="bar"><span>Missed calls after 5 PM</span><span class="r"><span class="presence"><span class="orb"><i></i></span>Working on 2 · 1 needs you</span><span class="seg"><span class="on">Type</span><span>Talk</span></span><span class="av">MA</span></span></div>
+        <div class="tray"><div class="th"><b>Running in the background</b><span>3</span></div>
+          <div class="task"><span class="spin"></span><span><b>Onboard Glow Med Spa</b><small>Building the media kit · Creator Studio</small></span><span class="st">3 of 5</span><span class="pb"><i style="width:60%"></i></span></div>
+          <div class="task"><svg class="ic" style="color:var(--amber)"><use href="#i-clock" /></svg><span><b>Black Friday campaign</b><small>Needs you: pick the offer</small></span><span class="st n">Your turn</span></div>
+          <div class="task"><svg class="ic" style="color:var(--green)"><use href="#i-check" /></svg><span><b>Review replies</b><small>Sent 12 replies, in each client’s voice</small></span><span class="st d">Done</span></div>
+        </div>
+        <div class="col" style="padding-top:18px;opacity:.5"><div class="ai">Calls after 5 PM go unanswered at 14 clinics…</div></div>
+        <div class="composer"><svg class="ic" style="color:#6b72ff"><use href="#i-agent" /></svg>Reply…<span class="send"></span></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">03</span><h2>Card grows into the chat · words stream in</h2><p>Tap a card and it <b>grows into the chat</b> (same corners, same title) instead of jumping to a new screen. The AI’s words <b>stream in</b> a few at a time, like they’re being said.</p></div>
+    <div class="fit"><div class="stage"><div class="board">
+      <div class="frame"><span class="lbl mono">1 · Tap</span><div class="card" style="height:150px;box-shadow:0 0 0 1.5px var(--fg)"><span class="k mono"><span class="dot need"></span>Harbor Dental</span><b>Harbor ads paused</b><span class="s">Card expired · −$2.4k/mo</span><span class="q">Switch card</span></div><div class="card" style="height:150px;opacity:.5"></div></div>
+      <div class="frame"><span class="lbl mono">2 · Grows (0.35s)</span><div class="ghost" style="height:420px;padding:16px 18px"><span class="k mono" style="font-size:9.5px;color:var(--fg3);display:flex;gap:7px;align-items:center"><span class="dot need"></span>Harbor Dental</span><b style="display:block;font-weight:500;font-size:17px;margin-top:4px">Harbor ads paused</b><div style="margin-top:16px;height:10px;width:70%;border-radius:5px;background:var(--chip)"></div><div style="margin-top:8px;height:10px;width:50%;border-radius:5px;background:var(--chip)"></div></div></div>
+      <div class="frame"><span class="lbl mono">3 · The chat, text streaming</span><div style="font-size:12px;color:var(--fg3)">Harbor Dental › Harbor ads paused</div><div class="ai stream"><span class="on">Harbor’s ads stopped on</span> <span class="on">Tuesday. The card</span> <span>on file expired.</span></div><div class="acts" style="opacity:.3"><span class="p">Switch card</span><span>Not now</span></div></div>
+    </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">04</span><h2>One icon set</h2><p>Emoji and stray symbols replaced by one thin line set (1.6px stroke, rounded), in soft tiles. Same family as the top bar icons.</p></div>
+    <div class="fit"><div class="stage"><div class="icons">
+      <div class="ico"><span class="before">🧠</span><span class="after"><svg class="ic"><use href="#i-brain" /></svg></span><b>Memory</b><small>was 🧠</small></div>
+      <div class="ico"><span class="before">◫</span><span class="after"><svg class="ic"><use href="#i-site" /></svg></span><b>Website</b><small>was ◫</small></div>
+      <div class="ico"><span class="before">⌄</span><span class="after"><svg class="ic"><use href="#i-funnel" /></svg></span><b>Funnel</b><small>was ⌄</small></div>
+      <div class="ico"><span class="before">✉</span><span class="after"><svg class="ic"><use href="#i-campaign" /></svg></span><b>Campaign</b><small>was ✉</small></div>
+      <div class="ico"><span class="before">✦</span><span class="after"><svg class="ic"><use href="#i-agent" /></svg></span><b>Agent / AI</b><small>was ✦</small></div>
+      <div class="ico"><span class="before">＋</span><span class="after"><svg class="ic"><use href="#i-onboard" /></svg></span><b>Onboard</b><small>was ＋</small></div>
+      <div class="row-demo">
+        <div class="remind" style="margin:0"><span class="ic2"><svg class="ic"><use href="#i-brain" /></svg></span><span class="t"><span class="mono">Remembered</span>Harbor Dental’s card ends 4411</span><em>Edit · Forget</em></div>
+        <div class="remind" style="margin:0"><span class="ic2" style="color:var(--fg)"><svg class="ic"><use href="#i-site" /></svg></span><span class="t"><span class="mono">Make something</span>Website · from their brand</span><em>›</em></div>
+      </div>
+    </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">05</span><h2>⌘K: one place for everything</h2><p>Search conversations, clients, memory and actions from one box, from anywhere. <b>Make something</b> and <b>jump to a client</b> live here too, so the sidebar stays light.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side" style="opacity:.6"><span class="brand"><i></i>Cerebro <em>Acme Agency</em></span><div class="island"></div></aside>
+      <div class="main"><div class="veil"></div>
+        <div class="cmd"><div class="in"><svg class="ic" style="width:18px;height:18px;color:var(--fg3)"><use href="#i-search" /></svg>harb<span class="k">⌘K</span></div>
+          <div class="gr"><div class="gl mono">Clients</div><div class="it on"><span class="b2" style="font-weight:600;font-size:11px">H</span>Harbor Dental<small>$1,240/mo · 2 clinics</small></div></div>
+          <div class="gr"><div class="gl mono">Conversations</div><div class="it"><span class="b2"><svg class="ic"><use href="#i-chat" /></svg></span>Harbor ads paused<small>Today · done</small></div><div class="it"><span class="b2"><svg class="ic"><use href="#i-chat" /></svg></span>New website · Harbor Dental<small>Today · live</small></div></div>
+          <div class="gr"><div class="gl mono">Memory</div><div class="it"><span class="b2"><svg class="ic"><use href="#i-brain" /></svg></span>Harbor Dental’s card on file ends 4411<small>Team</small></div></div>
+          <div class="gr"><div class="gl mono">Do</div><div class="it"><span class="b2"><svg class="ic"><use href="#i-site" /></svg></span>Make a website for Harbor Dental<small>↵</small></div><div class="it"><span class="b2"><svg class="ic"><use href="#i-campaign" /></svg></span>Start a campaign for Harbor Dental</div></div>
+          <div class="foot"><span>↑↓ move</span><span>↵ open</span><span>/ make</span><span>@ client</span></div></div>
+      </div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">06</span><h2>Harsh’s gap: a campaign you start, built together</h2><p>Not “I’ll start on that”. The AI works <b>with</b> you: a short plan bar (Offer → Audience → Messages → Schedule), real choices as cards with their expected result, the audience as counts you can trim, the sequence as a timeline you can edit. You stay in charge; it does the work.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><span class="brand"><i></i>Cerebro <em>Acme Agency</em></span><div class="island"><span class="nc"><svg class="ic"><use href="#i-plus" /></svg>New conversation</span><span class="sec mono">Today</span><span class="h on"><span class="dot start"></span>Black Friday campaign</span><span class="mem"><svg class="ic"><use href="#i-brain" /></svg>Memory</span></div></aside>
+      <div class="main"><div class="bar"><span>Black Friday campaign · 12 dental clients</span><span class="r"><span class="presence"><span class="orb"><i></i></span>Your turn</span><span class="av">MA</span></span></div>
+        <div class="camp">
+          <div class="plan"><div class="d"><i></i>Offer</div><div class="d"><i></i>Audience</div><div class="r"><i></i>Messages</div><div><i></i>Schedule</div><div><i></i>Launch</div></div>
+          <div class="me">Plan Black Friday for my dental clients</div>
+          <div class="ai">Here are three offers, ranked by what worked for your clients last year:</div>
+          <div class="offers"><div class="offer on"><b>Free whitening with a cleaning</b><small>Best for returning patients</small><span class="pr">Est. 7.4% · 160 bookings</span></div><div class="offer"><b>20% off Invisalign consults</b><small>Higher value, fewer bookings</small><span class="pr">Est. 3.1% · 54 bookings</span></div><div class="offer"><b>$99 new-patient exam</b><small>Brings new faces in</small><span class="pr">Est. 5.2% · 98 bookings</span></div></div>
+          <div class="ai">Audience: everyone not seen in 6+ months, across the 12 clinics.</div>
+          <div class="aud"><span><b>2,140</b> lapsed patients</span><span><b>12</b> clinics</span><span>Excluding <b>86</b> who opted out</span><span style="color:var(--fg3)">Edit audience</span></div>
+          <div class="ai">I drafted the sequence in each clinic’s voice. Change anything:</div>
+          <div class="seq"><div class="s1"><span class="mono">Nov 24</span>Email · “Your smile’s Black Friday treat”<em>Preview</em></div><div class="s1"><span class="mono">Nov 27</span>SMS · Reminder with booking link<em>Preview</em></div><div class="s1"><span class="mono">Nov 29</span>Email · Last day<em>Preview</em></div></div>
+          <div class="q">Schedule it for all 12 clinics?</div><div class="acts"><span class="p">Schedule all</span><span>Review one clinic first</span></div>
+        </div>
+        <div class="composer"><svg class="ic" style="color:#6b72ff"><use href="#i-agent" /></svg>Reply, or change something…<span class="send"></span></div>
+      </div></div></div></section>
+
+  <p class="pick">My order: <b>06 campaign</b> (closes Harsh’s feedback), <b>01 calmer home</b> + <b>04 icons</b> (quick, big visual lift), then <b>02 presence + tray</b> (the agentic feel), <b>05 ⌘K</b>, and <b>03 morph + streaming</b> last.</p>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => (f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})`))
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

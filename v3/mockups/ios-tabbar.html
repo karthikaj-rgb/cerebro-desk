@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tab Bar Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ee; color: #15161b; font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 80px; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } .lead { color: #52545f; margin: 0 0 28px; max-width: 880px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; } @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
+  .opt h2 { margin: 0 0 4px; font-size: 17px; font-weight: 500; display: flex; gap: 8px; align-items: center; } .opt h2 em { font-style: normal; font-size: 11px; color: #6b72ff; background: #eef0ff; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .opt p { margin: 0 0 14px; color: #52545f; font-size: 13.5px; } .opt ul { margin: 12px 0 0; padding-left: 18px; color: #52545f; font-size: 13px; line-height: 1.6; }
+  .ph { width: 100%; max-width: 380px; height: 300px; border-radius: 0 0 48px 48px; background: #0c0c0f; padding: 0 10px 10px; margin: 0 auto; }
+  .scr { --bg: #f9f9fa; --fg: #15161b; --fg3: #858896; --glass: rgba(255,255,255,.66); --edge: rgba(255,255,255,.8); --line: rgba(21,22,27,.07);
+    height: 100%; border-radius: 0 0 38px 38px; background: var(--bg); position: relative; overflow: hidden; }
+  .scr.dark { --bg: #0e0f13; --fg: #ececf1; --fg3: #6e717d; --glass: rgba(38,39,47,.62); --edge: rgba(255,255,255,.1); --line: rgba(255,255,255,.07); }
+  .content { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .content i { display: block; height: 56px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px var(--line); } .dark .content i { background: #17181d; }
+  .content i:nth-child(2) { background: linear-gradient(135deg, #f6d9c8, #e7e8ff); }
+  .glass { background: var(--glass); backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); box-shadow: 0 10px 30px -14px rgba(21,22,27,.3), inset 0 1px 0 var(--edge), 0 0 0 .5px rgba(21,22,27,.08); }
+  .dark .glass { box-shadow: 0 10px 30px -14px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 .5px rgba(255,255,255,.08); }
+  svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .bdg { position: absolute; top: -3px; right: -9px; min-width: 17px; height: 17px; border-radius: 9px; background: #d98a1c; color: #fff; font: 600 10px/17px Inter; text-align: center; padding: 0 4px; box-shadow: 0 0 0 2px var(--bg); }
+  .ico { position: relative; display: grid; place-items: center; }
+  /* A */
+  .a { position: absolute; left: 14px; right: 14px; bottom: 22px; display: flex; gap: 10px; }
+  .a .cap { flex: 1; height: 62px; border-radius: 31px; display: grid; grid-template-columns: repeat(3, 1fr); padding: 4px; }
+  .a .cap span { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 27px; font: 500 10.5px Inter; color: var(--fg3); }
+  .a .cap span.on { background: color-mix(in srgb, var(--fg) 8%, transparent); color: var(--fg); } .a .cap span.tk { color: #6b72ff; }
+  .a .sr { width: 62px; height: 62px; border-radius: 31px; display: grid; place-items: center; color: var(--fg); }
+  /* B */
+  .b { position: absolute; left: 14px; right: 14px; bottom: 22px; display: flex; gap: 10px; align-items: center; }
+  .b .cap { flex: 1; height: 58px; border-radius: 29px; display: grid; grid-template-columns: 1fr 1fr; padding: 4px; }
+  .b .cap span { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 25px; font: 500 10.5px Inter; color: var(--fg3); } .b .cap span.on { background: color-mix(in srgb, var(--fg) 8%, transparent); color: var(--fg); }
+  .b .tk { height: 58px; padding: 0 20px 0 16px; border-radius: 29px; background: #6b72ff; color: #fff; display: flex; align-items: center; gap: 8px; font: 500 15px Inter; box-shadow: 0 10px 24px -10px rgba(107,114,255,.8); } .b .tk svg { stroke: #fff; }
+  .b .hd { position: absolute; top: 14px; right: 16px; width: 36px; height: 36px; border-radius: 18px; display: grid; place-items: center; color: var(--fg); }
+  /* C */
+  .c { position: absolute; left: 50%; transform: translateX(-50%); bottom: 22px; height: 60px; border-radius: 30px; display: flex; align-items: center; gap: 6px; padding: 6px; }
+  .c span.i { width: 64px; height: 48px; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; color: var(--fg3); font: 500 10px Inter; } .c span.i.on { color: var(--fg); background: color-mix(in srgb, var(--fg) 8%, transparent); }
+  .c .tk { height: 48px; padding: 0 18px 0 14px; border-radius: 24px; background: #15161b; color: #fff; display: flex; align-items: center; gap: 8px; font: 500 14px Inter; } .dark .c .tk { background: #ececf1; color: #111; } .c .tk svg { stroke: currentColor; width: 20px; height: 20px; }
+  .c .tk i { width: 8px; height: 8px; border-radius: 4px; background: #8b90ff; }
+  .rowl { display: flex; gap: 14px; margin-top: 14px; justify-content: center; flex-wrap: wrap; } .rowl > div { width: 230px; } .rowl .ph { height: 180px; max-width: 230px; padding: 0 6px 6px; border-radius: 0 0 30px 30px; } .rowl .scr { border-radius: 0 0 25px 25px; }
+  .tag { text-align: center; font-size: 12px; color: #858896; margin-top: 6px; }
+  .pick { margin-top: 32px; color: #52545f; max-width: 900px; } .pick b { color: #15161b; font-weight: 500; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="t" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></symbol>
+  <symbol id="c" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+  <symbol id="w" viewBox="0 0 24 24"><path d="M5 10v4M9 7v10M12 4v16M15 7v10M19 10v4"/></symbol>
+  <symbol id="s" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.3-4.3"/></symbol>
+</svg>
+<div class="wrap">
+  <h1>Tab bar, three ways</h1>
+  <p class="lead">What's wrong now: the Talk circle is a different size and shape from everything else, the selected pill doesn't line up with it, the badge sits on top of the icon, and the bar feels heavy. Each option fixes those; they differ in how much Talk stands out.</p>
+  <div class="grid">
+    <div class="opt"><h2>A · Three equal tabs</h2><p>Apple's own pattern. Talk is a normal tab with a violet icon. Search stays a separate glass circle.</p>
+      <div class="ph"><div class="scr"><div class="content"><i></i><i></i><i></i></div>
+        <div class="a"><div class="cap glass"><span class="on"><span class="ico"><svg><use href="#t"/></svg><b class="bdg">3</b></span>Today</span><span class="tk"><svg><use href="#w"/></svg>Talk</span><span><svg><use href="#c"/></svg>Chats</span></div><span class="sr glass"><svg><use href="#s"/></svg></span></div></div></div>
+      <ul><li>Calmest, most native.</li><li>Talk is easy to miss.</li></ul></div>
+
+    <div class="opt"><h2>B · Two tabs + a Talk button <em>My pick</em></h2><p>Today and Chats in the capsule; Talk is its own violet pill on the right, like Apple's floating action. Search moves to the top of each screen.</p>
+      <div class="ph"><div class="scr"><div class="content"><i></i><i></i><i></i></div>
+        <div class="b"><div class="cap glass"><span class="on"><span class="ico"><svg><use href="#t"/></svg><b class="bdg">3</b></span>Today</span><span><svg><use href="#c"/></svg>Chats</span></div><span class="tk"><svg><use href="#w"/></svg>Talk</span></div></div></div>
+      <ul><li>Talk is obvious, with a label, in thumb reach.</li><li>Two tabs read instantly; nothing competes.</li><li>Search in the header, where people look for it.</li></ul></div>
+
+    <div class="opt"><h2>C · One compact pill</h2><p>A single small floating pill: Today, a dark Talk button, Chats. Leaves the most room for content.</p>
+      <div class="ph"><div class="scr"><div class="content"><i></i><i></i><i></i></div>
+        <div class="c glass"><span class="i on"><span class="ico"><svg><use href="#t"/></svg><b class="bdg">3</b></span>Today</span><span class="tk"><svg><use href="#w"/></svg>Talk</span><span class="i"><svg><use href="#c"/></svg>Chats</span></div></div></div>
+      <ul><li>Smallest footprint.</li><li>Talk reads as the main action.</li><li>Search goes to the header.</li></ul></div>
+  </div>
+
+  <h2 style="margin:40px 0 4px;font-size:17px;font-weight:500">In dark mode</h2>
+  <div class="rowl">
+    <div><div class="ph"><div class="scr dark"><div class="content"><i></i><i></i></div><div class="a" style="left:8px;right:8px;bottom:12px;gap:6px"><div class="cap glass" style="height:54px"><span class="on"><span class="ico"><svg><use href="#t"/></svg><b class="bdg">3</b></span>Today</span><span class="tk"><svg><use href="#w"/></svg>Talk</span><span><svg><use href="#c"/></svg>Chats</span></div><span class="sr glass" style="width:54px;height:54px"><svg><use href="#s"/></svg></span></div></div></div><div class="tag">A</div></div>
+    <div><div class="ph"><div class="scr dark"><div class="content"><i></i><i></i></div><div class="b" style="left:8px;right:8px;bottom:12px;gap:6px"><div class="cap glass" style="height:52px"><span class="on"><span class="ico"><svg><use href="#t"/></svg><b class="bdg">3</b></span>Today</span><span><svg><use href="#c"/></svg>Chats</span></div><span class="tk" style="height:52px;padding:0 12px;font-size:13px"><svg><use href="#w"/></svg>Talk</span></div></div></div><div class="tag">B</div></div>
+    <div><div class="ph"><div class="scr dark"><div class="content"><i></i><i></i></div><div class="c glass" style="bottom:12px;transform:translateX(-50%) scale(.82)"><span class="i on"><span class="ico"><svg><use href="#t"/></svg><b class="bdg">3</b></span>Today</span><span class="tk"><svg><use href="#w"/></svg>Talk</span><span class="i"><svg><use href="#c"/></svg>Chats</span></div></div></div><div class="tag">C</div></div>
+  </div>
+  <p class="pick">I'd go with <b>B</b>: Today and Chats as two clear tabs, and <b>Talk</b> as its own labelled violet button. It keeps voice one tap away without a big circle that fights the layout.</p>
+</div>
+</body>
+</html>

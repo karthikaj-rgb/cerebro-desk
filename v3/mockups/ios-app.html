@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cerebro iOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ee; color: #15161b; font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1320px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 32px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: #52545f; margin: 0 0 14px; max-width: 900px; } header b { color: #15161b; font-weight: 500; }
+  .pr { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 40px; } .pr span { font-size: 13px; padding: 6px 12px; border-radius: 99px; background: #fff; color: #52545f; box-shadow: 0 0 0 1px rgba(0,0,0,.05); } .pr b { color: #15161b; font-weight: 500; }
+  .sec { margin-bottom: 60px; } h2 { font-size: 20px; font-weight: 500; letter-spacing: -.02em; margin: 0 0 4px; } .sec > p { color: #52545f; margin: 0 0 20px; max-width: 920px; }
+  .row { display: flex; gap: 26px; flex-wrap: wrap; align-items: flex-start; }
+  .ph { width: 290px; flex: none; } .ph .lbl { margin: 12px 4px 0; font-size: 14px; font-weight: 500; } .ph .how { margin: 2px 4px 0; font-size: 13px; color: #52545f; }
+  .arrow { align-self: center; color: #858896; font-size: 22px; margin-top: -60px; }
+  .dev { width: 290px; height: 628px; border-radius: 44px; background: #0c0c0f; padding: 8px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
+  .scr { --bg: #f9f9fa; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.07); --chip: #f1f1f3; --pri: #15161b; --onpri: #fff; --tab: rgba(255,255,255,.9);
+    position: relative; width: 100%; height: 100%; border-radius: 37px; overflow: hidden; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; }
+  .scr.dark { --bg: #0e0f13; --page: #17181d; --fg: #ececf1; --fg2: #a4a6b1; --fg3: #6e717d; --line: rgba(255,255,255,.07); --chip: rgba(255,255,255,.07); --pri: #ececf1; --onpri: #111; --tab: rgba(20,21,26,.9); }
+  .sb { height: 40px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 6px 22px 0 26px; font-size: 12px; font-weight: 600; } .sb .isl { width: 84px; height: 24px; border-radius: 14px; background: #000; } .sb .ic { font-size: 10px; letter-spacing: 1px; }
+  .body { flex: 1; overflow: hidden; padding: 4px 16px 0; display: flex; flex-direction: column; gap: 10px; } .body > *, .sheet > * { flex-shrink: 0; }
+  .top { display: flex; align-items: center; justify-content: space-between; height: 36px; } .top .me, .me { width: 30px; height: 30px; border-radius: 15px; background: var(--pri); color: var(--onpri); font-size: 11px; font-weight: 600; display: grid; place-items: center; position: relative; } .me i { position: absolute; right: -2px; top: -2px; width: 10px; height: 10px; border-radius: 5px; background: #d98a1c; box-shadow: 0 0 0 2px var(--bg); }
+  .top .d { font-size: 13px; color: var(--fg3); }
+  .nav { display: flex; align-items: center; gap: 10px; height: 40px; font-size: 15px; } .nav .bk { color: #6b72ff; font-size: 24px; line-height: 1; } .nav .t { flex: 1; min-width: 0; } .nav .t b { display: block; font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .nav .t small { display: block; font-size: 11.5px; color: var(--fg3); }
+  .h1 { font-size: 27px; font-weight: 600; letter-spacing: -.035em; line-height: 32px; margin: 2px 0 0; } .sub { font-size: 14px; color: var(--fg2); margin-top: -6px; }
+  .lab { font: 600 10.5px/14px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); margin: 6px 2px -2px; }
+  .card { background: var(--page); border-radius: 18px; box-shadow: 0 0 0 1px var(--line); padding: 14px; }
+  .k { display: flex; align-items: center; gap: 6px; font: 600 10px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); } .k i { width: 6px; height: 6px; border-radius: 3px; background: #d98a1c; }
+  .money { margin-left: auto; font: 500 11px Inter; letter-spacing: 0; text-transform: none; padding: 2px 8px; border-radius: 99px; color: #d0453a; background: rgba(208,69,58,.1); }
+  .tt { font-size: 16px; font-weight: 500; letter-spacing: -.01em; margin-top: 6px; } .wy { font-size: 13px; color: var(--fg2); margin-top: 1px; }
+  .one { margin-top: 12px; height: 44px; border-radius: 22px; background: var(--pri); color: var(--onpri); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; }
+  .mini { display: flex; align-items: center; gap: 10px; padding: 12px 14px; } .mini .tx { flex: 1; min-width: 0; } .mini b { display: block; font-weight: 500; font-size: 14px; } .mini small { display: block; font-size: 12px; color: var(--fg3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .mini .go { font-size: 13px; color: var(--fg3); }
+  .list { padding: 0; } .list .mini + .mini { border-top: 1px solid var(--line); }
+  .fc { width: 26px; height: 26px; border-radius: 8px; flex: none; position: relative; } .fc::before, .fc::after { content: ''; position: absolute; top: 9px; width: 3px; height: 3px; border-radius: 2px; background: #1b1830; } .fc::before { left: 7px; } .fc::after { right: 7px; } .fc.lg { width: 40px; height: 40px; border-radius: 12px; } .fc.lg::before, .fc.lg::after { top: 15px; width: 4px; height: 4px; } .fc.lg::before { left: 11px; } .fc.lg::after { right: 11px; } .fc.xl { width: 72px; height: 72px; border-radius: 22px; } .fc.xl::before, .fc.xl::after { top: 28px; width: 6px; height: 6px; border-radius: 3px; } .fc.xl::before { left: 21px; } .fc.xl::after { right: 21px; } .fc.ch { background: var(--chip); } .fc.ch::before, .fc.ch::after { display: none; }
+  .f1 { background: #f08a3c; } .f2 { background: #4fd9c4; } .f3 { background: #5ad37b; } .f4 { background: #e66fa8; } .f5 { background: #8b90ff; } .f6 { background: #f0c03a; }
+  .done { display: flex; align-items: center; gap: 8px; padding: 12px 14px; font-size: 13.5px; } .done .ok { width: 22px; height: 22px; border-radius: 11px; background: rgba(7,148,85,.12); color: #079455; display: grid; place-items: center; font-size: 12px; flex: none; } .done span { flex: 1; } .done u { color: var(--fg2); text-decoration-color: var(--line); text-underline-offset: 3px; font-size: 13px; }
+  .tab { height: 78px; flex: none; background: var(--tab); border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 76px 1fr; align-items: start; padding: 8px 20px 0; font-size: 10.5px; color: var(--fg3); text-align: center; }
+  .tab span { display: flex; flex-direction: column; align-items: center; gap: 3px; position: relative; } .tab span.on { color: var(--fg); }
+  .tab svg { width: 23px; height: 23px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tab .talk { width: 58px; height: 58px; border-radius: 29px; background: #6b72ff; display: grid; place-items: center; margin: -18px auto 0; box-shadow: 0 10px 24px -10px rgba(107,114,255,.8); } .tab .talk svg { stroke: #fff; width: 26px; height: 26px; }
+  .bdg { position: absolute; top: -4px; left: calc(50% + 6px); min-width: 16px; height: 16px; border-radius: 8px; background: #d98a1c; color: #fff; font-size: 9.5px; font-weight: 600; display: grid; place-items: center; padding: 0 4px; }
+  .dim { position: absolute; inset: 0; background: rgba(8,8,12,.35); }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--page); border-radius: 24px 24px 0 0; padding: 8px 18px 28px; display: flex; flex-direction: column; gap: 12px; } .grab { width: 36px; height: 5px; border-radius: 3px; background: var(--chip); margin: 0 auto 2px; }
+  .slide { height: 54px; border-radius: 27px; background: var(--pri); color: var(--onpri); display: flex; align-items: center; padding: 5px; font-size: 14.5px; font-weight: 500; } .slide .kn { width: 44px; height: 44px; border-radius: 22px; background: var(--onpri); color: var(--pri); display: grid; place-items: center; font-size: 18px; } .slide span { flex: 1; text-align: center; margin-right: 22px; white-space: nowrap; }
+  .soft { text-align: center; font-size: 13.5px; color: var(--fg2); } .soft b { color: var(--fg); font-weight: 500; }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .facts div { background: var(--bg); border-radius: 12px; padding: 9px 11px; font-size: 13px; } .facts i { display: block; font: 600 9.5px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); font-style: normal; }
+  .ai { font-size: 15px; line-height: 21px; }
+  .rc { padding: 0; overflow: hidden; } .rc .h { display: flex; align-items: center; gap: 10px; padding: 12px 14px; } .rc .h b { display: block; font-weight: 500; font-size: 14.5px; } .rc .h small { display: block; font: 600 9.5px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); } .rc .res { border-top: 1px solid var(--line); padding: 10px 14px; font-size: 13.5px; color: #079455; font-weight: 500; display: flex; gap: 8px; } .rc .res span { margin-left: auto; color: var(--fg2); font-weight: 400; } .dark .rc .res { color: #3dd68c; }
+  .ask { display: flex; flex-direction: column; gap: 10px; } .chips { display: flex; gap: 8px; } .chips span { height: 40px; padding: 0 16px; border-radius: 20px; display: inline-flex; align-items: center; font-size: 14px; background: var(--page); box-shadow: 0 0 0 1px var(--line); } .chips span.p { background: var(--pri); color: var(--onpri); box-shadow: none; font-weight: 500; }
+  .composer { flex: none; margin: 8px 12px 30px; height: 48px; border-radius: 24px; background: var(--page); box-shadow: 0 0 0 1px var(--line); display: flex; align-items: center; padding: 0 6px 0 16px; color: var(--fg3); font-size: 14px; gap: 8px; } .composer .mic { margin-left: auto; width: 36px; height: 36px; border-radius: 18px; background: #6b72ff; display: grid; place-items: center; } .composer svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+  .site { border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); background: #fbfcfe; } .site .bar { height: 24px; background: #eef1f5; display: flex; align-items: center; padding: 0 10px; gap: 5px; font-size: 10px; color: #6b7280; } .site .bar i { width: 6px; height: 6px; border-radius: 3px; background: #cfd5dd; }
+  .site .hero { background: linear-gradient(135deg, #1f3a5f, #3a6ea5); color: #fff; padding: 22px 14px; } .site .hero b { display: block; font-size: 20px; font-weight: 600; line-height: 1.15; letter-spacing: -.02em; } .site .hero span { display: inline-block; margin-top: 12px; font-size: 11px; background: #fff; color: #1f3a5f; padding: 5px 10px; border-radius: 99px; font-weight: 600; }
+  .seg { display: flex; background: var(--chip); border-radius: 10px; padding: 2px; font-size: 12.5px; } .seg span { flex: 1; text-align: center; padding: 6px 0; border-radius: 8px; color: var(--fg2); } .seg span.on { background: var(--page); color: var(--fg); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .pill2 { display: flex; gap: 6px; flex-wrap: wrap; } .pill2 span { font-size: 12.5px; padding: 7px 12px; border-radius: 99px; background: var(--chip); color: var(--fg2); }
+  .menu { padding: 0; } .menu .mini { padding: 13px 14px; } .menu .mini .ic { width: 30px; height: 30px; border-radius: 9px; background: var(--chip); display: grid; place-items: center; font-size: 13px; flex: none; } .menu .mini em { font-style: normal; font-size: 11.5px; color: #fff; background: #d98a1c; padding: 1px 7px; border-radius: 99px; }
+  .search { height: 38px; border-radius: 12px; background: var(--chip); display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--fg3); font-size: 14px; }
+  .askm { height: 46px; border-radius: 23px; background: var(--page); box-shadow: 0 0 0 1px var(--line); display: flex; align-items: center; padding: 0 6px 0 16px; color: var(--fg3); font-size: 14px; } .askm span { margin-left: auto; width: 34px; height: 34px; border-radius: 17px; background: var(--pri); color: var(--onpri); display: grid; place-items: center; }
+  .ans { font-size: 14.5px; line-height: 21px; } .srcs { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; } .srcs span { font-size: 11.5px; padding: 3px 9px; border-radius: 99px; background: var(--chip); color: var(--fg2); }
+  .save { margin-left: auto; font-size: 11.5px; color: #1f6feb; background: rgba(31,111,235,.1); padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+  .tog { width: 40px; height: 24px; border-radius: 12px; background: #079455; position: relative; flex: none; } .tog::after { content: ''; position: absolute; right: 3px; top: 3px; width: 18px; height: 18px; border-radius: 9px; background: #fff; } .tog.off { background: var(--chip); } .tog.off::after { right: auto; left: 3px; }
+  .talk { background: radial-gradient(120% 80% at 50% 0%, #2a2c6e, #0d0e14 70%); color: #fff; }
+  .talk .orb { width: 112px; height: 112px; border-radius: 32px; margin: 48px auto 12px; background: radial-gradient(circle at 35% 30%, #b3b6ff, #6b72ff 55%, #3b3fbf); box-shadow: 0 0 0 12px rgba(107,114,255,.14), 0 0 0 28px rgba(107,114,255,.06), 0 20px 50px -10px rgba(107,114,255,.6); position: relative; } .talk .orb::before, .talk .orb::after { content: ''; position: absolute; top: 46px; width: 8px; height: 8px; border-radius: 4px; background: #14123a; } .talk .orb::before { left: 36px; } .talk .orb::after { right: 36px; }
+  .talk .cp { text-align: center; padding: 0 24px; } .talk .cp small { display: block; font-size: 12px; color: rgba(255,255,255,.55); margin-bottom: 8px; } .talk .cp p { margin: 0; font-size: 21px; line-height: 28px; letter-spacing: -.02em; }
+  .talk .chips { justify-content: center; margin-top: 18px; } .talk .chips span { background: rgba(255,255,255,.12); box-shadow: none; color: #fff; } .talk .chips span.p { background: #fff; color: #15161b; }
+  .talk .you { text-align: center; font-size: 13px; color: rgba(255,255,255,.6); margin-top: 14px; } .talk .you b { color: #fff; font-weight: 500; }
+  .wave { display: flex; gap: 3px; justify-content: center; align-items: center; height: 26px; margin-top: auto; } .wave i { width: 3px; border-radius: 2px; background: #a9adff; }
+  .ctrl { display: flex; justify-content: center; gap: 22px; padding: 18px 0 34px; } .ctrl span { width: 58px; height: 58px; border-radius: 29px; background: rgba(255,255,255,.12); display: grid; place-items: center; font-size: 11px; } .ctrl .end { background: #ff453a; }
+  .lock { background: linear-gradient(160deg, #8b90ff, #4a3fa8 60%, #1f1a4d); color: #fff; } .time { text-align: center; font-size: 62px; font-weight: 600; letter-spacing: -.04em; line-height: 1; margin-top: 10px; } .date { text-align: center; font-size: 14px; font-weight: 500; opacity: .85; margin-top: 4px; }
+  .note { margin: 0 10px; border-radius: 20px; background: rgba(255,255,255,.9); color: #15161b; padding: 11px 13px; } .note .h { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #52545f; } .note .h i { width: 18px; height: 18px; border-radius: 5px; background: #7f8cff; } .note .h em { margin-left: auto; font-style: normal; } .note b { display: block; font-size: 14px; font-weight: 600; margin-top: 4px; } .note p { margin: 1px 0 0; font-size: 13px; }
+  .nact { margin: 6px 10px 0; display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; } .nact span { background: rgba(255,255,255,.9); color: #15161b; padding: 11px 14px; font-size: 14px; border-top: 1px solid rgba(0,0,0,.06); } .nact span:first-child { border-top: 0; font-weight: 600; }
+  .la { margin: 0 10px; border-radius: 22px; background: rgba(20,20,26,.8); padding: 12px 14px; } .la .h { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(255,255,255,.7); } .la b { display: block; font-size: 15px; font-weight: 600; margin-top: 6px; } .la .bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.18); margin-top: 8px; overflow: hidden; } .la .bar i { display: block; height: 100%; width: 60%; background: #a9adff; } .la small { display: flex; justify-content: space-between; font-size: 11.5px; color: rgba(255,255,255,.65); margin-top: 6px; }
+  .di { position: absolute; left: 50%; top: 8px; transform: translateX(-50%); height: 30px; min-width: 196px; border-radius: 16px; background: #000; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; color: #fff; font-size: 11px; gap: 8px; z-index: 3; } .di .pr2 { width: 16px; height: 16px; border-radius: 8px; border: 2px solid #a9adff; border-right-color: transparent; }
+  .home { background: linear-gradient(170deg, #c9cbff, #f2e6ff 50%, #ffe9e1); }
+  .wid { margin: 6px 14px 0; border-radius: 22px; background: #fff; padding: 12px 14px; color: #15161b; box-shadow: 0 10px 30px -18px rgba(0,0,0,.35); } .wid .h { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #858896; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; } .wid .h i { width: 14px; height: 14px; border-radius: 4px; background: #7f8cff; } .wid .big { font-size: 26px; font-weight: 600; letter-spacing: -.03em; margin: 4px 0 2px; } .wid .r { display: flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 3px 0; } .wid .r i { width: 6px; height: 6px; border-radius: 3px; background: #d98a1c; } .wid .r em { margin-left: auto; font-style: normal; color: #d0453a; font-size: 11.5px; }
+  .apps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 0; padding: 18px 14px; } .apps span { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #2a2550; } .apps i { width: 50px; height: 50px; border-radius: 13px; background: rgba(255,255,255,.7); } .apps i.cb { background: #fff; display: grid; place-items: center; } .apps i.cb::after { content: ''; width: 24px; height: 24px; border-radius: 7px; background: #7f8cff; }
+  .wsm { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; padding: 0 14px; } .wsm > div { min-width: 0; border-radius: 22px; background: #fff; color: #15161b; aspect-ratio: 1; padding: 12px; display: flex; flex-direction: column; box-shadow: 0 10px 30px -18px rgba(0,0,0,.35); } .wsm b { font-size: 24px; font-weight: 600; letter-spacing: -.03em; margin-top: auto; } .wsm small { font-size: 11px; color: #858896; } .wsm .tk { background: #6b72ff; color: #fff; justify-content: center; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; text-align: center; }
+  .princ { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; } .princ div { background: #fff; border-radius: 14px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(0,0,0,.05); } .princ h3 { margin: 0 0 6px; font-size: 15px; font-weight: 500; } .princ p { margin: 0; color: #52545f; font-size: 13.5px; }
+  @media (max-width: 900px) { .princ { grid-template-columns: 1fr; } .arrow { display: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-today" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" /></symbol>
+  <symbol id="i-chats" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" /></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4" /></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></symbol>
+</svg>
+<div class="wrap">
+  <header><h1>Cerebro for iPhone</h1><p>Built for <b>one thumb and a few seconds</b>. Three tabs, one obvious action per card, and everything else one tap away under your avatar. Same look, agents and memory as the desktop app.</p></header>
+  <div class="pr"><span><b>3 tabs</b> · Today, Talk, Chats</span><span><b>One action per card</b> · the rest is in the sheet</span><span><b>Slide, swipe, say</b> · no tiny buttons</span><span><b>You menu</b> · Team, Memory, Settings</span><span><b>Light and dark</b></span></div>
+
+  <section class="sec"><h2>1 · Today → decide → done</h2><p>Open the app: what needs you, biggest first. The top item gets <b>one</b> big button; the rest are rows. Tap for the plan, slide to approve, and it turns into a receipt with Undo.</p>
+    <div class="row">
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="top"><span class="d">Monday, Nov 2</span><span class="me">MA<i></i></span></div>
+          <div class="h1">Good morning, Maya</div><div class="sub">3 things need you</div>
+          <div class="card"><div class="k"><i></i>Harbor Dental<span class="money">−$2.4k/mo</span></div><div class="tt">Ads paused</div><div class="wy">Card expired Tuesday</div><div class="one">Switch card</div></div>
+          <div class="card list"><div class="mini"><i class="fc f2"></i><div class="tx"><b>Booking widget down</b><small>Peak Fitness · −$1.6k/mo</small></div><span class="go">›</span></div><div class="mini"><i class="fc f3"></i><div class="tx"><b>Missed calls after 5 PM</b><small>14 clinics · +18%</small></div><span class="go">›</span></div></div>
+        </div>
+        <div class="tab"><span class="on"><svg><use href="#i-today" /></svg>Today<i class="bdg">3</i></span><span><span class="talk"><svg><use href="#i-wave" /></svg></span></span><span><svg><use href="#i-chats" /></svg>Chats</span></div>
+      </div></div><div class="lbl">Today</div><div class="how">Swipe a row right to do it, left for later.</div></div>
+      <div class="arrow">→</div>
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body" style="opacity:.3"><div class="h1">Good morning, Maya</div><div class="card"><div class="tt">Ads paused</div></div></div>
+        <div class="dim"></div>
+        <div class="sheet"><div class="grab"></div>
+          <div style="display:flex;align-items:center;gap:12px"><i class="fc lg f1"></i><div><div class="k">Ads agent</div><div class="tt" style="margin:2px 0 0">Switch to the new Visa ••4411?</div></div></div>
+          <div class="facts"><div><i>Lost so far</i>$2.4k/mo</div><div><i>Fixes</i>3 campaigns</div></div>
+          <div class="soft">Undo any time · <b>See the 4 steps</b></div>
+          <div class="slide"><span class="kn">→</span><span>Slide to switch</span></div>
+          <div class="soft">Not now · Always do this</div>
+        </div>
+      </div></div><div class="lbl">The plan, as a sheet</div><div class="how">Two facts and one slide. Details are one tap away.</div></div>
+      <div class="arrow">→</div>
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:42<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="top"><span class="d">Monday, Nov 2</span><span class="me">MA</span></div>
+          <div class="h1">Good morning, Maya</div><div class="sub">2 things need you · $2.4k back</div>
+          <div class="card done"><span class="ok">✓</span><span>Harbor's ads are live again</span><u>Undo</u></div>
+          <div class="card"><div class="k"><i></i>Peak Fitness<span class="money">−$1.6k/mo</span></div><div class="tt">Booking widget down</div><div class="wy">Broke Sunday night</div><div class="one">Repair it</div></div>
+          <div class="card list"><div class="mini"><i class="fc f3"></i><div class="tx"><b>Missed calls after 5 PM</b><small>14 clinics · +18%</small></div><span class="go">›</span></div></div>
+        </div>
+        <div class="tab"><span class="on"><svg><use href="#i-today" /></svg>Today<i class="bdg">2</i></span><span><span class="talk"><svg><use href="#i-wave" /></svg></span></span><span><svg><use href="#i-chats" /></svg>Chats</span></div>
+      </div></div><div class="lbl">Done</div><div class="how">A haptic tick, a receipt with Undo, and the next item moves up.</div></div>
+    </div></section>
+
+  <section class="sec"><h2>2 · Talk</h2><p>The centre tab starts a call. The same morning, by voice: captions, tap-or-say answers, the same receipts.</p>
+    <div class="row">
+      <div class="ph"><div class="dev"><div class="scr talk">
+        <div class="sb">9:42<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="orb"></div>
+        <div class="cp"><small>Cerebro · your morning</small><p>Three things need you. First: Harbor's ads are paused. Switch the card?</p></div>
+        <div class="chips"><span class="p">Switch card</span><span>Skip</span></div>
+        <div class="you">You · <b>“Yes, do it”</b></div>
+        <div class="wave"><i style="height:6px"></i><i style="height:12px"></i><i style="height:20px"></i><i style="height:14px"></i><i style="height:24px"></i><i style="height:10px"></i><i style="height:18px"></i><i style="height:8px"></i><i style="height:16px"></i><i style="height:6px"></i></div>
+        <div class="ctrl"><span>Mute</span><span>Type</span><span class="end">End</span></div>
+      </div></div><div class="lbl">Talk</div><div class="how">Works with AirPods and CarPlay. “Type” switches to the chat.</div></div>
+    </div></section>
+
+  <section class="sec"><h2>3 · Chats, a thread, a website</h2><p>Chats is one list. A thread looks like desktop: receipts and big answer chips. Building stays on desktop; on the phone you preview, tweak and publish.</p>
+    <div class="row">
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="top"><span class="h1" style="font-size:24px">Chats</span><span class="me">MA<i></i></span></div>
+          <div class="search">⌕ Search</div>
+          <div class="card list">
+            <div class="mini"><i class="fc f1"></i><div class="tx"><b>Harbor ads paused</b><small>Done · ads live again</small></div><span class="go">9:42</span></div>
+            <div class="mini"><i class="fc f5"></i><div class="tx"><b>Onboard Glow Med Spa</b><small>Working · 3 of 5</small></div><span class="go">9:30</span></div>
+            <div class="mini"><i class="fc f2"></i><div class="tx"><b>Website · Harbor Dental</b><small>Draft ready to review</small></div><span class="go">Yest</span></div>
+            <div class="mini"><i class="fc ch"></i><div class="tx"><b># harbor-dental</b><small>Ads → Reporting: watch delivery</small></div><span class="go">Yest</span></div>
+          </div>
+        </div>
+        <div class="composer">Ask anything…<span class="mic"><svg><use href="#i-mic" /></svg></span></div>
+        <div class="tab"><span><svg><use href="#i-today" /></svg>Today<i class="bdg">2</i></span><span><span class="talk"><svg><use href="#i-wave" /></svg></span></span><span class="on"><svg><use href="#i-chats" /></svg>Chats</span></div>
+      </div></div><div class="lbl">Chats</div><div class="how">Chats and channels together. The box starts a new one.</div></div>
+
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:42<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="nav"><span class="bk">‹</span><span class="t"><b>Harbor ads paused</b><small>Harbor Dental</small></span></div>
+          <div class="ai">Harbor's ads stopped on Tuesday. The card on file expired.</div>
+          <div class="card rc"><div class="h"><i class="fc f1"></i><div><small>Ads agent · done</small><b>Ads are live again</b></div></div><div class="res">✓ Visa ••4411 · $2.4k/mo back<span>Undo</span></div></div>
+          <div class="ask"><div class="ai">Peak Fitness and Lumen Spa have expired cards too. Switch those?</div><div class="chips"><span class="p">Switch both</span><span>Just Harbor</span></div></div>
+        </div>
+        <div class="composer">Reply…<span class="mic"><svg><use href="#i-mic" /></svg></span></div>
+      </div></div><div class="lbl">A thread</div><div class="how">Same receipt cards as desktop. Answers are big chips; the mic dictates.</div></div>
+
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:42<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="nav"><span class="bk">‹</span><span class="t"><b>Website · Harbor Dental</b><small>Draft · 4 pages</small></span></div>
+          <div class="seg"><span class="on">Phone</span><span>Desktop</span></div>
+          <div class="site"><div class="bar"><i></i><i></i><i></i>harbordental.com</div><div class="hero"><b>Gentle care,<br />every visit.</b><span>Book a visit</span></div></div>
+          <div class="pill2"><span>Bigger headline</span><span>Make it blue</span><span>Hide reviews</span></div>
+          <div class="one" style="margin-top:2px">Publish</div>
+          <div class="soft">Detailed edits · <b>Continue on desktop</b></div>
+        </div>
+      </div></div><div class="lbl">Website preview</div><div class="how">Preview, quick changes by chip or voice, publish. Deep edits hand off to desktop.</div></div>
+    </div></section>
+
+  <section class="sec"><h2>4 · Under your avatar: Team, Memory, Settings</h2><p>The tab bar stays at three. Your avatar opens everything else; the dot means something's waiting.</p>
+    <div class="row">
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body" style="opacity:.3"><div class="h1">Good morning, Maya</div></div>
+        <div class="dim"></div>
+        <div class="sheet" style="top:64px"><div class="grab"></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="me" style="width:44px;height:44px;border-radius:22px;font-size:14px">MA</span><div><b style="font-weight:600;font-size:16px">Maya Lee</b><div class="wy">Acme Agency · 1,284 clients</div></div></div>
+          <div class="card menu">
+            <div class="mini"><span class="ic">◍</span><div class="tx"><b>AI team</b><small>9 agents · 1 needs you</small></div><span class="go">›</span></div>
+            <div class="mini"><span class="ic">◎</span><div class="tx"><b>Memory</b><small>3 to review</small></div><em>3</em></div>
+            <div class="mini"><span class="ic">⇄</span><div class="tx"><b>Switch to HighLevel</b><small>Classic dashboard</small></div><span class="go">›</span></div>
+            <div class="mini"><span class="ic">⚙</span><div class="tx"><b>Settings</b><small>Notifications, Face ID, appearance</small></div><span class="go">›</span></div>
+          </div>
+        </div>
+      </div></div><div class="lbl">You menu</div><div class="how">Team, Memory, HighLevel and Settings in one sheet.</div></div>
+
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="nav"><span class="bk">‹</span><span class="t"><b>AI team</b></span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin:4px 0"><i class="fc xl f2"></i><b style="font-size:18px;font-weight:600">Sites agent</b><span class="wy">Builds and fixes websites</span></div>
+          <div class="card mini"><div class="tx"><b>Working now</b><small>Lumen site refresh · 85%</small></div></div>
+          <div class="lab">Does on its own</div>
+          <div class="card list"><div class="mini"><div class="tx"><b>Repair broken widgets</b></div><span class="tog off"></span></div><div class="mini"><div class="tx"><b>Publish small text fixes</b></div><span class="tog"></span></div></div>
+          <div class="one" style="background:var(--chip);color:var(--fg)">Message Sites agent</div>
+        </div>
+      </div></div><div class="lbl">An agent</div><div class="how">What it's doing, what it may do alone, and a way to talk to it.</div></div>
+
+      <div class="ph"><div class="dev"><div class="scr">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="nav"><span class="bk">‹</span><span class="t"><b>Memory</b></span></div>
+          <div class="askm">What does Harbor care about?<span>↑</span></div>
+          <div class="card"><div class="ans">New patients, about <b style="font-weight:500">40 a month</b>, and Dr. Chen wants <b style="font-weight:500">texts, not emails</b>.</div><div class="srcs"><span>Tuesday's call</span><span>Amy's email</span></div></div>
+          <div class="lab">To review · 3</div>
+          <div class="card"><b style="font-weight:500;font-size:14px">Harbor caps ad spend at $700/week</b><div class="wy" style="font-size:12px">From Amy's email</div><div class="chips" style="margin-top:10px"><span class="p" style="height:36px">Keep</span><span style="height:36px">Not true</span></div></div>
+        </div>
+      </div></div><div class="lbl">Memory</div><div class="how">Ask first. Review with two buttons.</div></div>
+    </div></section>
+
+  <section class="sec"><h2>5 · Dark mode</h2><p>Follows the iPhone setting. Same layout; cards sit one step lighter than the background.</p>
+    <div class="row">
+      <div class="ph"><div class="dev"><div class="scr dark">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="top"><span class="d">Monday, Nov 2</span><span class="me">MA<i></i></span></div>
+          <div class="h1">Good morning, Maya</div><div class="sub">3 things need you</div>
+          <div class="card"><div class="k"><i></i>Harbor Dental<span class="money">−$2.4k/mo</span></div><div class="tt">Ads paused</div><div class="wy">Card expired Tuesday</div><div class="one">Switch card</div></div>
+          <div class="card list"><div class="mini"><i class="fc f2"></i><div class="tx"><b>Booking widget down</b><small>Peak Fitness · −$1.6k/mo</small></div><span class="go">›</span></div><div class="mini"><i class="fc f3"></i><div class="tx"><b>Missed calls after 5 PM</b><small>14 clinics · +18%</small></div><span class="go">›</span></div></div>
+        </div>
+        <div class="tab"><span class="on"><svg><use href="#i-today" /></svg>Today<i class="bdg">3</i></span><span><span class="talk"><svg><use href="#i-wave" /></svg></span></span><span><svg><use href="#i-chats" /></svg>Chats</span></div>
+      </div></div><div class="lbl">Today · dark</div></div>
+      <div class="ph"><div class="dev"><div class="scr dark">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body" style="opacity:.3"><div class="h1">Good morning, Maya</div></div>
+        <div class="dim" style="background:rgba(0,0,0,.5)"></div>
+        <div class="sheet"><div class="grab"></div>
+          <div style="display:flex;align-items:center;gap:12px"><i class="fc lg f1"></i><div><div class="k">Ads agent</div><div class="tt" style="margin:2px 0 0">Switch to the new Visa ••4411?</div></div></div>
+          <div class="facts"><div><i>Lost so far</i>$2.4k/mo</div><div><i>Fixes</i>3 campaigns</div></div>
+          <div class="soft">Undo any time · <b>See the 4 steps</b></div>
+          <div class="slide"><span class="kn">→</span><span>Slide to switch</span></div>
+          <div class="soft">Not now · Always do this</div>
+        </div>
+      </div></div><div class="lbl">Sheet · dark</div></div>
+      <div class="ph"><div class="dev"><div class="scr dark">
+        <div class="sb">9:42<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="body">
+          <div class="nav"><span class="bk">‹</span><span class="t"><b>Harbor ads paused</b><small>Harbor Dental</small></span></div>
+          <div class="ai">Harbor's ads stopped on Tuesday. The card on file expired.</div>
+          <div class="card rc"><div class="h"><i class="fc f1"></i><div><small>Ads agent · done</small><b>Ads are live again</b></div></div><div class="res">✓ Visa ••4411 · $2.4k/mo back<span>Undo</span></div></div>
+          <div class="ask"><div class="ai">Peak Fitness and Lumen Spa have expired cards too. Switch those?</div><div class="chips"><span class="p">Switch both</span><span>Just Harbor</span></div></div>
+        </div>
+        <div class="composer">Reply…<span class="mic"><svg><use href="#i-mic" /></svg></span></div>
+      </div></div><div class="lbl">Thread · dark</div></div>
+    </div></section>
+
+  <section class="sec"><h2>6 · It comes to you</h2><p>Often you won't open the app at all.</p>
+    <div class="row">
+      <div class="ph"><div class="dev"><div class="scr lock">
+        <div class="sb">&nbsp;<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="time">9:41</div><div class="date">Monday, November 2</div><div style="margin-top:auto"></div>
+        <div class="note"><div class="h"><i></i>Cerebro · Ads agent<em>now</em></div><b>Harbor ads paused · −$2.4k/mo</b><p>Card expired. Switch to Visa ••4411?</p></div>
+        <div class="nact"><span>Switch card</span><span>Not now</span></div><div style="height:60px"></div>
+      </div></div><div class="lbl">Answer from the lock screen</div><div class="how">Face ID confirms anything that spends money or messages clients.</div></div>
+      <div class="ph"><div class="dev"><div class="scr lock">
+        <div class="di"><span class="fc f5" style="width:18px;height:18px;border-radius:6px"></span><span>Onboarding Glow</span><span class="pr2"></span></div>
+        <div class="sb">&nbsp;<span></span><span class="ic">●●● ▮</span></div>
+        <div class="time">10:05</div><div class="date">Monday, November 2</div><div style="margin-top:auto"></div>
+        <div class="la"><div class="h"><i class="fc f5" style="width:22px;height:22px"></i>Onboarding agent</div><b>Onboarding Glow Med Spa</b><div class="bar"><i></i></div><small><span>Media kit · 3 of 5</span><span>~4 min</span></small></div><div style="height:70px"></div>
+      </div></div><div class="lbl">Live Activity</div><div class="how">Long jobs show progress on the lock screen and Dynamic Island.</div></div>
+      <div class="ph"><div class="dev"><div class="scr home">
+        <div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>
+        <div class="wid"><div class="h"><i></i>Cerebro</div><div class="big">3 need you</div><div class="r"><i></i>Harbor ads paused<em>−$2.4k</em></div><div class="r"><i></i>Booking widget down<em>−$1.6k</em></div></div>
+        <div class="apps"><span><i></i>Mail</span><span><i></i>Calendar</span><span><i class="cb"></i>Cerebro</span><span><i></i>Photos</span></div>
+        <div class="wsm"><div><small>MRR</small><b>$412.8k</b><small style="color:#079455">↑ 6.2%</small></div><div class="tk"><svg style="width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.7"><use href="#i-wave" /></svg>Talk to Cerebro</div></div>
+      </div></div><div class="lbl">Widgets</div><div class="how">Today, MRR and one-tap Talk. Plus Siri: “Ask Cerebro what needs me.”</div></div>
+    </div></section>
+
+  <section class="sec"><h2>Why it feels simple</h2><p>The rules every screen follows.</p>
+    <div class="princ">
+      <div><h3>One action per card</h3><p>The most likely answer is the only button. Everything else is in the sheet.</p></div>
+      <div><h3>Three tabs</h3><p>Today, Talk, Chats. Team, Memory and Settings live under your avatar.</p></div>
+      <div><h3>Big targets</h3><p>Buttons are 44pt or more. Approving is a slide, so nothing happens by accident.</p></div>
+      <div><h3>Details on demand</h3><p>Two facts on screen, the rest one tap away (“See the 4 steps”).</p></div>
+      <div><h3>Always undoable</h3><p>Every result is a receipt with Undo, in the app and in the notification.</p></div>
+      <div><h3>Same product as desktop</h3><p>Same faces, cards, grey (F9F9FA) and memory. Start on the phone, finish on the laptop.</p></div>
+    </div></section>
+</div>
+</body>
+</html>

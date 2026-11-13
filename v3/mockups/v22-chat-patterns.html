@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chat Patterns</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f5f5f7; --page: #fff; --fg: #15161b; --fg2: #555865; --fg3: #8a8d99; --line: rgba(21,22,27,.055); --line2: rgba(21,22,27,.1); --chip: #f2f2f5; --spark: #6b72ff; --green: #0a8a52; --green-bg: #e9f6ef; --red: #d0453a; --red-bg: #fdf0ee; --amber: #c27a12;
+    --shadow: 0 0 0 1px rgba(21,22,27,.04), 0 1px 2px rgba(21,22,27,.025), 0 6px 18px -14px rgba(21,22,27,.1); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ebebef; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 30px; max-width: 860px; }
+  h2 { font-size: 19px; font-weight: 500; letter-spacing: -.02em; margin: 0 0 4px; } .lead { color: var(--fg2); margin: 0 0 16px; max-width: 900px; } .lead b { color: var(--fg); font-weight: 500; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 52px; }
+  th, td { text-align: left; padding: 12px 16px; border-top: 1px solid var(--line); vertical-align: top; font-size: 13.5px; } th { border-top: 0; font: 500 10.5px/14px 'Geist Mono'; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); background: #fafafb; }
+  td b { font-weight: 500; } td small { display: block; color: var(--fg3); font-size: 12px; margin-top: 2px; }
+  .y { color: var(--green); font-weight: 500; } .n { color: var(--fg3); } .m { color: var(--amber); font-weight: 500; }
+  .opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 48px; }
+  .opt { background: #f7f7f9; border-radius: 20px; box-shadow: 0 0 0 1px var(--line2); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .opt h3 { margin: 0; font-size: 15px; font-weight: 500; display: flex; gap: 8px; align-items: baseline; } .opt h3 .mono { font-size: 10.5px; color: var(--fg3); } .opt p { margin: 0 0 4px; color: var(--fg2); font-size: 13px; }
+  .stage { display: flex; flex-direction: column; gap: 8px; } .stage > .mono { font-size: 9.5px; color: var(--fg3); margin-top: 6px; }
+  .ai { font-size: 14px; line-height: 1.5; } .me { align-self: flex-end; background: #fff; box-shadow: 0 0 0 1px var(--line2); padding: 5px 11px; border-radius: 12px 12px 4px 12px; font-size: 13px; }
+  .card { background: #fff; border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+  .ch { display: flex; align-items: center; gap: 10px; padding: 12px 14px; } .ch .t { flex: 1; min-width: 0; } .ch .t small { display: block; font: 500 9.5px/13px 'Geist Mono'; letter-spacing: .05em; color: var(--fg3); text-transform: uppercase; } .ch .t b { font-weight: 500; font-size: 13.5px; }
+  .face { width: 26px; height: 26px; border-radius: 9px; background: #f08a3c; position: relative; flex: none; } .face::before, .face::after { content: ''; position: absolute; top: 10px; width: 3px; height: 3px; border-radius: 2px; background: #1b1830; } .face::before { left: 7px; } .face::after { right: 7px; } .face.sm { width: 18px; height: 18px; border-radius: 6px; } .face.sm::before, .face.sm::after { top: 7px; width: 2px; height: 2px; } .face.sm::before { left: 5px; } .face.sm::after { right: 5px; }
+  .pill { font: 500 10.5px/14px 'Geist Mono'; padding: 2px 7px; border-radius: 99px; white-space: nowrap; } .pill.r { color: var(--red); background: var(--red-bg); } .pill.g { color: var(--green); background: var(--green-bg); } .pill.s { color: var(--fg3); background: var(--chip); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); } .grid div { padding: 9px 14px; font-size: 12.5px; } .grid div + div { border-left: 1px solid var(--line); } .grid small { display: block; font: 500 9px/12px 'Geist Mono'; letter-spacing: .05em; color: var(--fg3); text-transform: uppercase; }
+  .ft { display: flex; gap: 6px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); background: #fbfbfc; flex-wrap: wrap; }
+  .b { font-size: 12px; padding: 5px 11px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); white-space: nowrap; } .b.p { background: var(--fg); color: #fff; box-shadow: none; } .b.l { box-shadow: none; color: var(--fg3); padding: 5px 4px; }
+  .steps { padding: 4px 14px 10px; border-top: 1px solid var(--line); } .steps div { display: flex; align-items: center; gap: 8px; font-size: 12.5px; padding: 4px 0; color: var(--fg2); } .steps .ok { color: var(--green); } .steps .run { color: var(--fg); } .spin { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid #ddd; border-top-color: var(--fg); animation: sp .7s linear infinite; } @keyframes sp { to { transform: rotate(360deg) } }
+  .bar { height: 3px; background: var(--chip); } .bar i { display: block; height: 100%; width: 55%; background: var(--spark); }
+  .res { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--green); flex-wrap: wrap; } .res .x { margin-left: auto; display: flex; gap: 10px; color: var(--fg2); } .res .x span { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line2); }
+  .line { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 12px; box-shadow: var(--shadow); padding: 9px 12px; font-size: 12.5px; } .line .g { color: var(--green); } .line .x { margin-left: auto; color: var(--fg3); }
+  .count { font-size: 11px; color: var(--fg3); margin-top: 2px; } .count b { color: var(--fg); font-weight: 500; }
+  .pick { color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+  .mini { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 12px; box-shadow: var(--shadow); padding: 8px 10px 8px 12px; font-size: 13px; } .mini span { flex: 1; }
+  .answer { background: #fff; border-radius: 14px; box-shadow: var(--shadow); padding: 12px 14px; font-size: 12.5px; } .answer .rows div { display: flex; justify-content: space-between; padding: 5px 0; border-top: 1px solid var(--line); } .answer .rows div:first-child { border-top: 0; }
+  @media (max-width: 1000px) { .opts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Chats · one experience, used where it helps</h1><p>The plan card is the right pattern whenever the AI is about to <b>do</b> something. It’s the wrong pattern for answers, memory, and building with the canvas. Below: where to use it, and three options to make the whole flow lighter, using Harbor as the example.</p></header>
+
+  <h2>Where the plan card belongs</h2><p class="lead">Rule of thumb: <b>if the AI will change something, show a plan card. If it’s only telling you something, answer in text (with a small visual). If it’s building something you need to see, use the canvas.</b></p>
+  <table>
+    <tr><th>Kind of chat</th><th>Example</th><th>Plan card?</th><th>Instead / how</th></tr>
+    <tr><td><b>Fix</b><small>Something broke, money at risk</small></td><td>Harbor ads paused, Peak widget down</td><td class="y">Yes, the full card</td><td>Money pill, facts, steps, Always allow. This is the hero use.</td></tr>
+    <tr><td><b>Task you start</b><small>Proactive work</small></td><td>Missed-call text-back, review replies, posts</td><td class="y">Yes</td><td>Same card; step-by-step offered when there are 3+ steps.</td></tr>
+    <tr><td><b>Campaign</b><small>Several decisions</small></td><td>Black Friday</td><td class="y">Yes, editable</td><td>Draft-first card with Change links (already built).</td></tr>
+    <tr><td><b>Channel / agent job</b></td><td>“@Sites add a booking button”</td><td class="y">Yes, compact</td><td>Agent face in the header; group channels show the client grid.</td></tr>
+    <tr><td><b>Follow-up question</b><small>Inside a fix</small></td><td>“Switch Peak and Lumen too?”, “Do this on your own next time?”</td><td class="m">A mini card</td><td>One line, two buttons. A full card here is too heavy.</td></tr>
+    <tr><td><b>Question / answer</b></td><td>“Which clients grew most?”, MRR, “Is anyone about to leave?”</td><td class="n">No</td><td>Text answer with a small table or sparkline. A plan card appears only if it then offers to act (“Make the report?”).</td></tr>
+    <tr><td><b>Build with a canvas</b></td><td>Website, funnel, onboarding</td><td class="n">No</td><td>Short ask, then the canvas shows the work; changes by chips or chat.</td></tr>
+    <tr><td><b>Memory</b></td><td>“Remember Harbor’s card ends 4411?”</td><td class="n">No</td><td>The quiet remember row with Remember / Not now.</td></tr>
+    <tr><td><b>Talk</b> (voice view)</td><td>Any of the above, by voice</td><td class="n">No card</td><td>One spoken line and two big answers; the card shows when you switch back to text.</td></tr>
+  </table>
+
+  <h2>Three options for the flow itself</h2><p class="lead">Today a fix makes <b>six blocks</b>: the AI line, the plan card, your “Switch card” bubble, “Did 4 steps”, “Done. Harbor’s ads are live again.”, and the result line. Same information, too many pieces.</p>
+  <div class="opts">
+    <div class="opt"><h3><span class="mono">A</span>The card becomes the receipt</h3><p>One card for the whole life of the job: it asks, then <b>works inside itself</b> (steps tick in place with a thin progress bar), then <b>turns into the result</b> with Undo, Repeat and Why in its footer. No echo bubble, no separate steps row, no “Done.” line.</p>
+      <div class="stage"><span class="mono">1 · Ask</span>
+        <div class="card"><div class="ch"><i class="face"></i><div class="t"><small>Plan · Ads agent</small><b>Switch to the new Visa ••4411?</b></div><span class="pill r">−$2.4k/mo</span></div><div class="grid"><div><small>Paused since</small>Tue · 3 campaigns</div><div><small>I’ll do</small>4 steps · undo any time</div></div><div class="ft"><span class="b p">Switch card</span><span class="b">Always allow</span><span class="b l">Not now</span></div></div>
+        <span class="mono">2 · Working (same card)</span>
+        <div class="card"><div class="bar"><i></i></div><div class="ch"><i class="face"></i><div class="t"><small>Ads agent · working</small><b>Switching to Visa ••4411</b></div><span class="pill s">2 of 4</span></div><div class="steps"><div class="ok">✓ Opened Harbor Dental</div><div class="ok">✓ Replaced card</div><div class="run"><span class="spin"></span>Resuming 3 campaigns</div></div></div>
+        <span class="mono">3 · Done (same card)</span>
+        <div class="card"><div class="ch"><i class="face"></i><div class="t"><small>Ads agent · done 9:41</small><b>Harbor’s ads are live again</b></div><span class="pill g">$2.4k/mo protected</span></div><div class="res">✓ Visa ••4411 · 3 campaigns resumed<span class="x"><span>Repeat…</span><span>Undo</span><span>Why?</span></span></div></div>
+        <div class="count">Blocks per fix: <b>1</b> (plus follow-ups)</div>
+      </div></div>
+
+    <div class="opt"><h3><span class="mono">B</span>Ask big, finish small</h3><p>The plan card stays as the ask. Once you approve, it <b>shrinks to one line</b> and everything after is a single <b>receipt line</b> you can open for the steps. Calm history: scroll back and each job is one row.</p>
+      <div class="stage"><span class="mono">1 · Ask</span>
+        <div class="card"><div class="ch"><i class="face"></i><div class="t"><small>Plan · Ads agent</small><b>Switch to the new Visa ••4411?</b></div><span class="pill r">−$2.4k/mo</span></div><div class="grid"><div><small>Paused since</small>Tue · 3 campaigns</div><div><small>I’ll do</small>4 steps</div></div><div class="ft"><span class="b p">Switch card</span><span class="b">Always allow</span><span class="b l">Not now</span></div></div>
+        <span class="mono">2 · After you approve</span>
+        <div class="line"><i class="face sm"></i><span><b style="font-weight:500">You approved</b> · Switch to Visa ••4411</span><span class="x">9:40</span></div>
+        <div class="line"><span class="spin"></span><span>Ads agent · resuming 3 campaigns</span><span class="x">2 of 4</span></div>
+        <span class="mono">3 · Done</span>
+        <div class="line"><i class="face sm"></i><span class="g">✓ Live again on Visa ••4411 · $2.4k/mo protected</span><span class="x">Steps › · Undo</span></div>
+        <div class="count">Blocks per fix: <b>2</b></div>
+      </div></div>
+
+    <div class="opt"><h3><span class="mono">C</span>Keep the parts, trim them</h3><p>Closest to today. Keep the card, steps and result, but <b>drop the echo bubble</b> (the card shows “You chose Switch card”), <b>drop the “Done.” sentence</b> (the result line says it), and make follow-ups <b>mini cards</b>.</p>
+      <div class="stage"><span class="mono">1 · Ask → chosen</span>
+        <div class="card"><div class="ch"><i class="face"></i><div class="t"><small>Plan · Ads agent</small><b>Switch to the new Visa ••4411?</b></div><span class="pill s">You chose Switch card</span></div><div class="grid"><div><small>Paused since</small>Tue · 3 campaigns</div><div><small>I’ll do</small>4 steps</div></div></div>
+        <span class="mono">2 · Steps</span>
+        <div class="line"><span style="color:var(--fg3)">›</span><span>Did 4 steps</span><span class="x"><i class="face sm" style="display:inline-block;vertical-align:middle"></i> Ads agent</span></div>
+        <span class="mono">3 · Result and a follow-up</span>
+        <div class="line"><span class="g">✓ Live again on Visa ••4411 · $2.4k/mo protected</span><span class="x">Repeat… · Undo</span></div>
+        <div class="mini"><span>Switch Peak and Lumen too? <small style="color:var(--fg3)">Same expired card</small></span><span class="b p" style="flex:none">Switch both</span><span class="b l" style="flex:none">No</span></div>
+        <div class="count">Blocks per fix: <b>3</b></div>
+      </div></div>
+  </div>
+
+  <h2>And for answers (no plan card)</h2><p class="lead">A question gets <b>a sentence and a small visual</b>, with the action offered underneath only if there is one.</p>
+  <div class="opts" style="grid-template-columns: minmax(0, 420px)">
+    <div class="opt"><div class="stage"><div class="me">Which clients grew most?</div><div class="ai">Three clients grew most in October, all using the missed-call text-back.</div>
+      <div class="answer"><div class="rows"><div><span>Smile Studio</span><span class="pill g">+31% bookings</span></div><div><span>Harbor Dental</span><span class="pill g">+22%</span></div><div><span>Peak Fitness</span><span class="pill g">+18%</span></div></div></div>
+      <div class="mini"><span>Make a client-ready report, leading with wins?</span><span class="b p" style="flex:none">Make it</span></div></div></div>
+  </div>
+
+  <p class="pick">My pick: <b>A · The card becomes the receipt</b> for fixes, tasks, campaigns and channel jobs. It cuts six blocks to one, and the agent’s face carries through ask → working → done, which makes the AI feel like it’s doing the work in front of you. Follow-ups as <b>mini cards</b>, answers as <b>text + small visual</b>, building on the <b>canvas</b>, memory as the <b>remember row</b>.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cerebro iOS Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; min-height: 100vh; background: #e9e9ee; color: #15161b; font: 400 14px/1.45 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; display: flex; align-items: center; justify-content: center; gap: 48px; padding: 32px 16px; flex-wrap: wrap; }
+  .side { width: 300px; } .side h1 { font-size: 26px; font-weight: 400; letter-spacing: -.03em; margin: 0 0 6px; } .side p { color: #52545f; margin: 0 0 16px; }
+  .side ol { margin: 0 0 20px; padding-left: 20px; color: #52545f; line-height: 1.7; } .side ol b { color: #15161b; font-weight: 500; }
+  .ctl { display: flex; gap: 8px; flex-wrap: wrap; } .ctl button { border: 0; height: 36px; padding: 0 14px; border-radius: 99px; background: #fff; font: inherit; font-size: 13px; cursor: pointer; box-shadow: 0 0 0 1px rgba(0,0,0,.08); } .ctl button.on { background: #15161b; color: #fff; }
+  .dev { width: 393px; height: 852px; border-radius: 56px; background: #0c0c0f; padding: 11px; box-shadow: 0 40px 80px -40px rgba(0,0,0,.5); flex: none; }
+  @media (max-height: 900px) { .dev { transform: scale(.88); transform-origin: top center; margin-bottom: -100px; } }
+  .scr { --bg: #f9f9fa; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.07); --chip: #f1f1f3; --pri: #15161b; --onpri: #fff; --tab: rgba(255,255,255,.92);
+    position: relative; width: 100%; height: 100%; border-radius: 46px; overflow: hidden; background: var(--bg); color: var(--fg); user-select: none; }
+  .scr.dark { --bg: #0e0f13; --page: #17181d; --fg: #ececf1; --fg2: #a4a6b1; --fg3: #6e717d; --line: rgba(255,255,255,.07); --chip: rgba(255,255,255,.08); --pri: #ececf1; --onpri: #111; --tab: rgba(20,21,26,.92); }
+  .sb { position: absolute; left: 0; right: 0; top: 0; height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 8px 32px 0 40px; font-size: 15px; font-weight: 600; z-index: 30; pointer-events: none; } .sb .isl { width: 120px; height: 34px; border-radius: 20px; background: #000; } .sb .ic { font-size: 11px; letter-spacing: 1px; }
+  .view { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg); }
+  .view.push { animation: push .32s cubic-bezier(.2,.8,.2,1); } @keyframes push { from { transform: translateX(100%); } to { transform: none; } }
+  .body { flex: 1; overflow-y: auto; padding: 60px 20px 20px; display: flex; flex-direction: column; gap: 12px; scrollbar-width: none; } .body::-webkit-scrollbar { display: none; } .body > * { flex-shrink: 0; }
+  .top { display: flex; align-items: center; justify-content: space-between; height: 40px; } .top .d { font-size: 14px; color: var(--fg3); }
+  .me { width: 36px; height: 36px; border-radius: 18px; background: var(--pri); color: var(--onpri); font-size: 13px; font-weight: 600; display: grid; place-items: center; position: relative; border: 0; cursor: pointer; font-family: inherit; } .me i { position: absolute; right: -1px; top: -1px; width: 12px; height: 12px; border-radius: 6px; background: #d98a1c; box-shadow: 0 0 0 2px var(--bg); }
+  .h1 { font-size: 32px; font-weight: 600; letter-spacing: -.035em; line-height: 38px; margin: 0; } .sub { font-size: 16px; color: var(--fg2); margin-top: -8px; }
+  .lab { font: 600 12px/16px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); margin: 8px 2px -4px; }
+  .card { background: var(--page); border-radius: 22px; box-shadow: 0 0 0 1px var(--line); padding: 18px; }
+  .k { display: flex; align-items: center; gap: 7px; font: 600 11.5px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); } .k i { width: 7px; height: 7px; border-radius: 4px; background: #d98a1c; }
+  .money { margin-left: auto; font: 500 13px Inter; letter-spacing: 0; text-transform: none; padding: 3px 10px; border-radius: 99px; color: #d0453a; background: rgba(208,69,58,.1); }
+  .tt { font-size: 20px; font-weight: 500; letter-spacing: -.015em; margin-top: 8px; } .wy { font-size: 15px; color: var(--fg2); margin-top: 2px; }
+  .one { margin-top: 16px; height: 54px; width: 100%; border: 0; border-radius: 27px; background: var(--pri); color: var(--onpri); font: inherit; font-size: 17px; font-weight: 500; cursor: pointer; }
+  .rows { padding: 0; overflow: hidden; } .rw { position: relative; overflow: hidden; } .rw + .rw { border-top: 1px solid var(--line); }
+  .rw .bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; color: #fff; font-weight: 600; font-size: 15px; } .rw .bg.r { background: #079455; } .rw .bg.l { background: #858896; justify-content: flex-end; }
+  .mini { position: relative; display: flex; align-items: center; gap: 12px; padding: 15px 18px; background: var(--page); cursor: pointer; touch-action: pan-y; } .mini .tx { flex: 1; min-width: 0; } .mini b { display: block; font-weight: 500; font-size: 17px; } .mini small { display: block; font-size: 14px; color: var(--fg3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .mini .go { font-size: 15px; color: var(--fg3); }
+  .fc { width: 34px; height: 34px; border-radius: 10px; flex: none; position: relative; } .fc::before, .fc::after { content: ''; position: absolute; top: 12px; width: 4px; height: 4px; border-radius: 2px; background: #1b1830; } .fc::before { left: 9px; } .fc::after { right: 9px; }
+  .fc.lg { width: 50px; height: 50px; border-radius: 15px; } .fc.lg::before, .fc.lg::after { top: 19px; width: 5px; height: 5px; border-radius: 3px; } .fc.lg::before { left: 14px; } .fc.lg::after { right: 14px; }
+  .fc.xl { width: 96px; height: 96px; border-radius: 28px; } .fc.xl::before, .fc.xl::after { top: 37px; width: 8px; height: 8px; border-radius: 4px; } .fc.xl::before { left: 28px; } .fc.xl::after { right: 28px; } .fc.ch { background: var(--chip); } .fc.ch::before, .fc.ch::after { display: none; }
+  .f1 { background: #f08a3c; } .f2 { background: #4fd9c4; } .f3 { background: #5ad37b; } .f4 { background: #e66fa8; } .f5 { background: #8b90ff; } .f6 { background: #f0c03a; }
+  .done { display: flex; align-items: center; gap: 12px; padding: 15px 18px; font-size: 16px; animation: pop .35s ease; } @keyframes pop { from { transform: scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+  .done .ok { width: 28px; height: 28px; border-radius: 14px; background: rgba(7,148,85,.12); color: #079455; display: grid; place-items: center; font-size: 14px; flex: none; } .done span { flex: 1; } .done button { border: 0; background: none; font: inherit; color: var(--fg2); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); cursor: pointer; font-size: 15px; }
+  .empty { text-align: center; padding: 30px 10px; color: var(--fg2); font-size: 16px; } .empty b { display: block; font-size: 22px; color: var(--fg); font-weight: 600; margin-bottom: 4px; }
+  .tab { height: 96px; flex: none; background: var(--tab); border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 96px 1fr; align-items: start; padding: 10px 26px 0; font-size: 12px; color: var(--fg3); text-align: center; backdrop-filter: blur(16px); }
+  .tab button { border: 0; background: none; font: inherit; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; cursor: pointer; } .tab button.on { color: var(--fg); }
+  .tab svg { width: 28px; height: 28px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tab .talk { width: 70px; height: 70px; border-radius: 35px; background: #6b72ff; display: grid; place-items: center; margin: -24px auto 0; box-shadow: 0 12px 28px -10px rgba(107,114,255,.8); } .tab .talk svg { stroke: #fff; width: 32px; height: 32px; }
+  .bdg { position: absolute; top: -4px; left: calc(50% + 8px); min-width: 19px; height: 19px; border-radius: 10px; background: #d98a1c; color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; padding: 0 5px; }
+  .dim { position: absolute; inset: 0; background: rgba(8,8,12,.35); animation: fade .2s; z-index: 20; } @keyframes fade { from { opacity: 0; } }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--page); border-radius: 32px 32px 0 0; padding: 10px 22px 40px; display: flex; flex-direction: column; gap: 16px; z-index: 21; animation: up .32s cubic-bezier(.2,.8,.2,1); } @keyframes up { from { transform: translateY(100%); } }
+  .grab { width: 40px; height: 5px; border-radius: 3px; background: var(--chip); margin: 0 auto; }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .facts div { background: var(--bg); border-radius: 14px; padding: 11px 13px; font-size: 16px; } .facts i { display: block; font: 600 11px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); font-style: normal; }
+  .steps { margin: 0; padding-left: 20px; color: var(--fg2); font-size: 15px; line-height: 1.7; }
+  .soft { display: flex; justify-content: center; gap: 18px; font-size: 16px; color: var(--fg2); } .soft button { border: 0; background: none; font: inherit; color: inherit; cursor: pointer; padding: 6px; } .soft button.b { color: var(--fg); font-weight: 500; }
+  .slide { position: relative; height: 64px; border-radius: 32px; background: var(--pri); color: var(--onpri); display: flex; align-items: center; padding: 6px; font-size: 17px; font-weight: 500; overflow: hidden; touch-action: none; }
+  .slide .fill { position: absolute; left: 0; top: 0; bottom: 0; background: #079455; border-radius: 32px; width: 0; }
+  .slide .kn { position: relative; z-index: 2; width: 52px; height: 52px; border-radius: 26px; background: var(--onpri); color: var(--pri); display: grid; place-items: center; font-size: 22px; cursor: grab; } .slide span:not(.kn) { position: absolute; left: 0; right: 0; text-align: center; z-index: 1; pointer-events: none; }
+  .nav { display: flex; align-items: center; gap: 10px; height: 46px; } .nav button.bk { border: 0; background: none; color: #6b72ff; font-size: 34px; line-height: 1; cursor: pointer; padding: 0 6px 4px 0; } .nav .t { flex: 1; min-width: 0; } .nav .t b { display: block; font-weight: 600; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .nav .t small { display: block; font-size: 13px; color: var(--fg3); }
+  .ai { font-size: 17px; line-height: 25px; } .me-b { align-self: flex-end; max-width: 80%; background: var(--chip); padding: 10px 14px; border-radius: 20px 20px 6px 20px; font-size: 16px; animation: pop .25s; }
+  .rc { padding: 0; overflow: hidden; animation: pop .3s; } .rc .h { display: flex; align-items: center; gap: 12px; padding: 14px 16px; } .rc .h b { display: block; font-weight: 500; font-size: 17px; } .rc .h small { display: block; font: 600 11px Inter; letter-spacing: .04em; text-transform: uppercase; color: var(--fg3); }
+  .rc .res { border-top: 1px solid var(--line); padding: 12px 16px; font-size: 15px; color: #079455; font-weight: 500; display: flex; gap: 8px; } .dark .rc .res { color: #3dd68c; } .rc .res button { margin-left: auto; border: 0; background: none; font: inherit; color: var(--fg2); font-weight: 400; cursor: pointer; }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; } .chips button { height: 48px; padding: 0 20px; border-radius: 24px; border: 0; font: inherit; font-size: 16px; background: var(--page); color: var(--fg); box-shadow: 0 0 0 1px var(--line); cursor: pointer; } .chips button.p { background: var(--pri); color: var(--onpri); box-shadow: none; font-weight: 500; }
+  .composer { flex: none; margin: 8px 16px 36px; height: 56px; border-radius: 28px; background: var(--page); box-shadow: 0 0 0 1px var(--line); display: flex; align-items: center; padding: 0 8px 0 20px; color: var(--fg3); font-size: 16px; gap: 8px; } .composer input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; color: var(--fg); }
+  .composer .mic { width: 42px; height: 42px; border-radius: 21px; background: #6b72ff; display: grid; place-items: center; border: 0; cursor: pointer; } .composer svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; }
+  .search { height: 44px; border-radius: 14px; background: var(--chip); display: flex; align-items: center; gap: 8px; padding: 0 14px; color: var(--fg3); font-size: 16px; }
+  .seg { display: flex; background: var(--chip); border-radius: 12px; padding: 3px; font-size: 14px; } .seg button { flex: 1; border: 0; background: none; font: inherit; padding: 7px 0; border-radius: 10px; color: var(--fg2); cursor: pointer; } .seg button.on { background: var(--page); color: var(--fg); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .site { border-radius: 18px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); background: #fbfcfe; transition: all .3s; } .site .bar { height: 28px; background: #eef1f5; display: flex; align-items: center; padding: 0 12px; gap: 6px; font-size: 11px; color: #6b7280; } .site .bar i { width: 7px; height: 7px; border-radius: 4px; background: #cfd5dd; }
+  .site .hero { background: var(--hero, linear-gradient(135deg, #1f3a5f, #3a6ea5)); color: #fff; padding: 28px 18px; } .site .hero b { display: block; font-size: var(--hs, 24px); font-weight: 600; line-height: 1.12; letter-spacing: -.02em; transition: font-size .3s; } .site .hero span { display: inline-block; margin-top: 14px; font-size: 13px; background: #fff; color: #1f3a5f; padding: 7px 12px; border-radius: 99px; font-weight: 600; }
+  .site .rev { padding: 12px 18px; font-size: 13px; color: #374151; display: var(--rv, block); } .site.desk { transform: scale(.9); }
+  .pill2 { display: flex; gap: 8px; flex-wrap: wrap; } .pill2 button { border: 0; font: inherit; font-size: 14px; padding: 9px 14px; border-radius: 99px; background: var(--chip); color: var(--fg2); cursor: pointer; } .pill2 button.on { background: rgba(107,114,255,.14); color: #4a51e0; }
+  .menu { padding: 0; } .menu .mini { padding: 15px 16px; } .menu .ic { width: 36px; height: 36px; border-radius: 11px; background: var(--chip); display: grid; place-items: center; font-size: 15px; flex: none; } .menu em { font-style: normal; font-size: 13px; color: #fff; background: #d98a1c; padding: 1px 8px; border-radius: 99px; }
+  .tog { width: 52px; height: 32px; border-radius: 16px; background: var(--chip); position: relative; flex: none; border: 0; cursor: pointer; transition: background .2s; } .tog::after { content: ''; position: absolute; left: 3px; top: 3px; width: 26px; height: 26px; border-radius: 13px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: left .2s; } .tog.on { background: #079455; } .tog.on::after { left: 23px; }
+  .askm { height: 54px; border-radius: 27px; background: var(--page); box-shadow: 0 0 0 1px var(--line); display: flex; align-items: center; padding: 0 7px 0 18px; gap: 8px; } .askm input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 16px; color: var(--fg); } .askm button { width: 40px; height: 40px; border-radius: 20px; background: var(--pri); color: var(--onpri); border: 0; font-size: 17px; cursor: pointer; }
+  .ans { font-size: 17px; line-height: 25px; } .srcs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; } .srcs span { font-size: 13px; padding: 4px 11px; border-radius: 99px; background: var(--chip); color: var(--fg2); }
+  .sug { display: flex; flex-wrap: wrap; gap: 8px; } .sug button { border: 0; font: inherit; font-size: 14px; padding: 8px 13px; border-radius: 99px; background: var(--page); box-shadow: 0 0 0 1px var(--line); color: var(--fg2); cursor: pointer; }
+  /* talk */
+  .talkv { background: radial-gradient(120% 80% at 50% 0%, #2a2c6e, #0d0e14 70%); color: #fff; z-index: 25; animation: up .35s cubic-bezier(.2,.8,.2,1); }
+  .orb { width: 150px; height: 150px; border-radius: 44px; margin: 110px auto 18px; background: radial-gradient(circle at 35% 30%, #b3b6ff, #6b72ff 55%, #3b3fbf); box-shadow: 0 0 0 14px rgba(107,114,255,.14), 0 0 0 34px rgba(107,114,255,.06), 0 24px 60px -10px rgba(107,114,255,.6); position: relative; animation: breathe 2.6s ease-in-out infinite; flex: none; }
+  .orb::before, .orb::after { content: ''; position: absolute; top: 62px; width: 11px; height: 11px; border-radius: 6px; background: #14123a; } .orb::before { left: 48px; } .orb::after { right: 48px; } @keyframes breathe { 50% { transform: scale(1.04); } }
+  .cp { text-align: center; padding: 0 28px; } .cp small { display: block; font-size: 14px; color: rgba(255,255,255,.55); margin-bottom: 10px; } .cp p { margin: 0; font-size: 25px; line-height: 33px; letter-spacing: -.02em; animation: pop .35s; }
+  .talkv .chips { justify-content: center; margin-top: 22px; } .talkv .chips button { background: rgba(255,255,255,.12); box-shadow: none; color: #fff; } .talkv .chips button.p { background: #fff; color: #15161b; }
+  .you { text-align: center; font-size: 15px; color: rgba(255,255,255,.6); margin-top: 16px; min-height: 22px; } .you b { color: #fff; font-weight: 500; }
+  .wave { display: flex; gap: 4px; justify-content: center; align-items: center; height: 32px; margin-top: auto; } .wave i { width: 4px; border-radius: 2px; background: #a9adff; animation: wv 1s ease-in-out infinite; } @keyframes wv { 50% { height: 26px; } }
+  .ctrl { display: flex; justify-content: center; gap: 28px; padding: 22px 0 44px; } .ctrl button { width: 70px; height: 70px; border-radius: 35px; background: rgba(255,255,255,.12); border: 0; color: #fff; font: inherit; font-size: 13px; cursor: pointer; } .ctrl button.on { background: #fff; color: #15161b; } .ctrl .end { background: #ff453a; }
+  .toast { position: absolute; left: 50%; top: 62px; transform: translateX(-50%); background: rgba(21,22,27,.92); color: #fff; padding: 10px 16px; border-radius: 99px; font-size: 14px; z-index: 40; white-space: nowrap; animation: tin .3s; } @keyframes tin { from { transform: translate(-50%, -10px); opacity: 0; } }
+</style>
+</head>
+<body>
+<div class="side">
+  <h1>Cerebro for iPhone</h1>
+  <p>A clickable prototype. Try:</p>
+  <ol>
+    <li><b>Slide</b> the Harbor card's plan to switch the card</li>
+    <li><b>Swipe</b> a row right to do it, left for later</li>
+    <li>Tap the violet <b>Talk</b> button and answer by tapping</li>
+    <li><b>Chats</b> → a thread → tap an answer chip</li>
+    <li>Open the <b>website</b> draft, try the change chips, publish</li>
+    <li>Tap your <b>avatar</b> → AI team, Memory</li>
+  </ol>
+  <div class="ctl"><button type="button" id="light" class="on">Light</button><button type="button" id="dark">Dark</button><button type="button" id="reset">Restart</button></div>
+</div>
+<div class="dev"><div class="scr" id="scr"></div></div>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-today" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" /></symbol>
+  <symbol id="i-chats" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" /></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4" /></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></symbol>
+</svg>
+
+<script>
+const scr = document.getElementById('scr')
+const NEEDS = [
+  { id: 'harbor', client: 'Harbor Dental', title: 'Ads paused', row: 'Harbor ads paused', why: 'Card expired Tuesday', money: '−$2.4k/mo', face: 'f1', agent: 'Ads agent', q: 'Switch to the new Visa ••4411?', act: 'Switch card', slide: 'Slide to switch', facts: [['Lost so far', '$2.4k/mo'], ['Fixes', '3 campaigns']], steps: ['Open Harbor Dental', 'Replace the card with Visa ••4411', 'Resume 3 campaigns', 'Check first impressions'], doneText: 'Harbor’s ads are live again', back: 2.4 },
+  { id: 'peak', client: 'Peak Fitness', title: 'Booking widget down', row: 'Booking widget down', why: 'Broke Sunday night', money: '−$1.6k/mo', face: 'f2', agent: 'Sites agent', q: 'Repair the booking widget now?', act: 'Repair it', slide: 'Slide to repair', facts: [['Lost so far', '$1.6k/mo'], ['Takes', 'About 2 min']], steps: ['Find what broke', 'Put the widget back', 'Make a test booking'], doneText: 'Peak’s booking widget works again', back: 1.6 },
+  { id: 'calls', client: '14 clinics', title: 'Missed calls after 5 PM', row: 'Missed calls after 5 PM', why: '61 missed calls last week', money: '+18% missed', face: 'f3', agent: 'Voice agent', q: 'Text back missed calls after 5 PM?', act: 'Set it up', slide: 'Slide to set up', facts: [['Missed', '61 last week'], ['Costs', '$0']], steps: ['Write a text-back in each clinic’s voice', 'Turn it on for 14 clinics'], doneText: 'Text-back is live at 14 clinics', back: 0 },
+]
+const S = { tab: 'today', stack: [], sheet: null, talk: null, done: {}, later: {}, theme: 'light', thread: [], site: { dev: 'phone', big: false, blue: false, hide: false, live: false }, agentRules: { a: false, b: true }, mem: null, toast: null, showSteps: false, review: 3 }
+const open = () => NEEDS.filter((n) => !S.done[n.id] && !S.later[n.id])
+const backTotal = () => NEEDS.filter((n) => S.done[n.id]).reduce((s, n) => s + n.back, 0)
+const tabBar = () => `<div class="tab"><button data-a="tab:today" class="${S.tab === 'today' ? 'on' : ''}"><svg><use href="#i-today" /></svg>Today${open().length ? `<i class="bdg">${open().length}</i>` : ''}</button><button data-a="talk" aria-label="Talk"><span class="talk"><svg><use href="#i-wave" /></svg></span></button><button data-a="tab:chats" class="${S.tab === 'chats' ? 'on' : ''}"><svg><use href="#i-chats" /></svg>Chats</button></div>`
+const meBtn = () => `<button class="me" data-a="sheet:you" aria-label="You">MA${S.review ? '<i></i>' : ''}</button>`
+
+function today() {
+  const o = open(), first = o[0], rest = o.slice(1)
+  const doneCards = NEEDS.filter((n) => S.done[n.id]).map((n) => `<div class="card done"><span class="ok">✓</span><span>${n.doneText}</span><button data-a="undo:${n.id}">Undo</button></div>`).join('')
+  const back = backTotal()
+  return `<div class="view"><div class="body">
+    <div class="top"><span class="d">Monday, Nov 2</span>${meBtn()}</div>
+    <h1 class="h1">${o.length ? 'Good morning, Maya' : 'All caught up'}</h1>
+    <div class="sub">${o.length ? `${o.length} thing${o.length > 1 ? 's' : ''} need${o.length > 1 ? '' : 's'} you` : 'Nothing needs you'}${back ? ` · $${back.toFixed(1)}k back` : ''}</div>
+    ${doneCards}
+    ${first ? `<div class="card" data-a="sheet:plan:${first.id}"><div class="k"><i></i>${first.client}<span class="money">${first.money}</span></div><div class="tt">${first.title}</div><div class="wy">${first.why}</div><button class="one" data-a="sheet:plan:${first.id}">${first.act}</button></div>` : `<div class="empty"><b>✓ You're done</b>Your team keeps going. I'll ping you if anything needs you.</div>`}
+    ${rest.length ? `<div class="card rows">${rest.map((n) => `<div class="rw"><div class="bg r">✓ ${n.act}</div><div class="mini" data-swipe="${n.id}" data-a="sheet:plan:${n.id}"><i class="fc ${n.face}"></i><div class="tx"><b>${n.row}</b><small>${n.client} · ${n.money}</small></div><span class="go">›</span></div></div>`).join('')}</div>` : ''}
+    ${Object.keys(S.later).length ? `<div class="lab">Later</div><div class="card rows">${NEEDS.filter((n) => S.later[n.id]).map((n) => `<div class="rw"><div class="mini" data-a="unlater:${n.id}"><i class="fc ${n.face}"></i><div class="tx"><b>${n.row}</b><small>Tap to bring back</small></div></div></div>`).join('')}</div>` : ''}
+    <div class="lab">When you're ready</div>
+    <div class="card rows"><div class="rw"><div class="mini" data-a="push:site"><i class="fc f2"></i><div class="tx"><b>Review Harbor's new site</b><small>Draft ready · 4 pages</small></div><span class="go">›</span></div></div></div>
+  </div>${tabBar()}</div>`
+}
+function chats() {
+  return `<div class="view"><div class="body">
+    <div class="top"><span class="h1" style="font-size:28px">Chats</span>${meBtn()}</div>
+    <div class="search">⌕ Search</div>
+    <div class="card rows">
+      <div class="rw"><div class="mini" data-a="push:thread"><i class="fc f1"></i><div class="tx"><b>Harbor ads paused</b><small>${S.done.harbor ? 'Done · ads live again' : 'Switch to the new Visa ••4411?'}</small></div><span class="go">9:41</span></div></div>
+      <div class="rw"><div class="mini" data-a="push:site"><i class="fc f2"></i><div class="tx"><b>Website · Harbor Dental</b><small>${S.site.live ? 'Live at harbordental.com' : 'Draft ready to review'}</small></div><span class="go">Yest</span></div></div>
+      <div class="rw"><div class="mini" data-a="toast:Onboarding Glow · 3 of 5 · about 4 min"><i class="fc f5"></i><div class="tx"><b>Onboard Glow Med Spa</b><small>Working · 3 of 5</small></div><span class="go">9:30</span></div></div>
+      <div class="rw"><div class="mini" data-a="toast:Channel view is the same as a thread"><i class="fc ch"></i><div class="tx"><b># harbor-dental</b><small>Ads → Reporting: watch delivery</small></div><span class="go">Yest</span></div></div>
+    </div>
+  </div><div class="composer"><input placeholder="Ask anything…" id="newq" /><button class="mic" data-a="talk" aria-label="Talk"><svg><use href="#i-mic" /></svg></button></div>${tabBar()}</div>`
+}
+function thread() {
+  const h = NEEDS[0], d = S.done.harbor
+  const msgs = S.thread.filter((m) => !m.q2done).map((m) => m.me ? `<div class="me-b">${m.me}</div>` : m.rc ? `<div class="card rc"><div class="h"><i class="fc f1"></i><div><small>Ads agent · done</small><b>${m.rc}</b></div></div><div class="res">✓ ${m.res}<button data-a="toast:Undone">Undo</button></div></div>` : `<div class="ai">${m.ai}</div>`).join('')
+  const ask = !d ? `<div class="ai">${h.q}</div><div class="chips"><button class="p" data-a="th:yes">Switch card</button><button data-a="th:later">Not now</button></div>`
+    : S.thread.some((m) => m.q2done) ? '' : `<div class="ai">Peak Fitness and Lumen Spa have expired cards too. Switch those?</div><div class="chips"><button class="p" data-a="th:both">Switch both</button><button data-a="th:just">Just Harbor</button></div>`
+  return `<div class="view push"><div class="body">
+    <div class="nav"><button class="bk" data-a="back">‹</button><span class="t"><b>Harbor ads paused</b><small>Harbor Dental</small></span></div>
+    <div class="ai">Harbor's ads stopped on Tuesday. The card on file expired.</div>
+    ${d && !S.thread.some((m) => m.rc === 'Ads are live again') ? `<div class="card rc"><div class="h"><i class="fc f1"></i><div><small>Ads agent · done</small><b>Ads are live again</b></div></div><div class="res">✓ Visa ••4411 · $2.4k/mo back<button data-a="undo:harbor">Undo</button></div></div>` : ''}
+    ${msgs}${ask}
+  </div><div class="composer"><input placeholder="Reply…" /><button class="mic" data-a="talk" aria-label="Talk"><svg><use href="#i-mic" /></svg></button></div></div>`
+}
+function site() {
+  const s = S.site
+  return `<div class="view push"><div class="body">
+    <div class="nav"><button class="bk" data-a="back">‹</button><span class="t"><b>Website · Harbor Dental</b><small>${s.live ? 'Live' : 'Draft · 4 pages'}</small></span></div>
+    <div class="seg"><button class="${s.dev === 'phone' ? 'on' : ''}" data-a="site:phone">Phone</button><button class="${s.dev === 'desk' ? 'on' : ''}" data-a="site:desk">Desktop</button></div>
+    <div class="site ${s.dev === 'desk' ? 'desk' : ''}" style="--hs:${s.big ? '30px' : '24px'};--hero:${s.blue ? 'linear-gradient(135deg,#1d4ed8,#60a5fa)' : 'linear-gradient(135deg,#1f3a5f,#3a6ea5)'};--rv:${s.hide ? 'none' : 'block'}"><div class="bar"><i></i><i></i><i></i>harbordental.com</div><div class="hero"><b>Gentle care,<br />every visit.</b><span>Book a visit</span></div><div class="rev">★★★★★ “Dr. Chen made my kids love the dentist.”</div></div>
+    <div class="pill2"><button class="${s.big ? 'on' : ''}" data-a="site:big">Bigger headline</button><button class="${s.blue ? 'on' : ''}" data-a="site:blue">Make it blue</button><button class="${s.hide ? 'on' : ''}" data-a="site:hide">Hide reviews</button></div>
+    <button class="one" style="margin-top:4px" data-a="site:publish">${s.live ? '✓ Live · View site' : 'Publish'}</button>
+    <div class="soft"><button data-a="toast:Sent to your desktop · open Cerebro there">Continue on desktop</button></div>
+  </div></div>`
+}
+function agent() {
+  return `<div class="view push"><div class="body">
+    <div class="nav"><button class="bk" data-a="back">‹</button><span class="t"><b>AI team</b></span></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0"><i class="fc xl f2"></i><b style="font-size:22px;font-weight:600">Sites agent</b><span class="wy">Builds and fixes websites</span></div>
+    <div class="card"><b style="font-weight:500;font-size:17px">Working now</b><div class="wy">Lumen site refresh · 85%</div></div>
+    <div class="lab">Does on its own</div>
+    <div class="card rows"><div class="rw"><div class="mini" style="cursor:default"><div class="tx"><b>Repair broken widgets</b><small>Asks you first today</small></div><button class="tog ${S.agentRules.a ? 'on' : ''}" data-a="rule:a" aria-label="Toggle"></button></div></div><div class="rw"><div class="mini" style="cursor:default"><div class="tx"><b>Publish small text fixes</b><small>On its own</small></div><button class="tog ${S.agentRules.b ? 'on' : ''}" data-a="rule:b" aria-label="Toggle"></button></div></div></div>
+    <div class="lab">Others</div>
+    <div class="card rows">${[['f1', 'Ads agent', 'Needs you · 1 question'], ['f4', 'Marketing agent', 'Black Friday drafts ready'], ['f6', 'Reputation agent', 'Replied to 23 reviews']].map(([f, n, s]) => `<div class="rw"><div class="mini" data-a="toast:${n}"><i class="fc ${f}"></i><div class="tx"><b>${n}</b><small>${s}</small></div><span class="go">›</span></div></div>`).join('')}</div>
+  </div></div>`
+}
+function memory() {
+  const a = S.mem
+  return `<div class="view push"><div class="body">
+    <div class="nav"><button class="bk" data-a="back">‹</button><span class="t"><b>Memory</b></span></div>
+    <form class="askm" id="memf"><input id="memq" placeholder="Ask what I know…" /><button type="submit">↑</button></form>
+    ${a ? `<div class="card"><div class="wy" style="font-size:13px;margin-bottom:6px">${a.q}</div><div class="ans">${a.text}</div><div class="srcs">${a.srcs.map((x) => `<span>${x}</span>`).join('')}</div></div>` : `<div class="sug"><button data-a="mem:harbor">What does Harbor care about?</button><button data-a="mem:me">What do you know about me?</button></div>`}
+    ${S.review ? `<div class="lab">To review · ${S.review}</div><div class="card"><b style="font-weight:500;font-size:17px">${['Peak wants 6 AM classes at the top', 'Lumen signs replies “— Jen”', 'Harbor caps ad spend at $700/week'][S.review - 1]}</b><div class="wy" style="font-size:14px">${['Asked twice on calls with Marco', 'Noticed in 6 of Jen’s replies', 'From Amy’s email'][S.review - 1]}</div><div class="chips" style="margin-top:12px"><button class="p" data-a="rev:keep">Keep</button><button data-a="rev:no">Not true</button></div></div>` : `<div class="empty"><b>All reviewed</b>Nothing new to check.</div>`}
+  </div></div>`
+}
+function sheet() {
+  if (!S.sheet) return ''
+  if (S.sheet === 'you') return `<div class="dim" data-a="close"></div><div class="sheet" style="top:90px"><div class="grab"></div>
+    <div style="display:flex;align-items:center;gap:14px"><span class="me" style="width:56px;height:56px;border-radius:28px;font-size:18px">MA</span><div><b style="font-weight:600;font-size:20px">Maya Lee</b><div class="wy">Acme Agency · 1,284 clients</div></div></div>
+    <div class="card menu rows">
+      <div class="rw"><div class="mini" data-a="go:agent"><span class="ic">◍</span><div class="tx"><b>AI team</b><small>9 agents · 1 needs you</small></div><span class="go">›</span></div></div>
+      <div class="rw"><div class="mini" data-a="go:memory"><span class="ic">◎</span><div class="tx"><b>Memory</b><small>${S.review ? `${S.review} to review` : 'All reviewed'}</small></div>${S.review ? `<em>${S.review}</em>` : '<span class="go">›</span>'}</div></div>
+      <div class="rw"><div class="mini" data-a="toast:Opening the HighLevel dashboard"><span class="ic">⇄</span><div class="tx"><b>Switch to HighLevel</b><small>Classic dashboard</small></div><span class="go">›</span></div></div>
+      <div class="rw"><div class="mini" data-a="theme"><span class="ic">◐</span><div class="tx"><b>Appearance</b><small>${S.theme === 'dark' ? 'Dark' : 'Light'} · tap to switch</small></div><span class="go">›</span></div></div>
+    </div></div>`
+  const n = NEEDS.find((x) => `plan:${x.id}` === S.sheet)
+  return `<div class="dim" data-a="close"></div><div class="sheet"><div class="grab"></div>
+    <div style="display:flex;align-items:center;gap:14px"><i class="fc lg ${n.face}"></i><div><div class="k">${n.agent}</div><div class="tt" style="margin:3px 0 0">${n.q}</div></div></div>
+    <div class="facts">${n.facts.map(([k, v]) => `<div><i>${k}</i>${v}</div>`).join('')}</div>
+    ${S.showSteps ? `<ol class="steps">${n.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : ''}
+    <div class="soft"><span>Undo any time</span><button class="b" data-a="steps">${S.showSteps ? 'Hide steps' : `See the ${n.steps.length} steps`}</button></div>
+    <div class="slide" id="slide" data-id="${n.id}"><i class="fill"></i><span class="kn">→</span><span>${n.slide}</span></div>
+    <div class="soft"><button data-a="later:${n.id}">Not now</button><button data-a="always:${n.id}">Always do this</button></div>
+  </div>`
+}
+const TALK = [
+  { cap: 'Good morning, Maya. Three things need you. First: Harbor’s ads are paused. Switch the card?', chips: [['Switch card', 'harbor'], ['Skip', 'skip']] },
+  { cap: 'Next: Peak Fitness’s booking widget is down. Repair it?', chips: [['Repair it', 'peak'], ['Skip', 'skip']] },
+  { cap: 'Last one: 61 missed calls after 5 PM. Text them back automatically?', chips: [['Set it up', 'calls'], ['Skip', 'skip']] },
+  { cap: 'That’s everything. I’ll keep going and ping you if anything needs you.', chips: [['End call', 'end']] },
+]
+function talkSteps() {
+  const o = open(), n = o.length, words = ['No', 'One', 'Two', 'Three']
+  const caps = o.map((x, i) => ({ cap: `${i === 0 ? `Good morning, Maya. ${words[n]} thing${n > 1 ? 's' : ''} need${n > 1 ? '' : 's'} you. First` : i === n - 1 ? 'Last one' : 'Next'}: ${x.client}, ${x.row}. ${x.q}`, chips: [[x.act, x.id], ['Skip', 'skip']] }))
+  return [...caps, { cap: n ? 'That’s everything. I’ll keep going and ping you if anything needs you.' : 'Good morning, Maya. Nothing needs you right now. Want to start something?', chips: [['End call', 'end']] }]
+}
+function talk() {
+  const t = S.talk, st = t.steps[t.i]
+  return `<div class="view talkv"><div class="orb"></div>
+    <div class="cp"><small>Cerebro · ${t.mute ? 'muted' : 'listening'}</small><p>${st.cap}</p></div>
+    <div class="chips">${st.chips.map(([l, v], i) => `<button class="${i ? '' : 'p'}" data-a="tk:${v}">${l}</button>`).join('')}</div>
+    <div class="you">${t.you ? `You · <b>“${t.you}”</b>` : ''}</div>
+    <div class="wave">${[6, 12, 20, 14, 24, 10, 18, 8, 16, 6].map((h, i) => `<i style="height:${h}px;animation-delay:${i * .08}s;${t.mute ? 'animation:none;opacity:.3' : ''}"></i>`).join('')}</div>
+    <div class="ctrl"><button class="${t.mute ? 'on' : ''}" data-a="tk:mute">${t.mute ? 'Unmute' : 'Mute'}</button><button data-a="tk:type">Type</button><button class="end" data-a="tk:end">End</button></div></div>`
+}
+function render() {
+  const base = S.tab === 'today' ? today() : chats()
+  const top = S.stack.length ? ({ thread, site, agent, memory })[S.stack[S.stack.length - 1]]() : ''
+  scr.className = 'scr' + (S.theme === 'dark' ? ' dark' : '')
+  scr.innerHTML = `<div class="sb">9:41<span class="isl"></span><span class="ic">●●● ▮</span></div>${top || base}${sheet()}${S.talk ? talk() : ''}${S.toast ? `<div class="toast">${S.toast}</div>` : ''}`
+  if (S.talk) scr.querySelector('.sb').style.color = '#fff'
+  wire()
+}
+let toastT
+function toast(t) { S.toast = t; clearTimeout(toastT); toastT = setTimeout(() => { S.toast = null; render() }, 1800) }
+function approve(id) { S.done[id] = true; delete S.later[id]; S.sheet = null; S.showSteps = false; if (navigator.vibrate) navigator.vibrate(12); toast('✓ Done · you can undo'); render() }
+function act(a) {
+  const [k, ...r] = a.split(':'); const v = r.join(':')
+  if (k === 'tab') { S.tab = v; S.stack = [] }
+  else if (k === 'sheet') { S.sheet = v; S.showSteps = false }
+  else if (k === 'close') S.sheet = null
+  else if (k === 'steps') S.showSteps = !S.showSteps
+  else if (k === 'later') { S.later[v] = true; S.sheet = null; toast('Moved to later') }
+  else if (k === 'unlater') delete S.later[v]
+  else if (k === 'always') { toast('I’ll do this on my own next time'); return approve(v) }
+  else if (k === 'undo') { delete S.done[v]; toast('Undone'); if (v === 'harbor') S.thread = [] }
+  else if (k === 'push') S.stack.push(v)
+  else if (k === 'go') { S.sheet = null; S.stack.push(v) }
+  else if (k === 'back') S.stack.pop()
+  else if (k === 'toast') toast(v)
+  else if (k === 'theme') { S.theme = S.theme === 'dark' ? 'light' : 'dark'; syncCtl() }
+  else if (k === 'talk') S.talk = { i: 0, you: '', mute: false, steps: talkSteps() }
+  else if (k === 'tk') {
+    const t = S.talk
+    if (v === 'end' ) S.talk = null
+    else if (v === 'mute') t.mute = !t.mute
+    else if (v === 'type') { S.talk = null; S.tab = 'chats'; S.stack = ['thread'] }
+    else if (v === 'skip') { t.you = 'Skip'; t.i = Math.min(t.i + 1, t.steps.length - 1) }
+    else { S.done[v] = true; t.you = t.steps[t.i].chips[0][0]; t.i = Math.min(t.i + 1, t.steps.length - 1); toast('✓ Done · you can undo') }
+  }
+  else if (k === 'th') {
+    if (v === 'yes') { S.thread.push({ me: 'Switch card' }, { rc: 'Ads are live again', res: 'Visa ••4411 · $2.4k/mo back' }); S.done.harbor = true }
+    else if (v === 'later') { S.thread.push({ me: 'Not now' }, { ai: 'Okay. It’s in Later on Today.' }); S.later.harbor = true; S.thread.push({ q2done: true }) }
+    else if (v === 'both') { S.thread.push({ me: 'Switch both' }, { rc: 'Cards switched', res: 'Peak Fitness and Lumen Spa' }, { q2done: true }) }
+    else if (v === 'just') { S.thread.push({ me: 'Just Harbor' }, { ai: 'Got it. I’ll leave the other two for now.' }, { q2done: true }) }
+  }
+  else if (k === 'site') { const s = S.site; if (v === 'phone' || v === 'desk') s.dev = v; else if (v === 'publish') { if (!s.live) { s.live = true; toast('✓ Live at harbordental.com') } else toast('Opening harbordental.com') } else s[v] = !s[v] }
+  else if (k === 'rule') { S.agentRules[v] = !S.agentRules[v]; toast(S.agentRules[v] ? 'Does this on its own now' : 'Asks you first now') }
+  else if (k === 'mem') S.mem = v === 'harbor' ? { q: 'What does Harbor care about?', text: 'New patients, about 40 a month, and Dr. Chen wants texts, not emails. Before/after ads work best.', srcs: ['Tuesday’s call', 'Amy’s email', 'Ad results'] } : { q: 'What do you know about me?', text: 'You like short answers, a recap every Friday at 5 PM, and client revenue shown monthly.', srcs: ['You said · Oct 12', 'Your edits'] }
+  else if (k === 'rev') { S.review = Math.max(0, S.review - 1); toast(v === 'keep' ? 'Kept · shared with your team' : 'Removed') }
+  render()
+}
+function wire() {
+  scr.querySelectorAll('[data-a]').forEach((el) => el.addEventListener('click', (e) => { if (el.dataset.dragged) { delete el.dataset.dragged; return } e.stopPropagation(); act(el.dataset.a) }))
+  const memf = scr.querySelector('#memf'); if (memf) memf.addEventListener('submit', (e) => { e.preventDefault(); const q = scr.querySelector('#memq').value.trim(); if (!q) return; S.mem = /me|my/i.test(q) ? { q, text: 'You like short answers, a recap every Friday at 5 PM, and client revenue shown monthly.', srcs: ['You said · Oct 12'] } : { q, text: 'New patients, about 40 a month, and texts, not emails.', srcs: ['Tuesday’s call', 'Amy’s email'] }; render() })
+  const nq = scr.querySelector('#newq'); if (nq) nq.addEventListener('keydown', (e) => { if (e.key === 'Enter' && nq.value.trim()) { toast('New chat started'); nq.value = '' } })
+  // slide to approve
+  const sl = scr.querySelector('#slide')
+  if (sl) {
+    const kn = sl.querySelector('.kn'), fill = sl.querySelector('.fill'), max = () => sl.clientWidth - kn.offsetWidth - 12
+    let x0 = null, dx = 0
+    kn.addEventListener('pointerdown', (e) => { x0 = e.clientX; kn.setPointerCapture(e.pointerId); kn.style.transition = 'none' })
+    kn.addEventListener('pointermove', (e) => { if (x0 === null) return; dx = Math.max(0, Math.min(max(), e.clientX - x0)); kn.style.transform = `translateX(${dx}px)`; fill.style.width = `${dx + 58}px` })
+    kn.addEventListener('pointerup', () => { if (x0 === null) return; x0 = null; if (dx > max() * 0.8) { kn.style.transform = `translateX(${max()}px)`; setTimeout(() => approve(sl.dataset.id), 180) } else { kn.style.transition = 'transform .25s'; kn.style.transform = ''; fill.style.width = '0' } dx = 0 })
+    kn.addEventListener('click', () => { kn.style.transition = 'transform .35s cubic-bezier(.2,.8,.2,1)'; kn.style.transform = `translateX(${max()}px)`; fill.style.transition = 'width .35s'; fill.style.width = '100%'; setTimeout(() => approve(sl.dataset.id), 380) })
+  }
+  // swipe rows
+  scr.querySelectorAll('[data-swipe]').forEach((row) => {
+    let x0 = null, dx = 0
+    const bg = row.previousElementSibling
+    row.addEventListener('pointerdown', (e) => { x0 = e.clientX; dx = 0; row.style.transition = 'none' })
+    row.addEventListener('pointermove', (e) => { if (x0 === null) return; dx = e.clientX - x0; if (Math.abs(dx) > 6) { row.setPointerCapture(e.pointerId); row.style.transform = `translateX(${dx}px)`; bg.className = 'bg ' + (dx > 0 ? 'r' : 'l'); bg.dataset.t ??= bg.textContent; bg.textContent = dx > 0 ? bg.dataset.t : 'Later' } })
+    row.addEventListener('pointerup', () => { if (x0 === null) return; x0 = null; const id = row.dataset.swipe; if (Math.abs(dx) > 6) row.dataset.dragged = '1'; if (dx > 110) { row.style.transition = 'transform .2s'; row.style.transform = 'translateX(110%)'; setTimeout(() => approve(id), 200) } else if (dx < -110) { row.style.transition = 'transform .2s'; row.style.transform = 'translateX(-110%)'; setTimeout(() => act('later:' + id), 200) } else { row.style.transition = 'transform .25s'; row.style.transform = '' } })
+  })
+}
+function syncCtl() { document.getElementById('light').classList.toggle('on', S.theme === 'light'); document.getElementById('dark').classList.toggle('on', S.theme === 'dark') }
+document.getElementById('light').onclick = () => { S.theme = 'light'; syncCtl(); render() }
+document.getElementById('dark').onclick = () => { S.theme = 'dark'; syncCtl(); render() }
+document.getElementById('reset').onclick = () => location.reload()
+render()
+</script>
+</body>
+</html>

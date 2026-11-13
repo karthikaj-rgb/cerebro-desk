@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V2.2 Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f6f6f7; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --green: #079455; --blue: #2f5fe0; --amber: #b54708;
+    --c-yellow: #fbe7bf; --c-pink: #fbe0ea; --c-red: #fde0dc; --c-mint: #d3f7e6; --c-lav: #ebdcfb; --c-blue: #dcebfb; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ec; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 44px 16px 100px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; }
+  header p { color: var(--fg2); margin: 0 0 12px; max-width: 860px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+  .legend span { font-size: 12px; padding: 4px 10px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--fg2); }
+  .shot { margin-bottom: 60px; }
+  .cap { display: grid; grid-template-columns: 40px 1fr; gap: 2px 12px; margin-bottom: 14px; }
+  .cap .n { font-size: 11px; color: var(--fg3); padding-top: 5px; }
+  .cap h2 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.015em; }
+  .cap p { grid-column: 2; margin: 0; color: var(--fg2); font-size: 13.5px; max-width: 900px; }
+  .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 750; }
+  .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 750px; transform-origin: 0 0; background: var(--bg); border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.4); display: flex; }
+
+  /* Left: history + memory */
+  .side { width: 236px; flex: none; background: var(--page); border-right: 1px solid var(--line); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+  .brand { display: flex; align-items: center; gap: 8px; padding: 4px 8px 12px; font-weight: 500; }
+  .brand i { width: 22px; height: 22px; border-radius: 6px; background: var(--fg); }
+  .new { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px; box-shadow: inset 0 0 0 1px var(--line2); color: var(--fg); margin-bottom: 10px; }
+  .sec { font-size: 10px; color: var(--fg3); padding: 12px 10px 4px; }
+  .h { padding: 7px 10px; border-radius: 8px; color: var(--fg2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; gap: 8px; align-items: center; }
+  .h.on { background: #f1f1f3; color: var(--fg); }
+  .h .d { width: 6px; height: 6px; border-radius: 3px; flex: none; }
+  .mem { margin-top: auto; border-top: 1px solid var(--line); padding-top: 10px; }
+  .mem .m { padding: 5px 10px; color: var(--fg2); font-size: 12.5px; display: flex; gap: 8px; }
+  .mem .m::before { content: '·'; color: var(--fg3); }
+  .mem .more { padding: 6px 10px; font-size: 12px; color: var(--blue); }
+
+  /* Main */
+  .main { flex: 1; position: relative; display: flex; flex-direction: column; }
+  .bar { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; }
+  .bar .t { font-size: 13px; color: var(--fg2); }
+  .bar .r { display: flex; gap: 10px; align-items: center; font-size: 12px; color: var(--fg2); }
+  .seg { display: inline-flex; padding: 2px; border-radius: 10px; background: rgba(21,22,27,.06); } .seg span { padding: 4px 10px; border-radius: 8px; } .seg span.on { background: #fff; color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .peek { font-size: 10.5px; color: var(--fg3); }
+  .av { width: 28px; height: 28px; border-radius: 14px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; }
+  .body { flex: 1; position: relative; padding: 0 60px; overflow: hidden; }
+  .center { width: 720px; margin: 0 auto; }
+
+  .hi { font-size: 30px; font-weight: 300; letter-spacing: -.03em; margin: 34px 0 4px; }
+  .sub { color: var(--fg2); font-size: 14px; margin-bottom: 22px; }
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 74px; gap: 10px; }
+  .card { border-radius: 16px; padding: 14px 16px; position: relative; display: flex; flex-direction: column; box-shadow: inset 0 0 0 1px rgba(21,22,27,.05); }
+  .card .k { font-size: 9.5px; color: rgba(21,22,27,.5); }
+  .card b { font-weight: 500; font-size: 15px; letter-spacing: -.01em; margin-top: 4px; line-height: 1.25; }
+  .card span { font-size: 12.5px; color: rgba(21,22,27,.62); margin-top: 3px; }
+  .card .go { margin-top: auto; font-size: 12px; color: var(--fg); }
+  .card .big { font-size: 26px; font-weight: 300; letter-spacing: -.03em; margin-top: 2px; }
+  .cy { background: var(--c-yellow); } .cp { background: var(--c-pink); } .cr { background: var(--c-red); } .cm { background: var(--c-mint); } .cl { background: var(--c-lav); } .cb { background: var(--c-blue); }
+  .s2 { grid-row: span 2; } .s3 { grid-row: span 3; }
+  .input { margin: 18px auto 0; width: 560px; height: 46px; border-radius: 23px; background: #fff; box-shadow: 0 0 0 1px var(--line2), 0 10px 30px -18px rgba(0,0,0,.3); display: flex; align-items: center; gap: 10px; padding: 0 6px 0 18px; color: var(--fg3); font-size: 14px; }
+  .input .sp { color: #7c83ff; } .input .mic { margin-left: auto; width: 34px; height: 34px; border-radius: 17px; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line2); color: var(--fg2); font-size: 13px; } .input .send { width: 34px; height: 34px; border-radius: 17px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 13px; }
+  .input.bottom { position: absolute; left: 50%; bottom: 20px; margin: 0; transform: translateX(-50%); width: 640px; }
+  .hint { text-align: center; font-size: 11.5px; color: var(--fg3); margin-top: 10px; }
+
+  /* Pills (cards folded) */
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 4px auto 16px; width: 760px; }
+  .pill { font-size: 12px; padding: 5px 12px; border-radius: 99px; box-shadow: inset 0 0 0 1px rgba(21,22,27,.06); color: var(--fg); white-space: nowrap; }
+  .pill.dn { background: #fff; color: var(--fg3); text-decoration: line-through; }
+
+  /* Card opened into a panel with its own chat */
+  .panel { width: 660px; margin: 0 auto; border-radius: 20px; padding: 18px 20px 76px; position: relative; height: 588px; box-shadow: inset 0 0 0 1px rgba(21,22,27,.05); }
+  .panel .ph { display: flex; justify-content: space-between; align-items: baseline; }
+  .panel .ph b { font-size: 18px; font-weight: 500; letter-spacing: -.015em; } .panel .ph .x { font-size: 12px; color: var(--fg2); }
+  .msgs { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .ai { background: #fff; border-radius: 14px 14px 14px 4px; padding: 10px 13px; max-width: 86%; font-size: 13.5px; color: var(--fg); box-shadow: 0 1px 0 rgba(0,0,0,.03); }
+  .ai small { display: block; color: var(--fg2); font-size: 12.5px; margin-top: 2px; }
+  .me { align-self: flex-end; background: var(--fg); color: #fff; border-radius: 14px 14px 4px 14px; padding: 8px 13px; font-size: 13.5px; max-width: 70%; }
+  .det { background: rgba(255,255,255,.6); border-radius: 12px; padding: 8px 12px; font-size: 12.5px; color: var(--fg2); }
+  .det .row { display: flex; gap: 10px; padding: 3px 0; } .det .row i { font-style: normal; width: 92px; color: var(--fg3); flex: none; }
+  .det summary { list-style: none; cursor: pointer; color: var(--fg); font-weight: 500; } .det summary::-webkit-details-marker { display: none; }
+  .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .act { font-size: 12.5px; padding: 6px 12px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); color: var(--fg); }
+  .act.pri { background: var(--fg); color: #fff; box-shadow: none; }
+  .tool { background: #fff; border-radius: 12px; padding: 9px 12px; font-size: 12.5px; color: var(--fg2); box-shadow: inset 0 0 0 1px var(--line); max-width: 92%; }
+  .tool .th { display: flex; gap: 8px; align-items: center; color: var(--fg); } .tool .th .ag { font-size: 10px; color: var(--fg3); margin-left: auto; }
+  .tool ol { margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .tool li { display: flex; gap: 8px; align-items: center; } .tool li .mod { font-size: 9.5px; padding: 1px 6px; border-radius: 4px; background: #f1f1f3; color: var(--fg2); }
+  .ok { color: var(--green); } .run { color: var(--blue); } .wait { color: var(--fg3); }
+  .res { font-size: 13px; color: var(--green); display: flex; gap: 12px; align-items: center; } .res u { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--fg2); font-size: 12px; }
+  .pin { position: absolute; left: 20px; right: 20px; bottom: 16px; height: 44px; border-radius: 22px; background: #fff; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 16px; color: var(--fg3); font-size: 13.5px; }
+  .pin .mic { margin-left: auto; width: 32px; height: 32px; border-radius: 16px; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line2); font-size: 12px; } .pin .send { width: 32px; height: 32px; border-radius: 16px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 12px; }
+  .note { font-size: 10.5px; color: var(--fg3); text-align: center; }
+
+  /* Done strip */
+  .done { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .done span { font-size: 12px; color: var(--green); background: #fff; padding: 5px 11px; border-radius: 99px; box-shadow: inset 0 0 0 1px var(--line); }
+
+  /* Plain chat (no card) */
+  .chat { width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+  .chat .ai { box-shadow: inset 0 0 0 1px var(--line); }
+
+  /* Phone */
+  .phones { display: flex; gap: 28px; flex-wrap: wrap; }
+  .phone { width: 300px; height: 620px; border-radius: 40px; background: #111; padding: 10px; flex: none; }
+  .ps { width: 100%; height: 100%; border-radius: 31px; background: var(--bg); overflow: hidden; position: relative; padding: 46px 14px 0; font-size: 12px; }
+  .ps .top { position: absolute; left: 14px; right: 14px; top: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--fg2); }
+  .ps .hi { font-size: 22px; margin: 6px 0 2px; } .ps .sub { font-size: 12px; margin-bottom: 12px; }
+  .ps .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 56px; gap: 7px; }
+  .ps .card { padding: 9px 11px; border-radius: 13px; } .ps .card b { font-size: 12.5px; } .ps .card span { font-size: 10.5px; }
+  .ps .input { width: auto; position: absolute; left: 12px; right: 12px; bottom: 16px; height: 40px; margin: 0; font-size: 12px; }
+  .ps .input .mic, .ps .input .send { width: 30px; height: 30px; }
+  .ps .sheet { position: absolute; left: 0; right: 0; bottom: 0; top: 70px; border-radius: 22px 22px 0 0; padding: 14px 12px 70px; }
+  .ps .grab { width: 36px; height: 4px; border-radius: 2px; background: rgba(21,22,27,.2); margin: 0 auto 10px; }
+  .ps .ai, .ps .me, .ps .tool, .ps .det { font-size: 11.5px; }
+  .ps .pin { left: 12px; right: 12px; bottom: 14px; height: 40px; font-size: 12px; }
+  .pick { margin-top: 10px; color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>V2.2 · mockup</h1>
+    <p>Built on Khoi’s concept: history on the left, today as a bento of soft cards, one input. A card opens into its own conversation; the rest fold into pills. On top: the meeting feedback (proactive work, “what’s next?”, visible steps, memory, voice optional).</p>
+    <div class="legend"><span>History + memory replace V2’s left column</span><span>Reactive + proactive cards</span><span>Cards open into their own chat</span><span>Click, type or talk · read aloud is off by default</span><span>Steps the AI took, visible</span><span>One thread across modes</span></div>
+  </header>
+
+  <!-- 1 · Home -->
+  <section class="shot"><div class="cap"><span class="mono n">01</span><h2>Home: today as cards</h2><p>The left column is <b>history</b> (past conversations) and <b>memory</b> (what it knows about you). Today is a bento: the three things that need you (warm colours) next to <b>proactive</b> work the AI suggests (cool colours), plus your numbers. One input under everything. Nothing talks until you ask.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="brand"><i></i>Acme Agency</div><div class="new">＋ New conversation</div>
+        <div class="sec mono">Today</div><div class="h on"><i class="d" style="background:#e9a23b"></i>Morning brief</div>
+        <div class="sec mono">Yesterday</div><div class="h"><i class="d" style="background:#3fbf87"></i>Glow Med Spa · signed</div><div class="h"><i class="d" style="background:#8b6fe0"></i>Q4 pricing page</div><div class="h"><i class="d" style="background:#5b9be6"></i>Why did Lumen dip?</div>
+        <div class="sec mono">Last week</div><div class="h">Review replies · 41 sent</div><div class="h">New agent: front desk</div><div class="h">Invoice reminders</div>
+        <div class="mem"><div class="sec mono" style="padding-top:0">Memory</div><div class="m">Ask before spending over $500</div><div class="m">Lead with wins in client reports</div><div class="m">Priya is a hot lead · Smile Studio</div><div class="more">Manage memory</div></div>
+      </aside>
+      <div class="main">
+        <div class="bar"><span class="t">Monday, Nov 2</span><span class="r"><span class="peek mono">$412.8k MRR · 61 done overnight</span><span class="seg"><span class="on">Type</span><span>Talk</span></span><span>🔈 Read aloud: off</span><span class="av">MA</span></span></div>
+        <div class="body"><div class="center">
+          <div class="hi">Good morning, Maya.</div><div class="sub">61 things done overnight. Three need you, and a few things you might want to start.</div>
+          <div class="bento">
+            <div class="card cy s2"><span class="k mono">Needs you · Harbor Dental</span><b>Ads paused since Tuesday</b><span>Card expired · −$2.4k/mo</span><span class="go">Switch card →</span></div>
+            <div class="card cl"><span class="k mono">Start · Campaign</span><b>Black Friday in 24 days</b></div>
+            <div class="card cr s2"><span class="k mono">Needs you · Peak Fitness</span><b>Booking widget down</b><span>−$1.6k/mo</span><span class="go">Repair it →</span></div>
+            <div class="card cm s3"><span class="k mono">Start · New client</span><b>Glow Med Spa signed yesterday</b><span>Contacts, site, media kit, automations, calendar. I can set it all up.</span><span class="go">Onboard them →</span></div>
+            <div class="card cp s2"><span class="k mono">Needs you · Calls</span><b>Missed calls after 5 PM</b><span>+18% this month</span><span class="go">Set up text-back →</span></div>
+            <div class="card cb"><span class="k mono">Your desk</span><span class="big">$412.8k</span></div>
+          </div>
+          <div class="input"><span class="sp">✦</span>Ask anything, or pick a card…<span class="mic">🎙</span><span class="send">↑</span></div>
+        </div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 2 · Card opened -->
+  <section class="shot"><div class="cap"><span class="mono n">02</span><h2>A card opens into its own conversation</h2><p>Click Harbor (or say “let’s do the ads”). The card grows into a panel with the chat inside; the other cards fold into pills at the top, one click away. <b>Details expand</b> for people who don’t use voice. Answers are buttons, typing or speech. After a yes, you see <b>the steps it took</b>, which agent did them, and an Undo.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="brand"><i></i>Acme Agency</div><div class="new">＋ New conversation</div>
+        <div class="sec mono">Today</div><div class="h on"><i class="d" style="background:#e9a23b"></i>Morning brief</div><div class="h" style="padding-left:24px">↳ Harbor ads</div>
+        <div class="sec mono">Yesterday</div><div class="h"><i class="d" style="background:#3fbf87"></i>Glow Med Spa · signed</div><div class="h"><i class="d" style="background:#8b6fe0"></i>Q4 pricing page</div><div class="h"><i class="d" style="background:#5b9be6"></i>Why did Lumen dip?</div>
+        <div class="mem"><div class="sec mono" style="padding-top:0">Memory</div><div class="m">Ask before spending over $500</div><div class="m">Harbor’s new card ends 4411</div><div class="more">Manage memory</div></div>
+      </aside>
+      <div class="main">
+        <div class="bar"><span class="t">Morning brief › Harbor ads</span><span class="r"><span class="seg"><span class="on">Type</span><span>Talk</span></span><span>🔈 Read aloud: off</span><span class="av">MA</span></span></div>
+        <div class="body">
+          <div class="pills"><span class="pill cr">Peak widget</span><span class="pill cp">Calls after 5</span><span class="pill cm">Glow Med Spa</span><span class="pill cl">Black Friday</span><span class="pill cb">Your desk</span></div>
+          <div class="panel cy">
+            <div class="ph"><b>Harbor Dental · ads paused</b><span class="x">✕ Back to today</span></div>
+            <div class="msgs">
+              <div class="ai">Harbor’s ads stopped on Tuesday because the card on file expired. That’s about $2.4k a month at risk.<small>They added a new Visa (ends 4411). Want me to switch to it and turn the ads back on?</small></div>
+              <details class="det" open><summary>Details ⌄</summary><div class="row"><i>Paused since</i>Tue, Oct 27 · 3 campaigns</div><div class="row"><i>Spend</i>$640 / week · unchanged</div><div class="row"><i>I’ll do</i>Switch card → resume 3 campaigns → check delivery</div></details>
+              <div class="acts"><span class="act pri">Switch card</span><span class="act">Not now</span><span class="act">Show me the ads</span></div>
+              <div class="me">Yes, switch it</div>
+              <div class="tool"><div class="th">▾ Did 4 steps · 6s <span class="ag mono">Ads agent</span></div><ol><li><span class="ok">✓</span>Opened Harbor Dental <span class="mod mono">Ads</span></li><li><span class="ok">✓</span>Replaced card → Visa ••4411 <span class="mod mono">Billing</span></li><li><span class="ok">✓</span>Resumed 3 campaigns <span class="mod mono">Ads</span></li><li><span class="ok">✓</span>First impressions served <span class="mod mono">Reporting</span></li></ol></div>
+              <div class="res">✓ Live again · $2.4k/mo protected <u>Undo</u></div>
+            </div>
+            <div class="pin"><span class="sp" style="color:#7c83ff">✦</span>Reply about Harbor…<span class="mic">🎙</span><span class="send">↑</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 3 · What's next -->
+  <section class="shot"><div class="cap"><span class="mono n">03</span><h2>After the last one: “what’s next?”</h2><p>No dead end. The things that needed you collapse into a green “done” strip. The proactive cards move up and grow: start a client, a campaign, posts, or just ask. This is where the AI becomes a <b>companion for your own work</b>, not only a fixer.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="brand"><i></i>Acme Agency</div><div class="new">＋ New conversation</div>
+        <div class="sec mono">Today</div><div class="h on"><i class="d" style="background:#3fbf87"></i>Morning brief · 3 done</div>
+        <div class="sec mono">Yesterday</div><div class="h"><i class="d" style="background:#3fbf87"></i>Glow Med Spa · signed</div><div class="h"><i class="d" style="background:#8b6fe0"></i>Q4 pricing page</div>
+        <div class="mem"><div class="sec mono" style="padding-top:0">Memory</div><div class="m">Ask before spending over $500</div><div class="m">Harbor’s new card ends 4411</div><div class="more">Manage memory</div></div>
+      </aside>
+      <div class="main">
+        <div class="bar"><span class="t">Monday, Nov 2</span><span class="r"><span class="peek mono">$412.8k MRR · 64 done</span><span class="seg"><span class="on">Type</span><span>Talk</span></span><span class="av">MA</span></span></div>
+        <div class="body"><div class="center">
+          <div class="hi">All caught up. What’s next?</div><div class="sub">+$6.0k a month back this morning.</div>
+          <div class="done"><span>✓ Harbor ads live</span><span>✓ Peak widget fixed</span><span>✓ Text-back on, 14 clinics</span></div>
+          <div class="bento" style="grid-auto-rows:84px">
+            <div class="card cm s2"><span class="k mono">New client · signed yesterday</span><b>Onboard Glow Med Spa</b><span>Contacts, booking site, media kit, welcome automations, calendar.</span><span class="go">Start →</span></div>
+            <div class="card cl s2"><span class="k mono">Campaign · 24 days out</span><b>Plan Black Friday</b><span>Last year’s offer converted 6.1%. I’ll draft a better one.</span><span class="go">Plan it →</span></div>
+            <div class="card cb s2"><span class="k mono">Content · not scheduled</span><b>Next week’s posts</b><span>12 posts for 6 clients, in their voices.</span><span class="go">Draft them →</span></div>
+            <div class="card cp"><span class="k mono">Prep · 11:00</span><b>Brief for Priya</b></div>
+            <div class="card cy"><span class="k mono">Idea</span><b>12 dentists → a referral loop?</b></div>
+            <div class="card" style="background:#fff"><span class="k mono">Or</span><b>Ask anything</b></div>
+          </div>
+          <div class="input"><span class="sp">✦</span>What do you want to do next?<span class="mic">🎙</span><span class="send">↑</span></div>
+        </div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 4 · Proactive, across modules -->
+  <section class="shot"><div class="cap"><span class="mono n">04</span><h2>Proactive work across modules: onboarding a client</h2><p>One conversation drives five tools (Contacts, Sites, Creator Studio, Automations, Calendars), showing AskAI as the single layer. Each step says which tool and agent. It stops to ask when it needs a decision, and shows what it made (site, media kit) inline.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="brand"><i></i>Acme Agency</div><div class="new">＋ New conversation</div>
+        <div class="sec mono">Today</div><div class="h on"><i class="d" style="background:#3fbf87"></i>Onboard Glow Med Spa</div><div class="h"><i class="d" style="background:#3fbf87"></i>Morning brief · 3 done</div>
+        <div class="sec mono">Yesterday</div><div class="h">Glow Med Spa · signed</div><div class="h">Q4 pricing page</div>
+        <div class="mem"><div class="sec mono" style="padding-top:0">Memory</div><div class="m">Glow uses Acuity for bookings</div><div class="m">Brand: sage + cream, serif</div><div class="more">Manage memory</div></div>
+      </aside>
+      <div class="main">
+        <div class="bar"><span class="t">Onboard Glow Med Spa</span><span class="r"><span class="seg"><span>Type</span><span class="on">Talk</span></span><span>🔈 Read aloud: on</span><span class="av">MA</span></span></div>
+        <div class="body">
+          <div class="pills"><span class="pill dn">Harbor ads</span><span class="pill dn">Peak widget</span><span class="pill dn">Calls after 5</span><span class="pill cl">Black Friday</span><span class="pill cb">Next week’s posts</span></div>
+          <div class="panel cm" style="height:600px">
+            <div class="ph"><b>Onboarding Glow Med Spa</b><span class="x mono" style="font-size:10px">3 of 5 · ~4 min left</span></div>
+            <div class="msgs">
+              <div class="me">Set up Glow Med Spa</div>
+              <div class="tool" style="max-width:100%"><div class="th">▾ Working · 5 steps across 5 tools <span class="ag mono">Onboarding agent</span></div><ol>
+                <li><span class="ok">✓</span>Imported 214 contacts from their old CRM <span class="mod mono">Contacts</span></li>
+                <li><span class="ok">✓</span>Built a booking site with their services <span class="mod mono">Sites</span> <span style="color:var(--blue)">Preview</span></li>
+                <li><span class="run">◐</span>Media kit: logo, colours, 6 launch posts <span class="mod mono">Creator Studio</span></li>
+                <li><span class="wait">○</span>Welcome + reminder workflows <span class="mod mono">Automations</span></li>
+                <li><span class="wait">○</span>Connect Acuity calendars (3) <span class="mod mono">Calendars</span></li></ol></div>
+              <div style="display:flex;gap:8px"><div style="width:150px;height:96px;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);padding:8px;font-size:10px;color:var(--fg2)"><b style="font-size:11px;color:var(--fg)">glowmedspa.com</b><br>Book a facial →<div style="margin-top:8px;height:34px;border-radius:6px;background:#eef3ee"></div></div><div style="width:150px;height:96px;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);padding:8px;font-size:10px;color:var(--fg2)"><b style="font-size:11px;color:var(--fg)">Media kit</b><br>Sage · cream · serif<div style="display:flex;gap:4px;margin-top:8px"><i style="width:24px;height:24px;border-radius:5px;background:#9fb59a"></i><i style="width:24px;height:24px;border-radius:5px;background:#efe6d6"></i><i style="width:24px;height:24px;border-radius:5px;background:#2c3a2e"></i></div></div></div>
+              <div class="ai">Their site uses sage and cream with a serif font. Use those for the media kit, or pick new ones?</div>
+              <div class="acts"><span class="act pri">Use their brand</span><span class="act">Pick new ones</span><span class="act">Show me first</span></div>
+            </div>
+            <div class="pin"><span class="sp" style="color:#7c83ff">✦</span>Listening… or type<span class="mic" style="color:var(--green);box-shadow:inset 0 0 0 1px var(--green)">🎙</span><span class="send">↑</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 5 · Just ask -->
+  <section class="shot"><div class="cap"><span class="mono n">05</span><h2>Just ask: plain chat, cards as pills</h2><p>Type a question instead of picking a card: the bento folds to pills (Khoi’s video) and it’s a normal chat with steps, saved to history. <b>Switching Type ↔ Talk keeps the same thread</b>. A quiet marker shows where you switched.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="brand"><i></i>Acme Agency</div><div class="new">＋ New conversation</div>
+        <div class="sec mono">Today</div><div class="h on"><i class="d" style="background:#5b9be6"></i>Which clients grew most?</div><div class="h">Onboard Glow Med Spa</div><div class="h">Morning brief · 3 done</div>
+        <div class="mem"><div class="sec mono" style="padding-top:0">Memory</div><div class="m">Lead with wins in client reports</div><div class="more">Manage memory</div></div>
+      </aside>
+      <div class="main">
+        <div class="bar"><span class="t">Which clients grew most?</span><span class="r"><span class="seg"><span class="on">Type</span><span>Talk</span></span><span class="av">MA</span></span></div>
+        <div class="body">
+          <div class="pills"><span class="pill dn">Harbor ads</span><span class="pill dn">Peak widget</span><span class="pill dn">Calls after 5</span><span class="pill cm">Glow Med Spa · 3 of 5</span><span class="pill cl">Black Friday</span><span class="pill cb">Your desk</span></div>
+          <div class="chat">
+            <div class="me">Which clients grew most in October?</div>
+            <div class="tool"><div class="th">▸ Looked at 1,284 sub-accounts · 3s <span class="ag mono">Reporting agent</span></div></div>
+            <div class="ai">Three stand out: <b>Smile Studio</b> +31% bookings, <b>Harbor Dental</b> +22% (before Tuesday’s pause), <b>Peak Fitness</b> +18%. All three use the missed-call text-back.<small>Want this as a client-ready report, leading with wins?</small></div>
+            <div class="acts"><span class="act pri">Make the report</span><span class="act">Show the numbers</span></div>
+            <div class="note mono">Switched to talk · same conversation</div>
+            <div class="me">Send it to the three of them too</div>
+            <div class="ai">You usually review client emails first. Draft them for you to check, or send now?</div>
+          </div>
+          <div class="input bottom"><span class="sp">✦</span>Reply, or ask anything…<span class="mic">🎙</span><span class="send">↑</span></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- 6 · Phone -->
+  <section class="shot"><div class="cap"><span class="mono n">06</span><h2>Phone</h2><p>Cards stack two-up; history is behind the menu. A card opens as a sheet with its chat inside, the same thread as desktop.</p></div>
+    <div class="phones">
+      <div class="phone"><div class="ps"><div class="top"><span>☰ Acme Agency</span><span class="av" style="width:24px;height:24px">MA</span></div>
+        <div class="hi">Good morning, Maya.</div><div class="sub">3 need you · 61 done overnight</div>
+        <div class="bento"><div class="card cy s2"><span class="k mono">Harbor</span><b>Ads paused</b><span>−$2.4k/mo</span></div><div class="card cr s2"><span class="k mono">Peak</span><b>Widget down</b><span>−$1.6k/mo</span></div><div class="card cp"><b>Calls after 5</b></div><div class="card cm s2"><span class="k mono">New client</span><b>Onboard Glow Med Spa</b></div><div class="card cl"><b>Black Friday</b></div><div class="card cb"><b>$412.8k MRR</b></div></div>
+        <div class="input"><span class="sp">✦</span>Ask anything…<span class="mic">🎙</span><span class="send">↑</span></div></div></div>
+      <div class="phone"><div class="ps"><div class="top"><span>☰ Morning brief</span><span class="av" style="width:24px;height:24px">MA</span></div>
+        <div class="pills" style="width:auto;justify-content:flex-start"><span class="pill cr">Peak</span><span class="pill cp">Calls</span><span class="pill cm">Glow</span></div>
+        <div class="sheet cy"><div class="grab"></div><b style="font-size:14px;font-weight:500">Harbor · ads paused</b>
+          <div class="msgs"><div class="ai">The card expired Tuesday. Switch to the new Visa (4411) and turn ads back on?</div><details class="det"><summary>Details ⌄</summary></details><div class="acts"><span class="act pri">Switch card</span><span class="act">Not now</span></div><div class="me">Yes</div><div class="tool"><div class="th">▸ Did 4 steps · Ads agent</div></div><div class="res">✓ Live again <u>Undo</u></div></div>
+          <div class="pin"><span class="sp" style="color:#7c83ff">✦</span>Reply…<span class="mic">🎙</span></div></div></div></div>
+    </div>
+  </section>
+
+  <p class="pick"><b>Not in the prototype:</b> success criteria and customer testing (team work), and using HighLevel from Claude or a CLI (Khoi’s side problem). I can draft success criteria separately.</p>
+</div>
+<script>
+  // Each 1200×750 screen scales to the page width.
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => (f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})`))
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

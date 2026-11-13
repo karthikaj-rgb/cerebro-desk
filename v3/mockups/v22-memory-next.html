@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Memory, Next</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ebebef; color: #15161b; font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1260px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: #52545f; margin: 0 0 28px; max-width: 900px; } header b, .cap p b { color: #15161b; font-weight: 500; }
+  .opt { margin-bottom: 56px; } .cap { display: grid; grid-template-columns: 34px 1fr; gap: 2px 10px; margin-bottom: 14px; } .cap .n { font: 500 11px/1 Inter; color: #858896; padding-top: 7px; } .cap h2 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .cap p { grid-column: 2; margin: 0; color: #52545f; max-width: 920px; }
+
+  /* tokens */
+  .scr { --bg: #f9f9fa; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.07); --line2: rgba(21,22,27,.13); --chip: #f1f1f3; --hover: #f6f6f8; --spark: #6b72ff; --sparkbg: #eef0ff; --amber: #b8730f; --amberbg: #fbf1e2; --green: #079455; --hl: #1f6feb; --hlbg: #e8f0fd; --pop: 0 0 0 1px rgba(21,22,27,.07), 0 24px 50px -18px rgba(21,22,27,.32);
+    background: var(--bg); color: var(--fg); }
+  .scr.dark { --bg: #0e0f13; --page: #17181d; --fg: #ececf1; --fg2: #a7a9b4; --fg3: #6e717d; --line: rgba(255,255,255,.07); --line2: rgba(255,255,255,.12); --chip: #23242b; --hover: #1d1e24; --spark: #8f95ff; --sparkbg: rgba(143,149,255,.14); --amber: #e0a24a; --amberbg: rgba(224,162,74,.13); --green: #3ccb8b; --hl: #6ea8ff; --hlbg: rgba(110,168,255,.13); --pop: 0 0 0 1px rgba(255,255,255,.08), 0 24px 50px -18px rgba(0,0,0,.7); }
+
+  .fit { position: relative; width: 100%; } .stage { position: absolute; left: 0; top: 0; width: 1280px; transform-origin: 0 0; border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px rgba(21,22,27,.12), 0 30px 60px -36px rgba(0,0,0,.3); }
+  .main { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; padding: 44px 56px 48px; align-items: start; }
+
+  h3.t { margin: 0 0 18px; font-size: 32px; line-height: 40px; font-weight: 400; letter-spacing: -.035em; }
+  .tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); margin: 0 0 18px; font-size: 14px; color: var(--fg3); } .tabs span { padding-bottom: 10px; } .tabs span.on { color: var(--fg); box-shadow: inset 0 -2px 0 var(--fg); } .tabs em { font-style: normal; font-size: 12px; color: var(--amber); background: var(--amberbg); padding: 0 6px; border-radius: 99px; margin-left: 4px; }
+  .swb { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; } .swb b { font-weight: 500; font-size: 20px; letter-spacing: -.02em; } .swb small { color: var(--fg3); font-size: 13px; } .swb .car { color: var(--fg3); margin-left: -4px; display: grid; }
+  .lg { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; font-weight: 600; font-size: 13px; background: var(--sparkbg); color: var(--spark); flex: none; }
+
+  .sec { display: flex; align-items: baseline; gap: 8px; margin: 0 2px 8px; font-size: 13px; font-weight: 500; color: var(--fg2); } .sec small { font-weight: 400; color: var(--fg3); } .sec .live { font-size: 11px; font-weight: 400; color: var(--hl); background: var(--hlbg); padding: 1px 7px; border-radius: 99px; }
+  .card { background: var(--page); border-radius: 16px; box-shadow: 0 0 0 1px var(--line); margin-bottom: 26px; }
+  .kv { display: grid; grid-template-columns: 96px 1fr; gap: 10px 16px; padding: 16px 20px; font-size: 14px; } .kv i { font-style: normal; color: var(--fg3); } .kv .lt { display: inline-block; width: 6px; height: 6px; border-radius: 3px; background: var(--spark); margin-left: 8px; vertical-align: 2px; }
+
+  .row { position: relative; display: flex; align-items: center; gap: 12px; padding: 14px 20px; } .row + .row { border-top: 1px solid var(--line); }
+  .row.hov { background: var(--hover); } .card .row.hov:first-child { border-radius: 16px 16px 0 0; } .card .row.hov:last-child { border-radius: 0 0 16px 16px; }
+  .tx { flex: 1; min-width: 0; } .tx b { display: block; font-weight: 400; font-size: 15px; line-height: 22px; } .tx small { display: block; font-size: 13px; color: var(--fg3); margin-top: 1px; }
+  .tx small a { color: var(--fg2); text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 3px; }
+  .tx small.warn { color: var(--amber); } .tx small.cf { color: var(--spark); }
+  .acts { display: flex; gap: 6px; align-items: center; flex: none; }
+  .b { font: inherit; font-size: 13px; height: 30px; padding: 0 12px; border-radius: 99px; display: inline-flex; align-items: center; white-space: nowrap; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); }
+  .b.k { background: var(--fg); color: var(--bg); box-shadow: none; } .b.g { box-shadow: none; color: var(--fg2); } .b.hl { box-shadow: none; background: var(--hlbg); color: var(--hl); }
+  .dots { width: 30px; height: 30px; border-radius: 15px; display: grid; place-items: center; color: var(--fg3); }
+  .dot { width: 8px; height: 8px; border-radius: 4px; flex: none; } .dot.a { background: var(--amber); } .dot.s { background: var(--spark); }
+
+  /* panel */
+  .panel { display: flex; flex-direction: column; gap: 24px; padding-top: 58px; }
+  .pg h4 { margin: 0 0 10px; font-size: 13px; font-weight: 500; color: var(--fg2); display: flex; justify-content: space-between; } .pg h4 a { font-weight: 400; color: var(--fg3); }
+  .sr { display: flex; align-items: center; gap: 12px; padding: 7px 0; font-size: 14px; } .sr > span { flex: 1; } .sr small { color: var(--fg3); font-size: 13px; }
+  .tog { width: 32px; height: 19px; border-radius: 10px; background: var(--fg); position: relative; flex: none; } .tog::after { content: ''; position: absolute; right: 2px; top: 2px; width: 15px; height: 15px; border-radius: 8px; background: var(--bg); } .tog.off { background: var(--chip); } .tog.off::after { right: auto; left: 2px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+  .use { display: flex; gap: 10px; padding: 7px 0; font-size: 14px; line-height: 20px; color: var(--fg2); } .use b { color: var(--fg); font-weight: 500; } .use .face { width: 22px; height: 22px; border-radius: 7px; flex: none; position: relative; margin-top: -1px; } .use .face::before, .use .face::after { content: ''; position: absolute; top: 8px; width: 3px; height: 3px; border-radius: 2px; background: #1b1830; } .use .face::before { left: 6px; } .use .face::after { right: 6px; }
+  .pf { font-size: 13px; color: var(--fg3); line-height: 20px; border-top: 1px solid var(--line); padding-top: 16px; } .pf a { color: var(--fg2); }
+
+  /* popover */
+  .pop { position: absolute; width: 360px; background: var(--page); border-radius: 16px; padding: 16px; box-shadow: var(--pop); z-index: 8; display: flex; flex-direction: column; gap: 12px; }
+  .pop .hd { display: flex; align-items: baseline; gap: 8px; font-size: 14px; } .pop .hd b { font-weight: 500; } .pop .hd small { color: var(--fg3); margin-left: auto; font-size: 12px; }
+  .q { font-size: 15px; line-height: 23px; color: var(--fg2); } .q mark { background: var(--sparkbg); color: var(--fg); border-radius: 4px; padding: 0 2px; }
+  .pop .ft { display: flex; gap: 6px; }
+
+  /* phone */
+  .phones { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+  .phone { width: 360px; border-radius: 48px; background: #0c0c0f; padding: 10px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
+  .phone .scr { border-radius: 38px; height: 760px; overflow: hidden; position: relative; padding: 54px 18px 0; }
+  .phone .sb { position: absolute; top: 16px; left: 30px; right: 30px; display: flex; justify-content: space-between; font: 600 14px Inter; }
+  .phone .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; } .phone .bk { width: 38px; height: 38px; border-radius: 19px; background: var(--chip); display: grid; place-items: center; }
+  .phone .bk svg { width: 20px; height: 20px; fill: none; stroke: var(--fg); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .phone h3.t { font-size: 28px; line-height: 34px; margin: 0 0 14px; }
+  .phone .swb { margin-bottom: 16px; } .phone .swb b { font-size: 17px; }
+  .phone .row { padding: 13px 16px; } .phone .card { margin-bottom: 18px; }
+  .phone .row.st { flex-wrap: wrap; } .phone .row.st .acts { flex-basis: 100%; padding-left: 20px; }
+  .phone .kv { grid-template-columns: 76px 1fr; padding: 14px 16px; }
+  .tag { text-align: center; color: #858896; font-size: 12px; margin-top: 10px; }
+
+  /* chat */
+  .chat { padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+  .ub { align-self: flex-end; background: var(--chip); border-radius: 20px; padding: 10px 16px; font-size: 16px; max-width: 420px; }
+  .ai { font-size: 16px; line-height: 26px; }
+  .saved { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--fg3); } .saved svg { width: 14px; height: 14px; fill: none; stroke: var(--spark); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .saved b { color: var(--fg2); font-weight: 500; } .saved a { color: var(--fg2); text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 3px; }
+  .comp { height: 54px; border-radius: 27px; background: var(--page); box-shadow: 0 0 0 1px var(--line2); display: flex; align-items: center; padding: 0 8px 0 18px; color: var(--fg3); font-size: 15px; gap: 8px; margin-top: 6px; } .comp > span:first-child { flex: 1; } .comp .ghost { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 99px; color: var(--fg2); font-size: 13px; }
+  .comp .ghost svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  .why { background: #fff; border-radius: 14px; padding: 16px 18px; box-shadow: 0 0 0 1px rgba(0,0,0,.05); } .why h3 { margin: 0 0 8px; font-size: 15px; font-weight: 500; } .why ul { margin: 0; padding-left: 18px; color: #52545f; font-size: 13.5px; line-height: 1.7; } .why b { color: #15161b; font-weight: 500; }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Memory, next · simpler</h1><p>Same five fixes, calmer. Each fact is <b>one line of text and one line of detail</b>. Things that need you sit in their own short list at the top; everything else stays quiet until you hover. The panel is <b>about the client you're looking at</b>.</p></header>
+
+  <section class="opt"><div class="cap"><span class="n">1</span><h2>Desktop</h2><p>Hovering a fact shows its actions (here, “Wants a monthly report”). Its source is a link: tap it to see the exact words from the call.</p></div>
+    <div class="fit" data-h="1020"><div class="stage scr" id="dl" style="height:1020px"></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">2</span><h2>Dark</h2><p>Same screen. Amber and violet stay readable without glowing.</p></div>
+    <div class="fit" data-h="1020"><div class="stage scr dark" id="dd" style="height:1020px"></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">3</span><h2>Phone, light and dark</h2><p>One column. The client is the title; tap it to switch. “How it learns” moves to the bottom of the scroll.</p></div>
+    <div class="phones"><div><div class="phone"><div class="scr" id="pl"></div></div><div class="tag">Light</div></div><div><div class="phone"><div class="scr dark" id="pd"></div></div><div class="tag">Dark</div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">4</span><h2>The moment it learns, in chat</h2><p>One quiet line under the reply: what it saved, for whom, and Undo. <b>Don't remember</b> in the composer works like an incognito chat.</p></div>
+    <div class="two"><div class="card scr" style="margin:0" id="cl"></div><div class="card scr dark" style="margin:0" id="cd"></div></div></section>
+
+  <div class="two">
+    <div class="why"><h3>What got simpler</h3><ul>
+      <li><b>Needs you</b> is its own short list (2). Everything else is plain text.</li>
+      <li><b>One detail line</b> per fact: source · how it was used. Who added it shows on hover.</li>
+      <li><b>Actions on hover</b> instead of buttons on every row.</li>
+      <li><b>HighLevel</b> rows mark learned values with a small violet dot, not a pill.</li>
+      <li><b>No coverage banner.</b> The panel is two short lists and a footer, no boxes.</li></ul></div>
+    <div class="why"><h3>Still in</h3><ul>
+      <li>Panel follows the client (Harbor Dental).</li>
+      <li>Source links open the exact moment.</li>
+      <li>Stale facts and conflicts get flagged, with the fix one tap away.</li>
+      <li>“Saved to memory” in chat, with Undo.</li></ul></div>
+  </div>
+</div>
+<script>
+const chev = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>'
+const dots = '<span class="dots"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="8" r="1.3"/><circle cx="8" cy="8" r="1.3"/><circle cx="12.5" cy="8" r="1.3"/></svg></span>'
+
+const needs = () => `
+  <div class="sec">Needs you <small>2</small></div>
+  <div class="card">
+    <div class="row st"><span class="dot s"></span><div class="tx"><b>Avoid calls before 10 AM</b><small class="cf">Thursday's review call is at 9:00 AM</small></div><div class="acts"><span class="b k">Move to 10:30</span><span class="b g">Ignore</span></div></div>
+    <div class="row st"><span class="dot a"></span><div class="tx"><b>Happy with leads (Oct 20)</b><small class="warn">3 weeks old · leads are down 18% since</small></div><div class="acts"><span class="b">Still true</span><span class="b g">Update</span></div></div>
+  </div>`
+
+const learned = (hov) => `
+  <div class="sec">Learned <small>3</small></div>
+  <div class="card">
+    <div class="row"><div class="tx"><b>Before/after ads work best, sent on Tuesdays</b><small><a>3 months of ad results</a> · used 3× this week</small></div></div>
+    <div class="row"><div class="tx"><b>Caps ad spend at $700 a week</b><small><a>Amy's email, Oct 28</a> · used in the budget plan</small></div></div>
+    <div class="row${hov ? ' hov' : ''}"><div class="tx"><b>Wants a monthly report on the 1st, wins first</b><small><a>Tuesday's call, 12:40</a> · used in the Nov 1 report${hov ? ' · added by Sam' : ''}</small></div>${hov ? `<div class="acts"><span class="b hl">Save to HighLevel</span>${dots}</div>` : ''}</div>
+  </div>`
+
+const hl = () => `
+  <div class="sec">From HighLevel <span class="live">Live</span></div>
+  <div class="card kv"><i>Plan</i><span>$1,240/mo · 2 clinics</span><i>Contact</i><span>Dr. Amy Chen · prefers text<span class="lt"></span></span><i>Goal</i><span>40 new patients a month<span class="lt"></span></span></div>`
+
+const learns = () => `<div class="pg"><h4>Learns from <a>Harbor only</a></h4>
+      <div class="sr"><span>Calls</span><small>3</small><i class="tog"></i></div>
+      <div class="sr"><span>Emails</span><small>2</small><i class="tog"></i></div>
+      <div class="sr"><span>Chats with you</span><small>1</small><i class="tog"></i></div>
+      <div class="sr"><span>Team notes</span><small>1</small><i class="tog off"></i></div></div>`
+
+const panel = () => `
+  <aside class="panel">
+    ${learns()}
+    <div class="pg"><h4>Used this week</h4>
+      <div class="use"><i class="face" style="background:#f08a3c"></i><span><b>Ads</b> kept the budget under $700</span></div>
+      <div class="use"><i class="face" style="background:#9b8cff"></i><span><b>Reports</b> led the Nov report with wins</span></div>
+      <div class="use"><i class="face" style="background:#4fd9c4"></i><span><b>Inbox</b> texted Amy instead of emailing</span></div></div>
+    <div class="pf">Shared with Sam and Dev. Agents only use what you've kept.<br><a>Pause</a> · <a>Export</a> · <a>Forget Harbor</a></div>
+  </aside>`
+
+const desk = (id) => { document.getElementById(id).innerHTML = `<div class="main"><div style="position:relative">
+  <h3 class="t">Memory</h3>
+  <div class="tabs"><span>To review<em>2</em></span><span>About you</span><span class="on">Clients</span></div>
+  <div class="swb"><span class="lg">H</span><b>Harbor Dental</b><span class="car">${chev}</span><small>$1,240/mo · 2 clinics</small></div>
+  ${needs()}${hl()}${learned(true)}
+  <div class="pop" style="left:20px;bottom:14px;transform:translateY(100%)"><div class="hd"><b>Tuesday's call with Amy</b><small>12:40</small></div>
+    <div class="q">“Just send me a report <mark>on the first of the month</mark>, and <mark>lead with what's working</mark>. The board only reads the top.”</div>
+    <div class="ft"><span class="b">▸ Play from here</span><span class="b g">Open call</span></div></div>
+  </div>${panel()}</div>` }
+
+const phone = (id) => { document.getElementById(id).innerHTML = `<div class="sb"><span>9:41</span><span>●●●</span></div>
+  <div class="nav"><span class="bk"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span></div>
+  <h3 class="t">Memory</h3>
+  <div class="tabs"><span>Review<em>2</em></span><span>You</span><span class="on">Clients</span></div>
+  <div class="swb"><span class="lg">H</span><b>Harbor Dental</b><span class="car">${chev}</span></div>
+  ${needs()}
+  <div class="sec">Learned <small>3</small></div>
+  <div class="card">
+    <div class="row"><div class="tx"><b>Before/after ads work best</b><small><a>3 months of ad results</a> · used 3×</small></div></div>
+    <div class="row"><div class="tx"><b>Caps ad spend at $700 a week</b><small><a>Amy's email</a> · used in budget</small></div></div>
+  </div>
+  <div class="sec">How it learns</div><div class="card" style="padding:6px 16px">${learns().replace(/<h4>.*?<\/h4>/,'')}</div>` }
+
+const chat = (id) => { document.getElementById(id).innerHTML = `<div class="chat">
+  <div class="ub">Amy just called. She wants everything by text from now on.</div>
+  <div class="ai">Got it. I'll text Amy from now on, and the Inbox agent will stop emailing her. One email was queued for Thursday; I've turned it into a text for you to check.</div>
+  <div class="saved"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg>Saved to <b>Harbor Dental</b>: prefers text · <a>Undo</a></div>
+  <div class="comp"><span>Reply…</span><span class="ghost"><svg viewBox="0 0 16 16"><path d="M2 2l12 12M6.5 4a6 6 0 011.5-.5c4 0 6.5 4.5 6.5 4.5a12 12 0 01-1.7 2.2M10 11.7a6 6 0 01-2 .8C4 12.5 1.5 8 1.5 8a12 12 0 012.6-3"/></svg>Don't remember</span></div></div>` }
+
+desk('dl'); desk('dd'); phone('pl'); phone('pd'); chat('cl'); chat('cd')
+const fit = () => document.querySelectorAll('.fit').forEach((f) => { const s = f.clientWidth / 1280; f.firstElementChild.style.transform = `scale(${s})`; f.style.height = (+f.dataset.h * s) + 'px' })
+fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

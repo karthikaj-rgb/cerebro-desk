@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V2.2 Chat Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f6f6f7; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; --green: #079455; --amber: #d98a1c; --blue: #2f5fe0; --violet: #6b5bd6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ec; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 44px 16px 100px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; }
+  header p { color: var(--fg2); margin: 0 0 40px; max-width: 880px; }
+  .opt { margin-bottom: 64px; }
+  .cap { display: grid; grid-template-columns: 40px 1fr; gap: 2px 12px; margin-bottom: 14px; }
+  .cap .n { font-size: 11px; color: var(--fg3); padding-top: 6px; } .cap h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+  .cap p { grid-column: 2; margin: 0; color: var(--fg2); font-size: 13.5px; max-width: 920px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .ref { grid-column: 2; display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; } .ref span { font-size: 11.5px; padding: 2px 9px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--fg2); }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 720; }
+  .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 720px; transform-origin: 0 0; background: var(--bg); border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.35); display: flex; flex-direction: column; }
+  .bar { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 13px; color: var(--fg2); border-bottom: 1px solid var(--line); background: var(--bg); flex: none; }
+  .bar b { color: var(--fg); font-weight: 500; } .av { width: 26px; height: 26px; border-radius: 13px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; }
+  .body { flex: 1; position: relative; overflow: hidden; }
+  .composer { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); width: 620px; height: 44px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px var(--line2); display: flex; align-items: center; padding: 0 6px 0 16px; gap: 10px; color: var(--fg3); }
+  .composer i { margin-left: auto; width: 32px; height: 32px; border-radius: 16px; background: #d8d9de; } .composer .sp { color: #6b72ff; }
+  .me { align-self: flex-end; background: #fff; padding: 7px 13px; border-radius: 14px 14px 4px 14px; box-shadow: 0 0 0 1px var(--line2); font-size: 14px; }
+  .ai { font-size: 15px; line-height: 1.5; }
+  .q { font-weight: 500; font-size: 15px; }
+  .acts { display: flex; gap: 6px; } .acts span { font-size: 13px; padding: 6px 13px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); } .acts span.p { background: var(--fg); color: #fff; box-shadow: none; }
+  .ok { color: var(--green); }
+  .spin { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--line2); border-top-color: var(--blue); animation: sp .7s linear infinite; } @keyframes sp { to { transform: rotate(360deg) } }
+  .mod { font-size: 9px; padding: 1px 6px; border-radius: 4px; background: var(--chip); color: var(--fg2); }
+  .site { border-radius: 10px; background: #fbfaf6; box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+  .site .nav { display: flex; justify-content: space-between; padding: 10px 14px; font-family: 'Instrument Serif', serif; font-size: 16px; color: #2c3a2e; } .site .nav span { font-family: Inter; font-size: 10px; color: #6b7a68; }
+  .site .hero { margin: 4px 14px; padding: 18px 16px; border-radius: 8px; background: #e7ece3; } .site .hero b { display: block; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 24px; color: #2c3a2e; line-height: 1.1; } .site .hero small { color: #4f5e4c; } .site .hero em { display: inline-block; margin-top: 10px; font-style: normal; font-size: 11px; padding: 5px 10px; border-radius: 99px; background: #2c3a2e; color: #efe6d6; }
+  .site .row3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 10px 14px 14px; } .site .row3 div { height: 54px; border-radius: 6px; background: #efe6d6; }
+  .shimmer { position: relative; overflow: hidden; } .shimmer::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,.6); animation: sh 1.6s ease-in-out infinite; } @keyframes sh { 0% { transform: translateX(-100%) } 100% { transform: translateX(100%) } }
+  .sw { display: flex; gap: 5px; } .sw i { width: 22px; height: 22px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--line); }
+
+  /* 1 · Live canvas */
+  .c1 { display: grid; grid-template-columns: 430px 1fr; height: 100%; }
+  .c1 .chat { padding: 18px 22px 80px; display: flex; flex-direction: column; gap: 12px; border-right: 1px solid var(--line); position: relative; }
+  .c1 .chat .composer { width: 386px; left: 22px; transform: none; }
+  .c1 .canvas { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .tabs { display: flex; gap: 4px; } .tabs span { font-size: 12.5px; padding: 5px 11px; border-radius: 8px; color: var(--fg2); display: flex; gap: 6px; align-items: center; } .tabs span.on { background: #fff; color: var(--fg); box-shadow: 0 0 0 1px var(--line2); }
+  .live { font-size: 10px; color: var(--green); display: flex; gap: 6px; align-items: center; margin-left: auto; } .live i { width: 6px; height: 6px; border-radius: 3px; background: var(--green); animation: bl 1.2s infinite; } @keyframes bl { 50% { opacity: .3 } }
+  .c1 .site { flex: 1; }
+  .mini { display: flex; flex-direction: column; gap: 6px; font-size: 13px; } .mini div { display: flex; gap: 8px; align-items: center; }
+
+  /* 2 · Run timeline */
+  .c2 { width: 720px; margin: 0 auto; padding: 22px 0 80px; display: flex; flex-direction: column; gap: 12px; }
+  .run { background: #fff; border-radius: 14px; box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+  .run .rh { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); } .run .rh b { font-weight: 500; } .run .rh .mono { margin-left: auto; font-size: 10px; color: var(--fg3); }
+  .pbar { height: 3px; background: var(--chip); } .pbar i { display: block; height: 100%; width: 52%; background: var(--fg); }
+  .tl { padding: 10px 16px 14px 16px; }
+  .node { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; position: relative; padding: 8px 0; }
+  .node::before { content: ''; position: absolute; left: 10px; top: 28px; bottom: -8px; width: 1px; background: var(--line2); } .node:last-child::before { display: none; }
+  .node .dt { width: 21px; height: 21px; border-radius: 11px; display: grid; place-items: center; font-size: 11px; background: var(--chip); color: var(--fg3); z-index: 1; } .node.done .dt { background: #e3f5ec; color: var(--green); } .node.run .dt { background: #e8eefc; }
+  .node .nt b { font-weight: 500; font-size: 14px; } .node .nt small { display: block; color: var(--fg2); font-size: 12.5px; } .node .ms { font-size: 11px; color: var(--fg3); font-family: 'Geist Mono'; }
+  .node.wait { opacity: .5; }
+  .node .att { display: flex; gap: 8px; margin-top: 8px; } .node .att > div { width: 150px; }
+
+  /* 3 · Operator: watch it work */
+  .c3 { width: 820px; margin: 0 auto; padding: 18px 0 80px; display: flex; flex-direction: column; gap: 12px; }
+  .screen { background: #fff; border-radius: 14px; box-shadow: 0 0 0 1px var(--line), 0 20px 40px -30px rgba(0,0,0,.35); overflow: hidden; }
+  .screen .chrome { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: #fafafb; font-size: 12px; color: var(--fg2); }
+  .screen .chrome .dots i { display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: #dedfe3; margin-right: 4px; }
+  .screen .chrome .url { flex: 1; text-align: center; font-family: 'Geist Mono'; font-size: 10.5px; }
+  .screen .app { display: grid; grid-template-columns: 150px 1fr; height: 300px; }
+  .screen .nav2 { border-right: 1px solid var(--line); padding: 10px; font-size: 12px; color: var(--fg3); display: flex; flex-direction: column; gap: 6px; } .screen .nav2 span.on { color: var(--fg); background: var(--chip); border-radius: 6px; padding: 3px 6px; margin: 0 -6px; }
+  .screen .work { padding: 14px; position: relative; } .screen .work .site { height: 100%; }
+  .cursor { position: absolute; left: 330px; top: 140px; width: 14px; height: 14px; } .cursor::before { content: ''; position: absolute; inset: 0; clip-path: polygon(0 0, 100% 60%, 55% 62%, 40% 100%); background: var(--fg); }
+  .cursor span { position: absolute; left: 14px; top: 14px; white-space: nowrap; font-size: 11px; background: var(--fg); color: #fff; padding: 3px 8px; border-radius: 6px; }
+  .narr { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--fg2); } .narr b { color: var(--fg); font-weight: 500; } .narr .mono { margin-left: auto; font-size: 10px; color: var(--fg3); }
+  .strip { display: flex; gap: 6px; } .strip span { font-size: 11.5px; padding: 3px 9px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); color: var(--fg3); display: flex; gap: 5px; align-items: center; } .strip span.d { color: var(--green); } .strip span.r { color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--fg); }
+
+  /* 4 · Rich result */
+  .c4 { width: 720px; margin: 0 auto; padding: 22px 0 80px; display: flex; flex-direction: column; gap: 12px; }
+  .done { background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line), 0 20px 50px -34px rgba(0,0,0,.35); overflow: hidden; }
+  .done .dh { display: flex; align-items: center; gap: 12px; padding: 16px 18px 12px; } .done .dh .badge { width: 34px; height: 34px; border-radius: 10px; background: #e3f5ec; display: grid; place-items: center; color: var(--green); font-size: 16px; }
+  .done .dh b { font-size: 17px; font-weight: 500; letter-spacing: -.01em; } .done .dh small { display: block; color: var(--fg2); font-size: 12.5px; }
+  .done .nums { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); } .done .nums div { padding: 12px 18px; } .done .nums div + div { border-left: 1px solid var(--line); }
+  .done .nums b { display: block; font-size: 22px; font-weight: 400; letter-spacing: -.03em; } .done .nums span { font-size: 11.5px; color: var(--fg2); }
+  .done .gal { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; padding: 14px 18px; } .done .gal .kit { border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line); padding: 12px; display: flex; flex-direction: column; gap: 8px; } .done .gal .kit .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; } .done .gal .kit .posts i { aspect-ratio: 1; border-radius: 5px; background: #e7ece3; } .done .gal .kit .posts i:nth-child(2n) { background: #efe6d6; }
+  .done .foot { display: flex; gap: 6px; padding: 0 18px 16px; }
+  .done .foot span { font-size: 12.5px; padding: 6px 12px; border-radius: 99px; box-shadow: inset 0 0 0 1px var(--line2); } .done .foot span.p { background: var(--fg); color: #fff; box-shadow: none; }
+
+  /* 5 · Plan pinned on top */
+  .c5 { width: 720px; margin: 0 auto; padding: 0 0 80px; display: flex; flex-direction: column; gap: 12px; }
+  .plan { position: sticky; top: 0; z-index: 2; background: rgba(246,246,247,.92); backdrop-filter: blur(10px); padding: 14px 0 12px; border-bottom: 1px solid var(--line); }
+  .plan .ph { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; } .plan .ph b { font-weight: 500; } .plan .ph .mono { margin-left: auto; font-size: 10px; color: var(--fg3); }
+  .seg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; } .seg div { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--fg3); }
+  .seg div i { height: 4px; border-radius: 2px; background: var(--line2); } .seg div.d { color: var(--fg); } .seg div.d i { background: var(--green); } .seg div.r { color: var(--fg); } .seg div.r i { background: var(--blue); }
+  .ask { background: #fff; border-radius: 14px; box-shadow: 0 0 0 1px var(--line2), 0 16px 34px -26px rgba(0,0,0,.3); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .ask .lbl { font-size: 10px; color: var(--fg3); }
+  .ask .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .ask .opts > div { border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line2); padding: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; } .ask .opts > div.p { box-shadow: inset 0 0 0 1.5px var(--fg); }
+  .pick { margin-top: 30px; color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>V2.2 · the chat while work happens · five options</h1>
+    <p>Same moment in each: Glow Med Spa onboarding, mid-way, waiting on one decision. Today it reads as a log. These make the work visible and worth watching, each borrowing from a modern product.</p>
+  </header>
+
+  <section class="opt"><div class="cap"><span class="mono n">01</span><h2>Live canvas: the work builds beside the chat</h2>
+    <p>Chat on the left, a <b>live canvas</b> on the right that shows the thing being made as it’s made: the site filling in, then the media kit, then the calendars. Tabs per tool. The decision appears in the chat, and the canvas shows both choices.</p>
+    <div class="ref"><span>Claude Artifacts</span><span>v0</span><span>Lovable</span><span>ChatGPT Canvas</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Glow Med Spa</b> › Onboarding</span><span class="av">MA</span></div><div class="body"><div class="c1">
+      <div class="chat">
+        <div class="me">Start</div>
+        <div class="ai">Setting up Glow Med Spa across five tools.</div>
+        <div class="mini"><div><span class="ok">✓</span>214 contacts imported <span class="mod mono">Contacts</span></div><div><span class="ok">✓</span>Booking site built <span class="mod mono">Sites</span></div><div><span class="spin"></span>Media kit <span class="mod mono">Creator Studio</span></div></div>
+        <div class="q">Their site uses sage and cream with a serif. Use those for the media kit?</div>
+        <div class="acts"><span class="p">Use their brand</span><span>Pick new ones</span></div>
+        <div class="composer"><span class="sp">✦</span>Reply…<i></i></div>
+      </div>
+      <div class="canvas">
+        <div class="tabs"><span>Contacts ✓</span><span class="on">Site ✓</span><span>Media kit</span><span>Automations</span><span>Calendars</span><span class="live mono"><i></i>Live</span></div>
+        <div class="site"><div class="nav">Glow Med Spa<span>Treatments · About · Book</span></div><div class="hero"><b>Calm skin,<br />by appointment.</b><small>Facials, peels and laser in Austin</small><br /><em>Book a facial</em></div><div class="row3"><div></div><div class="shimmer"></div><div class="shimmer"></div></div></div>
+      </div>
+    </div></div></div></div>
+  </section>
+
+  <section class="opt"><div class="cap"><span class="mono n">02</span><h2>Run timeline: every step a node, with its proof</h2>
+    <p>One <b>run card</b> with a progress bar and a vertical timeline. Each step shows its tool, how long it took, and what it produced, attached right on the node (site preview, contact count). The pending decision sits on the running step.</p>
+    <div class="ref"><span>Vercel deploys</span><span>GitHub Actions</span><span>Linear</span><span>Devin</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Glow Med Spa</b> › Onboarding</span><span class="av">MA</span></div><div class="body"><div class="c2">
+      <div class="me">Start</div>
+      <div class="run"><div class="rh"><span class="spin"></span><b>Onboarding Glow Med Spa</b><span class="mono">2 of 5 · 1m 12s</span></div><div class="pbar"><i></i></div>
+        <div class="tl">
+          <div class="node done"><span class="dt">✓</span><span class="nt"><b>Imported 214 contacts</b><small>From their old CRM · 3 duplicates merged</small></span><span class="ms">18s</span></div>
+          <div class="node done"><span class="dt">✓</span><span class="nt"><b>Built a booking site</b><small>6 services, booking on every page</small>
+            <div class="att"><div class="site" style="height:86px"><div class="nav" style="font-size:12px;padding:6px 8px">Glow Med Spa</div><div class="hero" style="padding:6px 8px;margin:0 8px"><b style="font-size:13px">Calm skin, by appointment.</b></div></div><div class="site" style="height:86px;display:grid;place-items:center;font-size:11px;color:#4f5e4c">214 contacts</div></div></span><span class="ms">54s</span></div>
+          <div class="node run"><span class="dt"><span class="spin"></span></span><span class="nt"><b>Media kit</b><small>Waiting for you: use their sage, cream and serif?</small><div class="acts" style="margin-top:8px"><span class="p">Use their brand</span><span>Pick new ones</span></div></span><span class="ms">…</span></div>
+          <div class="node wait"><span class="dt">4</span><span class="nt"><b>Welcome and reminder workflows</b></span><span class="ms"></span></div>
+          <div class="node wait"><span class="dt">5</span><span class="nt"><b>Connect 3 Acuity calendars</b></span><span class="ms"></span></div>
+        </div></div>
+      <div class="composer"><span class="sp">✦</span>Reply, or ask about any step…<i></i></div>
+    </div></div></div></div>
+  </section>
+
+  <section class="opt"><div class="cap"><span class="mono n">03</span><h2>Watch it work: a live screen of HighLevel</h2>
+    <p>A small <b>live window into HighLevel itself</b>: you see the actual module (Sites) with a labelled cursor doing the work, and a narration line under it. A strip shows the five tools it moves through. Makes “one AI drives every module” impossible to miss.</p>
+    <div class="ref"><span>OpenAI Operator</span><span>Perplexity Comet</span><span>Manus</span><span>Claude computer use</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Glow Med Spa</b> › Onboarding</span><span class="av">MA</span></div><div class="body"><div class="c3">
+      <div class="strip"><span class="d">✓ Contacts</span><span class="d">✓ Sites</span><span class="r"><span class="spin"></span> Creator Studio</span><span>Automations</span><span>Calendars</span></div>
+      <div class="screen"><div class="chrome"><span class="dots"><i></i><i></i><i></i></span><span class="url">app.gohighlevel.com / glow-med-spa / creator-studio</span></div>
+        <div class="app"><div class="nav2"><span>Dashboard</span><span>Contacts</span><span>Sites</span><span class="on">Creator Studio</span><span>Automation</span><span>Calendars</span></div>
+          <div class="work"><div class="site"><div class="nav">Media kit · draft<span>Logo · Colours · Posts</span></div><div class="hero"><b>Glow Med Spa</b><small>Sage · cream · serif</small><div class="sw" style="margin-top:10px"><i style="background:#9fb59a"></i><i style="background:#efe6d6"></i><i style="background:#2c3a2e"></i></div></div><div class="row3"><div></div><div class="shimmer"></div><div class="shimmer"></div></div></div>
+            <div class="cursor"><span>Ask AI · picking colours</span></div></div></div>
+        <div class="narr"><span class="spin"></span>Pulling colours from <b>glowmedspa.com</b> for the media kit<span class="mono">Creator Studio agent</span></div></div>
+      <div class="q">Use their sage, cream and serif for the media kit?</div>
+      <div class="acts"><span class="p">Use their brand</span><span>Pick new ones</span><span>Show me first</span></div>
+    </div><div class="composer"><span class="sp">✦</span>Reply, or say “pause”…<i></i></div></div></div></div>
+  </section>
+
+  <section class="opt"><div class="cap"><span class="mono n">04</span><h2>Rich result: the finish is the reward</h2>
+    <p>The work runs quietly, and the end is a <b>result card</b>: big numbers, a gallery of what was made, and next actions (open the site, send the welcome, undo). Like a launch summary. Best when you care more about the outcome than watching.</p>
+    <div class="ref"><span>Notion AI</span><span>Arc Max</span><span>Stripe receipts</span><span>Linear updates</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Glow Med Spa</b> › Onboarding</span><span class="av">MA</span></div><div class="body"><div class="c4">
+      <div class="me">Use their brand</div>
+      <div class="done"><div class="dh"><span class="badge">✓</span><div><b>Glow Med Spa is live</b><small>Set up across 5 tools in 3m 40s · Onboarding agent</small></div></div>
+        <div class="nums"><div><b>214</b><span>contacts</span></div><div><b>1</b><span>booking site</span></div><div><b>3</b><span>calendars</span></div><div><b>2</b><span>automations</span></div></div>
+        <div class="gal"><div class="site"><div class="nav">Glow Med Spa<span>Book</span></div><div class="hero"><b>Calm skin, by appointment.</b><em>Book a facial</em></div></div>
+          <div class="kit"><span class="mono" style="font-size:9.5px;color:var(--fg3)">Media kit</span><div class="sw"><i style="background:#9fb59a"></i><i style="background:#efe6d6"></i><i style="background:#2c3a2e"></i></div><div class="posts"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+        <div class="foot"><span class="p">Open the site</span><span>Send the welcome email</span><span>See all steps</span><span>Undo</span></div></div>
+    </div><div class="composer"><span class="sp">✦</span>What’s next?<i></i></div></div></div></div>
+  </section>
+
+  <section class="opt"><div class="cap"><span class="mono n">05</span><h2>Plan on top: always know where you are</h2>
+    <p>A <b>plan bar pinned at the top</b> of the chat: five segments that fill as each tool finishes, so you always see progress while you scroll. Decisions become a clear card with visual choices (their brand vs. new), not just two words.</p>
+    <div class="ref"><span>Cursor agent plan</span><span>Claude Code tasks</span><span>Devin</span><span>Apple setup flows</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Glow Med Spa</b> › Onboarding</span><span class="av">MA</span></div><div class="body"><div class="c5">
+      <div class="plan"><div class="ph"><b>Onboarding Glow Med Spa</b><span class="mono">2 of 5 · about 3 min left</span></div>
+        <div class="seg"><div class="d"><i></i>Contacts</div><div class="d"><i></i>Site</div><div class="r"><i></i>Media kit</div><div><i></i>Automations</div><div><i></i>Calendars</div></div></div>
+      <div class="ai">Contacts are in (214) and the site is built. One decision before the media kit:</div>
+      <div class="ask"><span class="lbl mono">Your call</span><b style="font-weight:500">Which brand for the media kit?</b>
+        <div class="opts"><div class="p"><div class="sw"><i style="background:#9fb59a"></i><i style="background:#efe6d6"></i><i style="background:#2c3a2e"></i></div><b style="font-weight:500">Use their brand</b><span style="color:var(--fg2);font-size:12px">Sage, cream, serif · from glowmedspa.com</span></div>
+          <div><div class="sw"><i style="background:#d9d0f7"></i><i style="background:#f4f1ea"></i><i style="background:#2a2550"></i></div><b style="font-weight:500">Pick new ones</b><span style="color:var(--fg2);font-size:12px">I’ll suggest 3 fresh palettes</span></div></div></div>
+    </div><div class="composer"><span class="sp">✦</span>Reply, or ask about the plan…<i></i></div></div></div></div>
+  </section>
+
+  <p class="pick">My pick: <b>02 Run timeline</b> as the default (clear, scales to any task, every step shows proof), with <b>05’s visual decision cards</b> for choices. <b>03 Watch it work</b> is the most impressive for demos: it shows the AI actually driving HighLevel.</p>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => (f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})`))
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

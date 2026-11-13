@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agent Faces</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f4f4f6; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; }
+  body.dark { --bg: #0e0f12; --page: #16181d; --fg: #ececf1; --fg2: #a4a6b1; --fg3: #6e717d; --line: rgba(255,255,255,.07); --line2: rgba(255,255,255,.13); --chip: rgba(255,255,255,.06); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; transition: background .3s, color .3s; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 36px; flex-wrap: wrap; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0; max-width: 760px; }
+  .ctl { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg { display: flex; padding: 3px; border-radius: 99px; background: var(--page); box-shadow: 0 0 0 1px var(--line); }
+  .seg button { border: 0; background: transparent; color: var(--fg2); font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 99px; cursor: pointer; }
+  .seg button.on { background: var(--fg); color: var(--bg); }
+  .opt { background: var(--page); border-radius: 22px; box-shadow: 0 0 0 1px var(--line); padding: 22px; margin-bottom: 22px; display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
+  .hero { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .hero canvas { width: 160px; height: 160px; cursor: pointer; touch-action: none; }
+  .hero small { color: var(--fg3); font-size: 12px; text-align: center; }
+  .info h2 { margin: 0 0 4px; font-size: 19px; font-weight: 500; letter-spacing: -.02em; display: flex; gap: 10px; align-items: baseline; } .info h2 .mono { font-size: 11px; color: var(--fg3); }
+  .info p { margin: 0 0 16px; color: var(--fg2); max-width: 720px; }
+  .row { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; }
+  .ag { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 72px; } .ag canvas { width: 56px; height: 56px; cursor: pointer; touch-action: none; } .ag span { font-size: 11.5px; color: var(--fg2); }
+  .ctx { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; }
+  .side { background: var(--bg); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+  .side .h { display: flex; align-items: center; gap: 9px; padding: 5px 8px; border-radius: 8px; font-size: 13px; color: var(--fg2); } .side .h.on { background: var(--chip); color: var(--fg); }
+  .side canvas { width: 22px; height: 22px; }
+  .card { border-radius: 16px; box-shadow: 0 0 0 1px var(--line); padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: var(--page); }
+  .card canvas { width: 40px; height: 40px; } .card b { font-weight: 500; display: block; } .card small { color: var(--fg3); font-size: 10px; } .card .st { margin-left: auto; font-size: 12px; color: var(--fg3); }
+  .pick { margin-top: 10px; color: var(--fg2); } .pick b { color: var(--fg); font-weight: 500; }
+  @media (max-width: 760px) { .opt { grid-template-columns: 1fr; } .ctx { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>Agent faces · options</h1><p>Each agent gets a living face in its own colour, not a letter tile. They breathe when idle, work when working, call for you when they need you, and move with the voice when talking. <b>Hover</b> to get their attention, <b>click</b> to poke them. Same face from the 22px sidebar to the profile.</p></div>
+    <div class="ctl">
+      <div class="seg" id="state"><button data-s="idle" class="on">Idle</button><button data-s="work">Working</button><button data-s="need">Needs you</button><button data-s="talk">Talking</button></div>
+      <div class="seg" id="theme"><button data-t="light" class="on">Light</button><button data-t="dark">Dark</button></div>
+    </div>
+  </header>
+  <div id="opts"></div>
+  <p class="pick">My picks: <b>A · Stitch</b> carries V2’s pixel language into each agent and reads well tiny. <b>B · Goo</b> is the most fun and personal. Could combine: Stitch tile for the sidebar, Goo creature on the profile and when an agent talks.</p>
+</div>
+<script>
+const AGENTS = [
+  { id: 'cerebro', name: 'Cerebro', h: 250, i: 'C' },
+  { id: 'ads', name: 'Ads', h: 22, i: 'Ad' },
+  { id: 'sites', name: 'Sites', h: 172, i: 'Si' },
+  { id: 'marketing', name: 'Marketing', h: 330, i: 'Mk' },
+  { id: 'reputation', name: 'Reputation', h: 42, i: 'Re' },
+  { id: 'voice', name: 'Voice', h: 140, i: 'Vo' },
+]
+const OPTS = [
+  { k: 'A', n: 'Stitch', d: 'V2’s stitched pixel field, shrunk into each agent. A little stitched creature sits in the middle and breathes; the pixels part around your pointer like cloth. Working runs a scan line through it, needs-you blinks amber, talking moves a stitched mouth.' },
+  { k: 'B', n: 'Goo', d: 'A soft jelly blob with eyes that follow your pointer and blink. It wobbles faster while working, bounces when it needs you, and its mouth moves when it talks. Click and it squishes.' },
+  { k: 'C', n: 'Orbit', d: 'A glowing core with its initials and three rings of sparks. The sparks are the work: slow when idle, racing when working, an amber ping when it needs you, rings pulsing with the voice.' },
+  { k: 'D', n: 'Lava glass', d: 'A glass marble with coloured light drifting inside, like a lava lamp. Calm and premium; the light speeds up while working and swells with the voice.' },
+  { k: 'E', n: 'Signal', d: 'A face made of the voice itself: two dots and a mouth of sound bars. Idle hums, talking speaks, working sweeps, needs-you flashes.' },
+  { k: 'F', n: 'Stickers', d: 'Playful flat shapes with a personality each: a burst for Ads, a window for Sites, a flower for Marketing, a star for Reputation. Faces change with the state; they wiggle when hovered.' },
+]
+let STATE = 'idle', DARK = false
+const DPR = Math.min(2, devicePixelRatio || 1)
+const hsl = (h, s, l, a = 1) => `hsla(${h},${s}%,${l}%,${a})`
+const faces = []
+function mk(canvas, agent, kind) {
+  const f = { c: canvas, x: canvas.getContext('2d'), a: agent, k: kind, px: 0.5, py: 0.5, hover: 0, hv: 0, poke: -9, seed: Math.random() * 100 }
+  const set = () => { const r = canvas.getBoundingClientRect(); canvas.width = r.width * DPR; canvas.height = r.height * DPR }
+  set(); new ResizeObserver(set).observe(canvas)
+  canvas.addEventListener('pointermove', (e) => { const r = canvas.getBoundingClientRect(); f.px = (e.clientX - r.left) / r.width; f.py = (e.clientY - r.top) / r.height; f.hv = 1 })
+  canvas.addEventListener('pointerleave', () => { f.hv = 0; f.px = 0.5; f.py = 0.5 })
+  canvas.addEventListener('pointerdown', () => (f.poke = performance.now() / 1000))
+  faces.push(f)
+}
+const state = (f) => STATE
+// ── A · Stitch ──
+function stitch(f, t, W, s) {
+  const x = f.x, N = W > 100 * DPR ? 13 : W > 40 * DPR ? 9 : 5, cell = W / N, h = f.a.h
+  const pk = Math.max(0, 1 - (t - f.poke) * 2)
+  x.fillStyle = DARK ? hsl(h, 35, 10) : hsl(h, 70, 96); roundRect(x, 0, 0, W, W, W * 0.3); x.fill()
+  x.save(); roundRect(x, 0, 0, W, W, W * 0.3); x.clip()
+  const br = (N / 2) * (0.62 + 0.05 * Math.sin(t * 2) + pk * 0.15)
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const cx = (i + 0.5) * cell, cy = (j + 0.5) * cell
+    const dx = cx / W - f.px, dy = cy / W - f.py, dp = Math.hypot(dx, dy)
+    const push = f.hover * Math.max(0, 0.28 - dp) * W * 0.25
+    const ox = dp ? (dx / dp) * push : 0, oy = dp ? (dy / dp) * push : 0
+    const dc = Math.hypot(i + 0.5 - N / 2, j + 0.5 - N / 2)
+    const inside = dc < br
+    let l = DARK ? 22 : 86, sat = 70, a = 1
+    const wave = 0.5 + 0.5 * Math.sin(i * 0.7 + j * 0.5 - t * (s === 'work' ? 4 : 1.4))
+    l += (DARK ? 8 : -6) * wave
+    if (inside) { l = DARK ? 60 + 6 * wave : 62 - 8 * wave; sat = 85 }
+    if (s === 'work' && Math.abs(((i + j) / (2 * N)) - ((t * 0.6) % 1.2 - 0.1)) < 0.07) l = DARK ? 80 : 50
+    let hue = h
+    if (s === 'need' && inside && Math.sin(t * 6) > 0) { hue = 38; sat = 95 }
+    // eyes and mouth
+    const ex = Math.round(N / 2 - N * 0.16 - 0.5), ex2 = Math.round(N / 2 + N * 0.16 - 0.5), ey = Math.round(N / 2 - N * 0.1 - 0.5)
+    const blink = (t + f.seed) % 4 < 0.14
+    if (inside && j === ey && (i === ex || i === ex2) && !blink) { l = DARK ? 8 : 15; sat = 20 }
+    if (inside && s === 'talk' && j >= Math.round(N / 2 + N * 0.12) && j <= Math.round(N / 2 + N * 0.12) + (Math.sin(t * 14 + i) > 0 ? 1 : 0) && Math.abs(i + 0.5 - N / 2) < N * 0.2) { l = DARK ? 8 : 15 }
+    const sz = cell * (inside ? 0.86 : 0.7) * (1 + pk * 0.2 * Math.sin(t * 20 + i))
+    x.fillStyle = hsl(hue, sat, l, a)
+    roundRect(x, cx - sz / 2 + ox, cy - sz / 2 + oy, sz, sz, sz * 0.32); x.fill()
+  }
+  x.restore()
+}
+// ── B · Goo ──
+function goo(f, t, W, s) {
+  const x = f.x, h = f.a.h, c = W / 2, pk = Math.max(0, 1 - (t - f.poke) * 2.5)
+  const bounce = s === 'need' ? Math.abs(Math.sin(t * 5)) * W * 0.06 : 0
+  const R = W * 0.36 * (1 + 0.03 * Math.sin(t * 2))
+  const sp = s === 'work' ? 5 : 1.6
+  x.save(); x.translate(c, c - bounce); x.scale(1 + pk * 0.18, 1 - pk * 0.16)
+  x.beginPath()
+  for (let k = 0; k <= 64; k++) {
+    const a = (k / 64) * Math.PI * 2
+    const r = R * (1 + 0.06 * Math.sin(a * 3 + t * sp + f.seed) + 0.04 * Math.sin(a * 5 - t * sp * 0.7) + f.hover * 0.04 * Math.cos(a - Math.atan2(f.py - 0.5, f.px - 0.5)))
+    const px = Math.cos(a) * r, py = Math.sin(a) * r * 0.94
+    k ? x.lineTo(px, py) : x.moveTo(px, py)
+  }
+  const g = x.createRadialGradient(-R * 0.35, -R * 0.45, R * 0.1, 0, 0, R * 1.2)
+  g.addColorStop(0, hsl(h, 95, DARK ? 78 : 82)); g.addColorStop(0.55, hsl(h, 80, 60)); g.addColorStop(1, hsl((h + 330) % 360, 70, DARK ? 38 : 46))
+  x.fillStyle = g; x.shadowColor = hsl(h, 80, 50, 0.45); x.shadowBlur = W * 0.08; x.fill(); x.shadowBlur = 0
+  x.fillStyle = 'rgba(255,255,255,.45)'; x.beginPath(); x.ellipse(-R * 0.38, -R * 0.5, R * 0.18, R * 0.1, -0.5, 0, 7); x.fill()
+  const lx = (f.px - 0.5) * R * 0.25, ly = (f.py - 0.5) * R * 0.25
+  const blink = (t + f.seed) % 3.6 < 0.12
+  for (const sx of [-1, 1]) {
+    x.fillStyle = '#fff'; x.beginPath(); x.ellipse(sx * R * 0.3 + lx * 0.4, -R * 0.08 + ly * 0.4, R * 0.15, blink ? R * 0.02 : R * 0.17, 0, 0, 7); x.fill()
+    if (!blink) { x.fillStyle = '#16131f'; x.beginPath(); x.arc(sx * R * 0.3 + lx, -R * 0.06 + ly, R * 0.075, 0, 7); x.fill() }
+  }
+  x.strokeStyle = '#16131f'; x.lineWidth = Math.max(1, R * 0.06); x.lineCap = 'round'; x.beginPath()
+  if (s === 'talk') { const o = 0.5 + 0.5 * Math.abs(Math.sin(t * 11)); x.fillStyle = '#16131f'; x.ellipse(0, R * 0.32, R * 0.14, R * 0.06 + R * 0.1 * o, 0, 0, 7); x.fill() }
+  else if (s === 'need') { x.fillStyle = '#16131f'; x.arc(0, R * 0.34, R * 0.08, 0, 7); x.fill() }
+  else if (s === 'work') { x.moveTo(-R * 0.12, R * 0.34); x.lineTo(R * 0.12, R * 0.34); x.stroke() }
+  else { x.arc(0, R * 0.2, R * 0.16, 0.25 * Math.PI, 0.75 * Math.PI); x.stroke() }
+  x.restore()
+}
+// ── C · Orbit ──
+function orbit(f, t, W, s) {
+  const x = f.x, h = f.a.h, c = W / 2, pk = Math.max(0, 1 - (t - f.poke) * 2)
+  const R = W * 0.22 * (1 + pk * 0.25 + (s === 'talk' ? 0.08 * Math.abs(Math.sin(t * 9)) : 0))
+  const g = x.createRadialGradient(c - R * 0.3, c - R * 0.3, R * 0.1, c, c, R * 1.1)
+  g.addColorStop(0, hsl(h, 95, 80)); g.addColorStop(1, hsl(h, 80, 45))
+  x.fillStyle = g; x.shadowColor = hsl(h, 90, 55, 0.7); x.shadowBlur = W * 0.12; x.beginPath(); x.arc(c, c, R, 0, 7); x.fill(); x.shadowBlur = 0
+  x.fillStyle = '#fff'; x.font = `600 ${R * 0.8}px Inter`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(f.a.i, c, c + R * 0.04)
+  const sp = s === 'work' ? 3.2 : 0.8
+  for (let ring = 0; ring < 3; ring++) {
+    const rr = R * (1.5 + ring * 0.45) * (s === 'talk' ? 1 + 0.05 * Math.sin(t * 8 + ring) : 1)
+    x.strokeStyle = hsl(h, 60, DARK ? 60 : 50, 0.16); x.lineWidth = Math.max(1, W * 0.006); x.beginPath(); x.ellipse(c, c, rr, rr * 0.42, ring * 0.9 + 0.3, 0, 7); x.stroke()
+    for (let d = 0; d < 3; d++) {
+      const a = t * sp * (1 + ring * 0.4) + d * 2.1 + ring
+      const ca = Math.cos(ring * 0.9 + 0.3), sa = Math.sin(ring * 0.9 + 0.3)
+      const ex = Math.cos(a) * rr, ey = Math.sin(a) * rr * 0.42
+      x.fillStyle = s === 'need' && d === 0 ? hsl(38, 95, 55) : hsl(h, 90, DARK ? 75 : 55)
+      x.beginPath(); x.arc(c + ex * ca - ey * sa, c + ex * sa + ey * ca, Math.max(1.2, W * 0.018), 0, 7); x.fill()
+    }
+  }
+  if (s === 'need') { const p = (t % 1.2) / 1.2; x.strokeStyle = hsl(38, 95, 55, 1 - p); x.lineWidth = W * 0.02; x.beginPath(); x.arc(c, c, R * (1 + p * 1.2), 0, 7); x.stroke() }
+}
+// ── D · Lava glass ──
+function lava(f, t, W, s) {
+  const x = f.x, h = f.a.h, c = W / 2, R = W * 0.42, pk = Math.max(0, 1 - (t - f.poke) * 2)
+  x.save(); x.beginPath(); x.arc(c, c, R * (1 + pk * 0.06), 0, 7); x.clip()
+  x.fillStyle = DARK ? hsl(h, 50, 12) : hsl(h, 60, 22); x.fillRect(0, 0, W, W)
+  x.globalCompositeOperation = 'lighter'
+  const sp = s === 'work' ? 2.6 : 0.7
+  for (let k = 0; k < 4; k++) {
+    const a = t * sp * (0.6 + k * 0.25) + k * 1.7 + f.seed
+    const bx = c + Math.cos(a) * R * 0.45 + (f.px - 0.5) * R * 0.3 * f.hover, by = c + Math.sin(a * 1.3) * R * 0.45 + (f.py - 0.5) * R * 0.3 * f.hover
+    const br = R * (0.45 + 0.1 * Math.sin(t * 2 + k)) * (s === 'talk' ? 1 + 0.25 * Math.abs(Math.sin(t * 10 + k)) : 1)
+    const hue = s === 'need' && k === 0 ? 38 : (h + k * 28) % 360
+    const g = x.createRadialGradient(bx, by, 0, bx, by, br); g.addColorStop(0, hsl(hue, 95, 62, 0.9)); g.addColorStop(1, hsl(hue, 95, 50, 0))
+    x.fillStyle = g; x.fillRect(0, 0, W, W)
+  }
+  x.globalCompositeOperation = 'source-over'
+  const hl = x.createLinearGradient(0, c - R, 0, c); hl.addColorStop(0, 'rgba(255,255,255,.55)'); hl.addColorStop(1, 'rgba(255,255,255,0)')
+  x.fillStyle = hl; x.beginPath(); x.ellipse(c - R * 0.15, c - R * 0.5, R * 0.6, R * 0.32, -0.3, 0, 7); x.fill()
+  x.restore()
+  x.strokeStyle = DARK ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.08)'; x.lineWidth = Math.max(1, W * 0.01); x.beginPath(); x.arc(c, c, R, 0, 7); x.stroke()
+}
+// ── E · Signal ──
+function signal(f, t, W, s) {
+  const x = f.x, h = f.a.h, pk = Math.max(0, 1 - (t - f.poke) * 2)
+  x.fillStyle = s === 'need' && Math.sin(t * 6) > 0 ? hsl(38, 90, 55) : hsl(h, 75, DARK ? 50 : 58); roundRect(x, 0, 0, W, W, W * 0.3); x.fill()
+  const blink = (t + f.seed) % 3.4 < 0.12
+  x.fillStyle = '#fff'
+  for (const sx of [0.35, 0.65]) { x.beginPath(); x.ellipse(W * sx + (f.px - 0.5) * W * 0.06, W * 0.36, W * 0.055, blink ? W * 0.01 : W * 0.055, 0, 0, 7); x.fill() }
+  const n = 7, bw = W * 0.06, gap = W * 0.025, tot = n * bw + (n - 1) * gap
+  for (let i = 0; i < n; i++) {
+    let a = s === 'talk' ? 0.35 + 0.65 * Math.abs(Math.sin(t * 12 + i * 1.7)) : s === 'work' ? 0.25 + 0.6 * Math.max(0, Math.sin(t * 5 - i * 0.6)) : 0.18 + 0.1 * Math.sin(t * 2 + i)
+    a += pk * 0.5 * Math.abs(Math.sin(i))
+    const bh = W * 0.3 * Math.min(1, a)
+    x.fillStyle = 'rgba(255,255,255,.92)'; roundRect(x, W / 2 - tot / 2 + i * (bw + gap), W * 0.66 - bh / 2, bw, Math.max(bw, bh), bw / 2); x.fill()
+  }
+}
+// ── F · Stickers ──
+function sticker(f, t, W, s) {
+  const x = f.x, h = f.a.h, c = W / 2, pk = Math.max(0, 1 - (t - f.poke) * 2.5)
+  const wig = f.hover * 0.12 * Math.sin(t * 12) + (s === 'need' ? 0.15 * Math.sin(t * 8) : 0)
+  x.save(); x.translate(c, c); x.rotate(wig); x.scale(1 + pk * 0.2, 1 - pk * 0.15)
+  const R = W * 0.38, id = f.a.id
+  x.beginPath()
+  if (id === 'ads') { for (let k = 0; k <= 24; k++) { const a = (k / 24) * 7 * Math.PI * 2 / 7, r = k % 2 ? R * 0.82 : R; x.lineTo(Math.cos(a + t * 0.3) * r, Math.sin(a + t * 0.3) * r) } }
+  else if (id === 'marketing') { for (let k = 0; k < 5; k++) { const a = (k / 5) * Math.PI * 2 + t * 0.4; x.moveTo(0, 0); x.arc(Math.cos(a) * R * 0.48, Math.sin(a) * R * 0.48, R * 0.5, 0, 7) } }
+  else if (id === 'reputation') { for (let k = 0; k <= 10; k++) { const a = (k / 10) * Math.PI * 2 - Math.PI / 2, r = k % 2 ? R * 0.55 : R * 1.05; x.lineTo(Math.cos(a) * r, Math.sin(a) * r) } }
+  else if (id === 'sites') roundRect(x, -R, -R * 0.9, R * 2, R * 1.8, R * 0.35)
+  else if (id === 'voice') x.arc(0, 0, R, 0, 7)
+  else { for (let k = 0; k <= 48; k++) { const a = (k / 48) * Math.PI * 2, r = R * (1 + 0.08 * Math.sin(a * 4 + t)); x.lineTo(Math.cos(a) * r, Math.sin(a) * r) } }
+  x.fillStyle = hsl(h, 85, DARK ? 60 : 62); x.shadowColor = 'rgba(0,0,0,.18)'; x.shadowBlur = W * 0.04; x.shadowOffsetY = W * 0.02; x.fill(); x.shadowBlur = 0; x.shadowOffsetY = 0
+  x.lineWidth = Math.max(1.5, W * 0.035); x.strokeStyle = '#fff'; x.stroke()
+  if (id === 'sites') { x.fillStyle = 'rgba(255,255,255,.5)'; roundRect(x, -R * 0.75, -R * 0.68, R * 1.5, R * 0.18, R * 0.08); x.fill() }
+  const blink = (t + f.seed) % 3 < 0.12
+  x.fillStyle = '#1b1830'
+  for (const sx of [-1, 1]) { x.beginPath(); x.ellipse(sx * R * 0.25, -R * 0.02, R * 0.08, blink ? R * 0.015 : (s === 'need' ? R * 0.12 : R * 0.09), 0, 0, 7); x.fill() }
+  x.strokeStyle = '#1b1830'; x.lineWidth = Math.max(1, R * 0.07); x.lineCap = 'round'; x.beginPath()
+  if (s === 'talk') { x.fillStyle = '#1b1830'; x.ellipse(0, R * 0.3, R * 0.12, R * (0.05 + 0.08 * Math.abs(Math.sin(t * 11))), 0, 0, 7); x.fill() }
+  else if (s === 'work') { x.moveTo(-R * 0.12, R * 0.3); x.lineTo(R * 0.12, R * 0.26); x.stroke() }
+  else if (s === 'need') { x.arc(0, R * 0.32, R * 0.07, 0, 7); x.fill() }
+  else { x.arc(0, R * 0.16, R * 0.16, 0.2 * Math.PI, 0.8 * Math.PI); x.stroke() }
+  x.restore()
+}
+function roundRect(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath() }
+const DRAW = { A: stitch, B: goo, C: orbit, D: lava, E: signal, F: sticker }
+function frame() {
+  const t = performance.now() / 1000
+  for (const f of faces) {
+    const W = f.c.width; if (!W) continue
+    f.hover += (f.hv - f.hover) * 0.12
+    f.x.clearRect(0, 0, W, W)
+    DRAW[f.k](f, t, W, STATE)
+  }
+  requestAnimationFrame(frame)
+}
+// Build the page
+const host = document.getElementById('opts')
+for (const o of OPTS) {
+  const el = document.createElement('section'); el.className = 'opt'
+  el.innerHTML = `<div class="hero"><canvas></canvas><small>Cerebro · hover, click</small></div>
+    <div class="info"><h2><span class="mono">${o.k}</span>${o.n}</h2><p>${o.d}</p>
+      <div class="row">${AGENTS.map((a) => `<div class="ag"><canvas data-a="${a.id}"></canvas><span>${a.name}</span></div>`).join('')}</div>
+      <div class="ctx"><div class="side">${AGENTS.slice(0, 5).map((a, i) => `<div class="h${i === 1 ? ' on' : ''}"><canvas data-a="${a.id}"></canvas>${a.id === 'cerebro' ? 'Cerebro' : a.name + ' agent'}</div>`).join('')}</div>
+      <div class="card"><canvas data-a="ads"></canvas><div><small class="mono">Plan · Ads agent</small><b>Switch to the new Visa ••4411?</b></div><span class="st">−$2.4k/mo</span></div></div>
+    </div>`
+  host.appendChild(el)
+  mk(el.querySelector('.hero canvas'), AGENTS[0], o.k)
+  el.querySelectorAll('canvas[data-a]').forEach((c) => mk(c, AGENTS.find((a) => a.id === c.dataset.a), o.k))
+}
+document.querySelectorAll('#state button').forEach((b) => b.onclick = () => { STATE = b.dataset.s; document.querySelectorAll('#state button').forEach((x) => x.classList.toggle('on', x === b)) })
+document.querySelectorAll('#theme button').forEach((b) => b.onclick = () => { DARK = b.dataset.t === 'dark'; document.body.classList.toggle('dark', DARK); document.querySelectorAll('#theme button').forEach((x) => x.classList.toggle('on', x === b)) })
+requestAnimationFrame(frame)
+</script>
+</body>
+</html>

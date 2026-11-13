@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V2.2 Chat Styles</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f6f6f7; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; --green: #079455; --red: #d0453a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #e9e9ec; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 44px 16px 100px; }
+  .mono { font-family: 'Geist Mono', monospace; letter-spacing: .05em; text-transform: uppercase; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 40px; max-width: 880px; }
+  .opt { margin-bottom: 60px; }
+  .cap { display: grid; grid-template-columns: 40px 1fr; gap: 2px 12px; margin-bottom: 14px; } .cap .n { font-size: 11px; color: var(--fg3); padding-top: 6px; } .cap h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+  .cap p { grid-column: 2; margin: 0; color: var(--fg2); font-size: 13.5px; max-width: 920px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .ref { grid-column: 2; display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; } .ref span { font-size: 11.5px; padding: 2px 9px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); color: var(--fg2); }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 680; }
+  .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 680px; transform-origin: 0 0; background: var(--bg); border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.35); display: flex; flex-direction: column; }
+  .bar { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-size: 13px; color: var(--fg2); flex: none; } .bar b { color: var(--fg); font-weight: 500; }
+  .av { width: 26px; height: 26px; border-radius: 13px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; flex: none; }
+  .ai-av { width: 26px; height: 26px; border-radius: 13px; background: #7f8cff; display: grid; place-items: center; color: #fff; font-size: 12px; flex: none; }
+  .body { flex: 1; position: relative; overflow: hidden; }
+  .col { width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; padding-top: 10px; }
+  .composer { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); width: 680px; height: 46px; border-radius: 23px; background: #fff; box-shadow: 0 0 0 1px var(--line2); display: flex; align-items: center; padding: 0 6px 0 16px; gap: 10px; color: var(--fg3); }
+  .composer i { margin-left: auto; width: 34px; height: 34px; border-radius: 17px; background: var(--fg); } .composer .sp { color: #6b72ff; }
+  .acts { display: flex; gap: 6px; } .acts span { font-size: 13px; padding: 6px 13px; border-radius: 99px; background: #fff; box-shadow: inset 0 0 0 1px var(--line2); } .acts span.p { background: var(--fg); color: #fff; box-shadow: none; }
+  .ok { color: var(--green); } .cost { font-family: 'Geist Mono'; font-size: 12px; color: var(--red); }
+  .steps { font-size: 12.5px; color: var(--fg2); display: flex; align-items: center; gap: 8px; } .steps .mod { font-size: 9px; padding: 1px 6px; border-radius: 4px; background: var(--chip); }
+
+  /* A · Clean (Claude / ChatGPT) */
+  .a .me { align-self: flex-end; background: #fff; box-shadow: 0 0 0 1px var(--line2); padding: 8px 14px; border-radius: 16px 16px 4px 16px; font-size: 14.5px; }
+  .a .ai p { margin: 0; font-size: 15.5px; line-height: 1.55; }
+  /* B · Bubbles */
+  .b .row { display: flex; gap: 10px; align-items: flex-end; } .b .row.me { justify-content: flex-end; }
+  .b .bub { max-width: 70%; padding: 10px 14px; border-radius: 18px; font-size: 14.5px; } .b .row:not(.me) .bub { background: #fff; box-shadow: 0 0 0 1px var(--line); border-bottom-left-radius: 6px; } .b .row.me .bub { background: var(--fg); color: #fff; border-bottom-right-radius: 6px; }
+  .b .time { text-align: center; font-size: 10px; color: var(--fg3); }
+  /* C · Threaded rows */
+  .c .msg { display: grid; grid-template-columns: 34px 1fr; gap: 0 10px; padding: 10px 12px; border-radius: 12px; } .c .msg:hover { background: rgba(21,22,27,.03); }
+  .c .who { display: flex; gap: 8px; align-items: baseline; } .c .who b { font-weight: 600; font-size: 13.5px; } .c .who small { color: var(--fg3); font-size: 11.5px; }
+  .c .txt { grid-column: 2; font-size: 14.5px; } .c .txt .acts { margin-top: 8px; }
+  .c .sys { margin-left: 56px; padding: 6px 10px; border-left: 2px solid var(--line2); font-size: 12.5px; color: var(--fg2); }
+  /* D · Answer page */
+  .d .qh { font-size: 26px; font-weight: 400; letter-spacing: -.03em; margin: 6px 0 0; }
+  .d .src { display: flex; gap: 6px; } .d .src span { font-size: 11.5px; padding: 4px 10px; border-radius: 8px; background: #fff; box-shadow: 0 0 0 1px var(--line); color: var(--fg2); display: flex; gap: 6px; align-items: center; }
+  .d .ans { font-size: 15.5px; line-height: 1.6; } .d .ans b { font-weight: 500; }
+  .d .sec { font-size: 10px; color: var(--fg3); margin-top: 6px; }
+  .d .fu { display: flex; flex-direction: column; } .d .fu span { padding: 10px 2px; border-top: 1px solid var(--line); font-size: 14px; color: var(--fg); display: flex; justify-content: space-between; } .d .fu span::after { content: '+'; color: var(--fg3); }
+  /* E · Turn cards */
+  .e .turn { background: #fff; border-radius: 16px; box-shadow: 0 0 0 1px var(--line), 0 14px 30px -26px rgba(0,0,0,.3); overflow: hidden; }
+  .e .tq { display: flex; gap: 10px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--fg2); }
+  .e .ta { padding: 14px 16px; font-size: 15px; display: flex; flex-direction: column; gap: 10px; }
+  .e .tf { display: flex; gap: 14px; padding: 10px 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--fg3); }
+  .e .turn.old { opacity: .55; }
+  /* F · Voice-first focus */
+  .f { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .f .past { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 620px; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; color: var(--fg3); }
+  .f .now { font-size: 30px; font-weight: 300; letter-spacing: -.03em; line-height: 1.25; max-width: 720px; } .f .now span { color: var(--fg3); }
+  .f .acts { margin-top: 22px; justify-content: center; }
+  .f .heard { margin-top: 18px; font-size: 14px; color: var(--fg2); }
+  .wave { position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; align-items: center; height: 24px; } .wave i { width: 2px; border-radius: 1px; background: var(--green); animation: w 1s ease-in-out infinite; } .wave i:nth-child(2n) { animation-delay: -.3s } .wave i:nth-child(3n) { animation-delay: -.6s } @keyframes w { 0%,100% { height: 5px } 50% { height: 20px } }
+  .pick { margin-top: 26px; color: var(--fg2); max-width: 900px; } .pick b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>V2.2 · chat layout · six styles</h1><p>The same Harbor conversation in each. These are the bones of every chat (how turns, answers, actions and work show up), not the onboarding canvas.</p></header>
+
+  <section class="opt"><div class="cap"><span class="mono n">01</span><h2>Clean</h2><p>The AI writes like a document, no bubble; your replies are small cards on the right. Most reading-friendly. <b>What V2.2 does today.</b></p><div class="ref"><span>Claude</span><span>ChatGPT</span><span>Gemini</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Harbor Dental</b> › Ads paused</span><span class="av">MA</span></div><div class="body"><div class="col a">
+      <div class="ai"><p>Harbor’s ads stopped on Tuesday. The card on file expired. <span class="cost">−$2.4k/mo</span></p></div>
+      <div class="ai"><p><b style="font-weight:500">Switch to the new Visa ••4411?</b></p></div>
+      <div class="acts"><span class="p">Switch card</span><span>Not now</span><span style="box-shadow:none;color:var(--fg3)">Details</span></div>
+      <div class="me">Yes, switch it</div>
+      <div class="steps">▸ Did 4 steps <span class="mod mono">Ads</span><span class="mod mono">Billing</span></div>
+      <div class="ai"><p>Done. Harbor’s ads are live again.</p></div><div class="ok">✓ Live again on Visa ••4411 · $2.4k/mo protected</div>
+    </div><div class="composer"><span class="sp">✦</span>Reply…<i></i></div></div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">02</span><h2>Bubbles</h2><p>Both sides in bubbles, like messaging a person: AI on the left with its avatar, you on the right in dark. Feels conversational and familiar on phones; less room for rich content.</p><div class="ref"><span>iMessage</span><span>WhatsApp</span><span>Intercom</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Harbor Dental</b> › Ads paused</span><span class="av">MA</span></div><div class="body"><div class="col b">
+      <div class="time mono">Today 9:38</div>
+      <div class="row"><span class="ai-av">✦</span><div class="bub">Harbor’s ads stopped on Tuesday, the card expired. That’s <b style="font-weight:500">−$2.4k/mo</b>.</div></div>
+      <div class="row"><span class="ai-av" style="visibility:hidden">✦</span><div class="bub">Switch to the new Visa ••4411?</div></div>
+      <div class="row me"><div class="bub">Yes, switch it</div></div>
+      <div class="row"><span class="ai-av">✦</span><div class="bub">Done ✓ Ads are live again. <span style="color:var(--fg3);font-size:12.5px">4 steps · Ads, Billing</span></div></div>
+    </div><div class="composer"><span class="sp">✦</span>Message…<i></i></div></div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">03</span><h2>Threaded rows</h2><p>Every message is a row with who and when, all left-aligned, like a team channel. System events (steps, results) sit indented as a quiet log. Best when <b>account managers and the AI share a thread</b>.</p><div class="ref"><span>Slack</span><span>Linear</span><span>Discord</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Harbor Dental</b> › Ads paused</span><span class="av">MA</span></div><div class="body"><div class="col c">
+      <div class="msg"><span class="ai-av">✦</span><div><div class="who"><b>Ask AI</b><small>9:38 AM</small></div></div><div class="txt">Harbor’s ads stopped Tuesday, the card expired <span class="cost">−$2.4k/mo</span>. Switch to the new Visa ••4411?<div class="acts"><span class="p">Switch card</span><span>Not now</span></div></div></div>
+      <div class="msg"><span class="av">MA</span><div><div class="who"><b>Maya</b><small>9:39 AM</small></div></div><div class="txt">Yes, switch it</div></div>
+      <div class="sys">⚙ Ads agent · switched card, resumed 3 campaigns · 6s</div>
+      <div class="msg"><span class="av" style="background:#2f5fe0">SK</span><div><div class="who"><b>Sam</b><small>9:41 AM · account manager</small></div></div><div class="txt">I’ll tell Dr. Chen it’s fixed 👍</div></div>
+    </div><div class="composer"><span class="sp">✦</span>Message the AI or @Sam…<i></i></div></div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">04</span><h2>Answer page</h2><p>Each question becomes a <b>page</b>: the question as a heading, where the answer came from (tools as sources), the answer, then follow-ups. Great for questions (“why did Lumen dip?”), heavier for quick yes/no.</p><div class="ref"><span>Perplexity</span><span>Arc Search</span><span>Google AI Mode</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Harbor Dental</b> › Ads paused</span><span class="av">MA</span></div><div class="body"><div class="col d">
+      <div class="qh">Why are Harbor’s ads paused?</div>
+      <div class="src"><span>Ads · 3 campaigns</span><span>Billing · card ••0912</span><span>Reporting · spend</span></div>
+      <div class="sec mono">Answer</div>
+      <div class="ans">The card on file <b>expired on Tuesday</b>, so all 3 campaigns stopped. That puts <b>$2.4k a month</b> at risk. A new Visa (••4411) was added last week.</div>
+      <div class="acts"><span class="p">Switch card</span><span>Not now</span></div>
+      <div class="sec mono">Related</div>
+      <div class="fu"><span>Which other clients have expired cards?</span><span>Make card switches automatic</span><span>Show Harbor’s ad results this month</span></div>
+    </div><div class="composer"><span class="sp">✦</span>Ask a follow-up…<i></i></div></div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">05</span><h2>Turn cards</h2><p>Each exchange is one card: your ask on top, the answer and actions in the middle, a footer with steps, copy and undo. Older turns fade. Very scannable, and each card can be <b>pinned, shared or re-run</b>.</p><div class="ref"><span>Notion AI</span><span>Raycast AI</span><span>Warp</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Harbor Dental</b> › Ads paused</span><span class="av">MA</span></div><div class="body"><div class="col e">
+      <div class="turn old"><div class="tq"><span class="av">MA</span>Why are Harbor’s ads paused?</div><div class="ta">The card on file expired Tuesday. −$2.4k/mo at risk.</div></div>
+      <div class="turn"><div class="tq"><span class="av">MA</span>Switch it to the new card</div><div class="ta"><span>Done. Harbor’s ads are live again on Visa ••4411.</span><span class="ok">✓ $2.4k/mo protected</span></div><div class="tf"><span>▸ 4 steps · Ads agent</span><span>Why?</span><span>Copy</span><span style="margin-left:auto">Undo</span></div></div>
+    </div><div class="composer"><span class="sp">✦</span>Ask anything…<i></i></div></div></div></div></section>
+
+  <section class="opt"><div class="cap"><span class="mono n">06</span><h2>Voice-first focus</h2><p>One big line in the middle: what the AI is saying now. The transcript fades above it, answers sit under it, and the wave is the AI. Calm and great in Talk mode; switches to 01 when you type.</p><div class="ref"><span>ChatGPT voice</span><span>Siri</span><span>V2.1 · V3</span></div></div>
+    <div class="fit"><div class="stage"><div class="bar"><span><b>Harbor Dental</b> › Ads paused</span><span class="av">MA</span></div><div class="body"><div class="f">
+      <div class="past"><span>Morning, Maya. Three things need you.</span><span style="opacity:.7">“Let’s start with Harbor.”</span></div>
+      <div class="now">Harbor’s ads stopped Tuesday. <span>The card expired.</span><br />Switch to the new Visa?</div>
+      <div class="acts"><span class="p">Switch card</span><span>Not now</span></div>
+      <div class="heard">Listening… say “yes” or “later”</div>
+      <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div></div></div></div></section>
+
+  <p class="pick">My pick: keep <b>01 Clean</b> as the default (reads best, room for rich results and the canvas), offer <b>06 Voice-first</b> automatically in Talk mode, and use <b>03 Threaded rows</b> later when account managers join the thread (agency plan, phase 4).</p>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => (f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})`))
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simple Memory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg: #f9f9fa; --page: #fff; --fg: #15161b; --fg2: #52545f; --fg3: #858896; --line: rgba(21,22,27,.08); --line2: rgba(21,22,27,.14); --chip: #f1f1f3; --spark: #6b72ff; --amber: #d98a1c; --green: #079455;
+    --shadow: 0 0 0 1px rgba(21,22,27,.06), 0 1px 2px rgba(21,22,27,.03); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ebebef; color: var(--fg); font: 400 14px/1.45 Inter, system-ui, sans-serif; padding: 40px 16px 100px; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  header h1 { font-weight: 400; font-size: 30px; letter-spacing: -.03em; margin: 0 0 8px; } header p { color: var(--fg2); margin: 0 0 28px; max-width: 880px; } header b { color: var(--fg); font-weight: 500; }
+  .opt { margin-bottom: 52px; } .cap { display: grid; grid-template-columns: 34px 1fr; gap: 2px 10px; margin-bottom: 14px; } .cap .n { font: 500 11px/1 Inter; color: var(--fg3); padding-top: 7px; } .cap h2 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .cap p { grid-column: 2; margin: 0; color: var(--fg2); max-width: 900px; } .cap p b { color: var(--fg); font-weight: 500; }
+  .fit { position: relative; width: 100%; aspect-ratio: 1200 / 700; } .stage { position: absolute; left: 0; top: 0; width: 1200px; height: 700px; transform-origin: 0 0; background: var(--bg); border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 1px var(--line2), 0 30px 60px -36px rgba(0,0,0,.3); display: flex; }
+  .side { width: 232px; flex: none; padding: 14px; } .isl { height: 100%; background: #fff; border-radius: 18px; box-shadow: var(--shadow); padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+  .isl .b { font-weight: 600; padding: 2px 8px 12px; display: flex; gap: 8px; align-items: center; } .isl .b i { width: 18px; height: 18px; border-radius: 6px; background: #7f8cff; }
+  .isl .h { display: flex; align-items: center; gap: 9px; padding: 6px 8px; border-radius: 8px; color: var(--fg2); } .isl .h.on { background: var(--chip); color: var(--fg); } .isl .h em { margin-left: auto; font-style: normal; font-size: 11px; color: var(--amber); background: #fbf1e2; padding: 0 6px; border-radius: 99px; } .isl .sp { flex: 1; }
+  .main { flex: 1; min-width: 0; display: flex; justify-content: center; }
+  .col { width: 720px; padding: 40px 0; display: flex; flex-direction: column; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; } .top h3 { margin: 0; font-size: 28px; font-weight: 400; letter-spacing: -.03em; } .top a { font-size: 13px; color: var(--fg2); text-decoration: none; }
+  .ask { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 8px 0 18px; border-radius: 26px; background: #fff; box-shadow: 0 0 0 1px var(--line2), 0 8px 24px -18px rgba(21,22,27,.2); font-size: 15px; color: var(--fg3); } .ask b { color: var(--fg); font-weight: 400; flex: 1; } .ask .go { width: 36px; height: 36px; border-radius: 18px; background: var(--fg); color: #fff; display: grid; place-items: center; font-size: 15px; }
+  .sug { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 22px; } .sug span { font-size: 13px; padding: 5px 12px; border-radius: 99px; background: #fff; box-shadow: var(--shadow); color: var(--fg2); }
+  .tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); margin-bottom: 14px; font-size: 14px; color: var(--fg3); } .tabs span { padding-bottom: 10px; } .tabs span.on { color: var(--fg); box-shadow: inset 0 -2px 0 var(--fg); } .tabs em { font-style: normal; font-size: 12px; color: var(--amber); background: #fbf1e2; padding: 0 6px; border-radius: 99px; margin-left: 4px; }
+  .card { background: #fff; border-radius: 16px; box-shadow: var(--shadow); }
+  .row { display: flex; align-items: center; gap: 12px; padding: 14px 18px; } .row + .row { border-top: 1px solid var(--line); }
+  .row .tx { flex: 1; min-width: 0; } .row .tx b { display: block; font-weight: 400; font-size: 14px; } .row .tx small { font-size: 12.5px; color: var(--fg3); }
+  .row .tx small i { font-style: normal; color: var(--spark); }
+  .btn { font-size: 13px; padding: 7px 14px; border-radius: 99px; background: var(--fg); color: #fff; white-space: nowrap; } .btn.o { background: #fff; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); }
+  .dots { color: var(--fg3); font-size: 16px; padding: 0 2px; }
+  .ans { padding: 18px 20px; margin-bottom: 14px; } .ans .q { font-size: 13px; color: var(--fg3); margin-bottom: 6px; } .ans p { margin: 0 0 12px; font-size: 16px; line-height: 1.55; }
+  .srcs { display: flex; flex-wrap: wrap; gap: 6px; } .srcs span { font-size: 12.5px; padding: 4px 10px; border-radius: 99px; background: var(--chip); color: var(--fg2); }
+  .foot { display: flex; justify-content: space-between; margin-top: auto; padding-top: 18px; font-size: 12.5px; color: var(--fg3); } .foot a { color: var(--fg2); text-decoration: none; }
+  .cl { display: grid; grid-template-columns: 220px 1fr; gap: 14px; }
+  .cls .row { padding: 10px 14px; } .cls .row.on { background: #f4f4f7; } .lg { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-weight: 600; font-size: 12px; flex: none; }
+  .kv { display: grid; grid-template-columns: 96px 1fr; gap: 8px 14px; padding: 14px 18px; font-size: 13.5px; } .kv i { font-style: normal; color: var(--fg3); font-size: 12.5px; }
+  .lab { font: 500 10px/14px Inter; letter-spacing: .05em; text-transform: uppercase; color: var(--fg3); margin: 0 2px 8px; display: flex; justify-content: space-between; } .lab span { color: #1f6feb; text-transform: none; letter-spacing: 0; font-size: 11.5px; }
+  .save { font-size: 12px; color: #1f6feb; background: #eaf2ff; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } .vs div { background: #fff; border-radius: 14px; padding: 16px 18px; box-shadow: var(--shadow); } .vs h3 { margin: 0 0 8px; font-size: 15px; font-weight: 500; } .vs ul { margin: 0; padding-left: 18px; color: var(--fg2); font-size: 13.5px; line-height: 1.65; } .vs b { color: var(--fg); font-weight: 500; }
+  @media (max-width: 760px) { .vs { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Memory, simplified</h1><p>One page, <b>search first</b>. Most of the time you just ask. Below the box, three tabs: <b>To review</b>, <b>About you</b>, <b>Clients</b>. Rules, sources, sharing and history move out of the way.</p></header>
+
+  <section class="opt"><div class="cap"><span class="n">1</span><h2>Ask</h2><p>Open Memory and type a question. The answer comes with its sources, so you can trust it or fix it.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="h">+ New</span><span class="h">Search</span><span class="h">Today</span><span class="sp"></span><span class="h on">Memory<em>3</em></span></div></aside>
+      <div class="main"><div class="col">
+        <div class="top"><h3>Memory</h3><a>Settings ›</a></div>
+        <div class="ask"><b>What does Harbor Dental care about?</b><span class="go">↑</span></div>
+        <div class="sug"><span>What do you know about me?</span><span>Who prefers texts?</span><span>What did Lumen say last month?</span></div>
+        <div class="card ans"><div class="q">Harbor Dental</div><p>New patients, about <b style="font-weight:500">40 a month</b>, and Dr. Chen wants <b style="font-weight:500">texts, not emails</b>. Before/after ads work best, and ad spend is capped at <b style="font-weight:500">$700 a week</b>.</p>
+          <div class="srcs"><span>☏ Tuesday's call</span><span>✉ Amy's email · Sep</span><span>▤ 3 months of ad results</span><span>◷ $700 cap · waiting for your review</span></div></div>
+        <div class="tabs"><span class="on">To review<em>3</em></span><span>About you</span><span>Clients</span></div>
+        <div class="card">
+          <div class="row"><div class="tx"><b>Harbor Dental caps ad spend at $700 a week</b><small>From Amy's email · Oct 30 · Ads agent</small></div><span class="btn">Keep</span><span class="btn o">Not true</span></div>
+          <div class="row"><div class="tx"><b>Lumen Spa: sign review replies “— Jen”</b><small>Noticed in 6 of Jen's replies · Reputation agent</small></div><span class="btn">Keep</span><span class="btn o">Not true</span></div>
+        </div>
+      </div></div>
+    </div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">2</span><h2>About you</h2><p>Just a list. Each line says where it came from. <b>⋯</b> has Edit and Forget; there's no switch, no filter row, no scope pills. Add something by typing it in the box above (“remember…”).</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="h">+ New</span><span class="h">Search</span><span class="h">Today</span><span class="sp"></span><span class="h on">Memory<em>3</em></span></div></aside>
+      <div class="main"><div class="col">
+        <div class="top"><h3>Memory</h3><a>Settings ›</a></div>
+        <div class="ask"><b style="color:var(--fg3)">Ask, or tell me something to remember…</b><span class="go">↑</span></div>
+        <div style="height:22px"></div>
+        <div class="tabs"><span>To review<em>3</em></span><span class="on">About you</span><span>Clients</span></div>
+        <div class="card">
+          <div class="row"><div class="tx"><b>Lead with their review numbers on the Lumen call</b><small>From a chat · Friday · until Thursday</small></div><span class="dots">⋯</span></div>
+          <div class="row"><div class="tx"><b>Send me a recap every Friday at 5 PM</b><small>You said · Oct 12</small></div><span class="dots">⋯</span></div>
+          <div class="row"><div class="tx"><b>Lead with wins in client reports</b><small>Learned from 6 report edits · <i>shared with your team</i></small></div><span class="dots">⋯</span></div>
+          <div class="row"><div class="tx"><b>Short answers; no voice before 9 AM</b><small>Learned this week</small></div><span class="dots">⋯</span></div>
+          <div class="row"><div class="tx"><b>Show client revenue as monthly, not yearly</b><small>Learned from 3 of your edits</small></div><span class="dots">⋯</span></div>
+        </div>
+        <div class="foot"><span>Only you see these unless marked “shared”.</span><a>Rules for agents live in AI team ›</a></div>
+      </div></div>
+    </div></div></section>
+
+  <section class="opt"><div class="cap"><span class="n">3</span><h2>Clients</h2><p>Pick a client. <b>From HighLevel</b> is the live record (nothing to keep in sync). <b>Learned</b> is what the AI picked up, and one tap saves a learned fact into a real HighLevel field.</p></div>
+    <div class="fit"><div class="stage">
+      <aside class="side"><div class="isl"><div class="b"><i></i>Cerebro</div><span class="h">+ New</span><span class="h">Search</span><span class="h">Today</span><span class="sp"></span><span class="h on">Memory<em>3</em></span></div></aside>
+      <div class="main"><div class="col" style="width:820px">
+        <div class="top"><h3>Memory</h3><a>Settings ›</a></div>
+        <div class="tabs"><span>To review<em>3</em></span><span>About you</span><span class="on">Clients</span></div>
+        <div class="cl">
+          <div class="card cls">
+            <div class="row" style="color:var(--fg3);font-size:13px">⌕ Search 1,284 clients</div>
+            <div class="row on"><span class="lg" style="background:#e6eef7;color:#1f3a5f">H</span><div class="tx"><b>Harbor Dental</b><small>7 learned</small></div></div>
+            <div class="row"><span class="lg" style="background:#efe6d6;color:#2c3a2e">G</span><div class="tx"><b>Glow Med Spa</b><small>3 learned</small></div></div>
+            <div class="row"><span class="lg" style="background:#fdf0ee;color:#8a3b2e">L</span><div class="tx"><b>Lumen Spa</b><small>5 learned</small></div></div>
+            <div class="row"><span class="lg" style="background:#e1f4f1;color:#16524a">P</span><div class="tx"><b>Peak Fitness</b><small>4 learned</small></div></div>
+            <div class="row"><span class="lg" style="background:#eef0ff;color:#3d43c7">S</span><div class="tx"><b>Smile Studio</b><small>Lead · 2 learned</small></div></div>
+          </div>
+          <div>
+            <div class="lab">From HighLevel <span>Live ↗</span></div>
+            <div class="card kv" style="margin-bottom:14px"><i>Contact</i><span>Dr. Amy Chen · (555) 010-2231</span><i>Plan</i><span>$1,240/mo · 2 clinics</span><i>Brand</i><span>Navy and white</span><i>Calendars</i><span>2 · online booking on</span></div>
+            <div class="lab">Learned · 7</div>
+            <div class="card">
+              <div class="row"><div class="tx"><b>Amy prefers text over email</b><small>Tuesday's call</small></div><span class="save">Save to contact</span><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Goal: 40 new patients a month</b><small>Amy's email · Sep</small></div><span class="save">Save as goal</span><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Before/after ads work best</b><small>3 months of ad results</small></div><span class="dots">⋯</span></div>
+              <div class="row"><div class="tx"><b>Avoid calls before 10 AM</b><small>Oct 20 call</small></div><span class="dots">⋯</span></div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div></div></section>
+
+  <div class="vs">
+    <div><h3>Gone from the Memory screen</h3><ul>
+      <li><b>Rules</b> → AI team (they're permissions)</li>
+      <li><b>On/off switch</b> on every row</li>
+      <li><b>All / Team / Only you</b> filter and pills → “shared with your team” only when it is</li>
+      <li><b>Learns from</b> chips, <b>Changes</b> tab → Settings</li>
+      <li>Separate <b>Add</b> box → just say “remember…” in the ask box</li></ul></div>
+    <div><h3>What's left</h3><ul>
+      <li><b>Ask box</b> with answers and sources</li>
+      <li><b>To review</b> · Keep or Not true</li>
+      <li><b>About you</b> · a plain list, ⋯ for Edit / Forget</li>
+      <li><b>Clients</b> · HighLevel record + what was learned, with Save to HighLevel</li>
+      <li><b>Settings ›</b> for sources, sharing and history</li></ul></div>
+  </div>
+</div>
+<script>
+  const fit = () => document.querySelectorAll('.fit').forEach((f) => { f.firstElementChild.style.transform = `scale(${f.clientWidth / 1200})` })
+  fit(); addEventListener('resize', fit)
+</script>
+</body>
+</html>
