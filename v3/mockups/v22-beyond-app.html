@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beyond an app</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#f6f6f7; --fg:#15161b; --fg2:#5c5e69; --fg3:#8a8c97; --line:rgba(21,22,27,.08); --vio:#6b72ff; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:400 15px/1.5 Inter, system-ui, sans-serif; -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1180px; margin:0 auto; padding:56px 24px 80px; }
+h1 { font-weight:500; font-size:34px; letter-spacing:-.02em; margin:0 0 8px; } .lead { color:var(--fg2); font-size:17px; max-width:720px; margin:0 0 20px; }
+.why { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:48px; } .why span { font-size:13px; padding:6px 12px; border-radius:99px; background:#fff; box-shadow:0 0 0 1px var(--line); color:var(--fg2); }
+.opt { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:32px; align-items:start; margin-bottom:72px; }
+.lbl { font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--fg3); }
+.opt h2 { font-weight:500; font-size:24px; letter-spacing:-.015em; margin:6px 0 8px; } .opt p { margin:0 0 14px; color:var(--fg2); }
+.opt ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; font-size:14px; color:var(--fg2); } .opt li b { color:var(--fg); font-weight:500; }
+.gone { margin-top:14px; font-size:13px; color:var(--fg3); }
+.scr { position:relative; aspect-ratio:16/10; border-radius:22px; overflow:hidden; box-shadow:0 0 0 1px var(--line), 0 30px 60px -40px rgba(21,22,27,.35); }
+@media (max-width:900px) { .opt { grid-template-columns:1fr; } }
+
+/* faces */
+.fc { position:relative; border-radius:30%; display:grid; place-items:center; flex:none; }
+.fc.stitch { background:radial-gradient(circle, #8b90ff 34%, transparent 36%) 0 0/14% 14%, #e4e5ff; }
+.fc .ey { display:flex; gap:22%; width:100%; justify-content:center; } .fc .ey i { width:9%; aspect-ratio:1; border-radius:50%; background:#15161b; }
+.fc.c { border-radius:50%; } .fc.o { background:#f08a3c; } .fc.t { background:#4fd9c4; border-radius:24%; } .fc.p { background:#e66fa8; border-radius:46% 54% 50% 50%; } .fc.g { background:#5ad37b; border-radius:50%; } .fc.y { background:#f0c03a; }
+
+/* A · One surface */
+.a { background:#fbfbfc; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6%; }
+.a .fc { width:64px; height:64px; margin-bottom:26px; animation:breathe 3.2s ease-in-out infinite; }
+@keyframes breathe { 50% { transform:scale(1.05); } }
+.a .say { font-size:clamp(18px,2.6vw,30px); font-weight:400; letter-spacing:-.02em; line-height:1.35; max-width:760px; color:var(--fg); }
+.a .say u { text-decoration:none; background:linear-gradient(transparent 62%, rgba(107,114,255,.2) 62%); cursor:pointer; padding:0 2px; }
+.a .say .m { color:var(--fg3); }
+.a .ask { position:absolute; left:50%; bottom:7%; transform:translateX(-50%); width:min(560px,80%); height:48px; border-radius:24px; background:#fff; box-shadow:0 0 0 1px var(--line), 0 10px 30px -20px rgba(21,22,27,.3); display:flex; align-items:center; padding:0 8px 0 20px; color:var(--fg3); font-size:14px; }
+.a .ask span { flex:1; text-align:left; } .a .ask kbd { font:500 11px Inter; color:var(--fg3); border-radius:6px; padding:3px 6px; background:var(--bg); margin-right:6px; } .a .ask b { width:34px; height:34px; border-radius:50%; background:#15161b; display:grid; place-items:center; color:#fff; font-size:14px; }
+.a .corner { position:absolute; top:5%; font-size:12px; color:var(--fg3); } .a .corner.l { left:4%; } .a .corner.r { right:4%; display:flex; gap:14px; }
+
+/* B · Living field */
+.b { background:#07070b; color:#fff; padding:6%; display:flex; flex-direction:column; justify-content:space-between; }
+.b .orb { position:absolute; width:62%; aspect-ratio:1; left:48%; top:-6%; border-radius:50%; filter:blur(50px); background:conic-gradient(from 0deg, #ff8a4c, #ff5f8a, #7a6bff, #39c6ff, #ff8a4c); opacity:.55; animation:spin 18s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.b .top { position:relative; display:flex; justify-content:space-between; font-size:12px; color:rgba(255,255,255,.5); letter-spacing:.04em; }
+.b .big { position:relative; font-size:clamp(36px,6vw,72px); font-weight:300; letter-spacing:-.04em; line-height:1; } .b .big small { display:block; font-size:clamp(13px,1.3vw,16px); letter-spacing:0; color:rgba(255,255,255,.6); margin-top:14px; font-weight:400; }
+.b .pills { position:relative; display:flex; gap:10px; flex-wrap:wrap; }
+.b .pill { display:flex; align-items:center; gap:10px; padding:10px 16px 10px 10px; border-radius:99px; background:rgba(255,255,255,.07); backdrop-filter:blur(20px); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); font-size:14px; }
+.b .pill .fc { width:26px; height:26px; } .b .pill em { font-style:normal; color:rgba(255,255,255,.5); }
+.b .dock { position:absolute; right:6%; bottom:8%; display:flex; gap:4px; padding:5px; border-radius:99px; background:rgba(255,255,255,.08); backdrop-filter:blur(20px); box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.b .dock span { font-size:12px; padding:7px 13px; border-radius:99px; color:rgba(255,255,255,.65); } .b .dock span.on { background:#fff; color:#07070b; }
+
+/* C · Orbit */
+.c { background:radial-gradient(70% 90% at 50% 50%, #fff, #eef0f6); }
+.c .ring { position:absolute; left:50%; top:50%; border-radius:50%; box-shadow:0 0 0 1px rgba(21,22,27,.07); transform:translate(-50%,-50%); }
+.c .r1 { width:38%; aspect-ratio:1; } .c .r2 { width:64%; aspect-ratio:1; }
+.c .core { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; }
+.c .core .fc { width:76px; height:76px; } .c .core b { font-weight:500; font-size:15px; } .c .core small { font-size:12px; color:var(--fg3); }
+.c .spin { position:absolute; inset:0; animation:spin 60s linear infinite; }
+.c .ag { position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:5px; font-size:11px; color:var(--fg2); }
+.c .spin .ag > * { animation:spin 60s linear infinite reverse; }
+.c .ag .fc { width:40px; height:40px; } .c .ag.need .fc { box-shadow:0 0 0 3px #fff, 0 0 0 5px #f0a35e; }
+.c .sat { position:absolute; display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:14px; background:#fff; box-shadow:0 0 0 1px var(--line), 0 12px 24px -18px rgba(21,22,27,.4); font-size:12.5px; white-space:nowrap; }
+.c .sat i { width:7px; height:7px; border-radius:50%; background:#e0523f; } .c .sat em { font-style:normal; color:var(--fg3); }
+.c .line { position:absolute; height:1px; background:linear-gradient(90deg, rgba(240,163,94,.0), rgba(240,163,94,.7)); transform-origin:left center; }
+.c .hint { position:absolute; left:4%; bottom:5%; font-size:12px; color:var(--fg3); }
+
+/* D · Time line */
+.d { background:#fbfbfc; padding:5% 0; display:flex; flex-direction:column; }
+.d .hd { padding:0 5%; display:flex; justify-content:space-between; align-items:baseline; } .d .hd b { font-weight:500; font-size:clamp(18px,2vw,24px); letter-spacing:-.02em; } .d .hd small { color:var(--fg3); font-size:12px; }
+.d .track { position:relative; flex:1; margin-top:4%; }
+.d .axis { position:absolute; left:0; right:0; top:50%; height:1px; background:var(--line); }
+.d .now { position:absolute; left:46%; top:6%; bottom:6%; width:2px; background:#15161b; border-radius:2px; } .d .now span { position:absolute; top:-4px; left:8px; font-size:11px; font-weight:600; letter-spacing:.06em; }
+.d .ev { position:absolute; width:20%; padding:12px 14px; border-radius:16px; background:#fff; box-shadow:0 0 0 1px var(--line); font-size:12.5px; }
+.d .ev b { display:block; font-weight:500; font-size:13.5px; margin:4px 0 2px; } .d .ev small { color:var(--fg3); font-size:11px; } .d .ev .fc { width:22px; height:22px; }
+.d .ev.past { opacity:.45; } .d .ev.need { box-shadow:0 0 0 1.5px #15161b, 0 16px 30px -20px rgba(21,22,27,.45); } .d .ev.fut { background:transparent; box-shadow:inset 0 0 0 1px rgba(21,22,27,.12); }
+.d .ev .r { display:flex; align-items:center; gap:7px; }
+.d .ev .act { margin-top:9px; display:inline-block; font-size:11.5px; padding:5px 11px; border-radius:99px; background:#15161b; color:#fff; }
+.d .times { position:absolute; left:0; right:0; top:calc(50% + 10px); display:flex; justify-content:space-around; font-size:11px; color:var(--fg3); padding:0 4%; }
+
+.pick { margin-top:-20px; padding:24px 28px; border-radius:20px; background:#fff; box-shadow:0 0 0 1px var(--line); } .pick h2 { font-weight:500; font-size:20px; margin:0 0 8px; } .pick p { margin:0; color:var(--fg2); }
+</style></head><body><div class="wrap">
+<span class="lbl">V2.2 · four directions</span>
+<h1>Less app, more presence</h1>
+<p class="lead">Most apps are a sidebar, a list and a settings page. Cerebro does the work for you, so it can show <b style="font-weight:500;color:var(--fg)">what’s happening</b> instead of <b style="font-weight:500;color:var(--fg)">where things are</b>. Four ways to get there, from the safest to the boldest.</p>
+<div class="why"><span>No sidebar by default</span><span>One thing on screen at a time</span><span>State you can feel, not read</span><span>Talk and type are equal</span></div>
+
+<!-- A -->
+<div class="opt"><div class="scr a">
+  <span class="corner l">Fri, Nov 14</span><span class="corner r"><span>Team</span><span>Memory</span><span>KA</span></span>
+  <span class="fc stitch"><span class="ey"><i></i><i></i></span></span>
+  <div class="say">Morning, Karthik. <u>Harbor’s ads stopped</u> because the card expired, <u>Peak’s booking widget</u> broke Sunday, and <u>14 clinics missed calls</u> after 5. <span class="m">Want me to take all three?</span></div>
+  <div class="ask"><span>Say or type anything…</span><kbd>⌘K</kbd><b>↑</b></div>
+</div><div>
+  <span class="lbl">A · Safest</span><h2>One surface</h2>
+  <p>The whole home is one sentence from Cerebro. The things that need you are highlighted words; tap one and its plan opens right there. Everything else is a word in the corner or ⌘K.</p>
+  <ul><li><b>Feels like:</b> a calm assistant, not a dashboard</li><li><b>New:</b> the needs live inside a sentence</li><li><b>Keeps:</b> plans, receipts, chat as they are</li></ul>
+  <div class="gone">Goes away: sidebar, card grid, tab bar</div>
+</div></div>
+
+<!-- B -->
+<div class="opt"><div class="scr b">
+  <div class="orb"></div>
+  <div class="top"><span>CEREBRO</span><span>FRI · 9:41</span></div>
+  <div class="big">3 things need you.<small>Everything else is handled. $6.0k a month is waiting on two taps.</small></div>
+  <div class="pills">
+    <span class="pill"><span class="fc o c"><span class="ey"><i></i><i></i></span></span>Harbor ads paused <em>−$2.4k</em></span>
+    <span class="pill"><span class="fc t"><span class="ey"><i></i><i></i></span></span>Peak widget down <em>−$1.6k</em></span>
+    <span class="pill"><span class="fc g"><span class="ey"><i></i><i></i></span></span>Missed calls <em>14 clinics</em></span>
+  </div>
+  <div class="dock"><span class="on">Now</span><span>Talk</span><span>Team</span><span>Memory</span></div>
+</div><div>
+  <span class="lbl">B · Moody</span><h2>Living field</h2>
+  <p>A dark canvas with one moving light. Its colour is your day: warm when something needs you, cool blue when all is calm, violet while agents work. Huge type says the one thing that matters.</p>
+  <ul><li><b>Feels like:</b> a car dashboard at night, or a watch face</li><li><b>New:</b> state you notice from across the room</li><li><b>Risk:</b> dark only; less room for detail</li></ul>
+  <div class="gone">Goes away: lists, greys, most borders</div>
+</div></div>
+
+<!-- C -->
+<div class="opt"><div class="scr c">
+  <div class="ring r1"></div><div class="ring r2"></div>
+  <div class="spin">
+    <div class="ag need" style="left:50%;top:18%"><span class="fc o c"><span class="ey"><i></i><i></i></span></span><span>Ads</span></div>
+    <div class="ag" style="left:77%;top:36%"><span class="fc t"><span class="ey"><i></i><i></i></span></span><span>Sites</span></div>
+    <div class="ag" style="left:73%;top:70%"><span class="fc p"><span class="ey"><i></i><i></i></span></span><span>Marketing</span></div>
+    <div class="ag" style="left:27%;top:70%"><span class="fc y"><span class="ey"><i></i><i></i></span></span><span>Reviews</span></div>
+    <div class="ag need" style="left:23%;top:36%"><span class="fc g"><span class="ey"><i></i><i></i></span></span><span>Voice</span></div>
+  </div>
+  <div class="core"><span class="fc stitch"><span class="ey"><i></i><i></i></span></span><b>Cerebro</b><small>2 agents need you · 3 working</small></div>
+  <div class="sat" style="left:58%;top:8%"><i></i>Harbor ads paused <em>Switch card</em></div>
+  <div class="sat" style="left:3%;top:24%"><i></i>14 clinics missed calls <em>Set it up</em></div>
+  <span class="hint">Drag to look around · pinch to zoom into an agent</span>
+</div><div>
+  <span class="lbl">C · Spatial</span><h2>Orbit</h2>
+  <p>Your AI team is a little solar system around Cerebro. Agents drift slowly; the ones that need you glow and pull their question into view. Zoom into an agent to see its work, zoom out to see the whole agency.</p>
+  <ul><li><b>Feels like:</b> a living map of your team</li><li><b>New:</b> who’s busy and who’s stuck, at a glance</li><li><b>Best for:</b> the AI team page, or a home toggle</li></ul>
+  <div class="gone">Goes away: the agent list and grid</div>
+</div></div>
+
+<!-- D -->
+<div class="opt"><div class="scr d">
+  <div class="hd"><b>Your day, as a line</b><small>Scroll left for what’s done, right for what’s next</small></div>
+  <div class="track">
+    <div class="axis"></div>
+    <div class="ev past" style="left:3%;top:12%"><div class="r"><span class="fc y"><span class="ey"><i></i><i></i></span></span><small>7:10 AM</small></div><b>23 reviews answered</b><small>Reviews agent</small></div>
+    <div class="ev past" style="left:21%;top:58%"><div class="r"><span class="fc t"><span class="ey"><i></i><i></i></span></span><small>8:30 AM</small></div><b>Lumen site refreshed</b><small>Sites agent</small></div>
+    <div class="now"><span>NOW</span></div>
+    <div class="ev need" style="left:49%;top:8%"><div class="r"><span class="fc o c"><span class="ey"><i></i><i></i></span></span><small>Since Tue</small></div><b>Harbor ads paused</b><small>−$2.4k/mo</small><br><span class="act">Switch card</span></div>
+    <div class="ev need" style="left:49%;top:56%"><div class="r"><span class="fc t"><span class="ey"><i></i><i></i></span></span><small>Since Sun</small></div><b>Peak widget down</b><small>−$1.6k/mo</small><br><span class="act">Repair it</span></div>
+    <div class="ev fut" style="left:75%;top:14%"><div class="r"><span class="fc stitch"><span class="ey"><i></i><i></i></span></span><small>2:00 PM</small></div><b>Glow Med Spa call</b><small>Prep is ready</small></div>
+    <div class="ev fut" style="left:75%;top:60%"><div class="r"><span class="fc p"><span class="ey"><i></i><i></i></span></span><small>Nov 24</small></div><b>Black Friday sends</b><small>12 clinics</small></div>
+    <div class="times"><span>Earlier today</span><span></span><span></span><span>Later today</span><span>This month</span></div>
+  </div>
+</div><div>
+  <span class="lbl">D · Different</span><h2>Time line</h2>
+  <p>There are no pages, just your day on one line. What agents finished sits to the left and fades; what needs you sits on the Now line; what’s coming waits on the right as outlines. Swipe through time instead of through menus.</p>
+  <ul><li><b>Feels like:</b> scrubbing through a video of your agency</li><li><b>New:</b> past, now and next in one view</li><li><b>Risk:</b> new idea to learn; needs good zoom</li></ul>
+  <div class="gone">Goes away: Today, Your work and History as separate places</div>
+</div></div>
+
+<div class="pick"><h2>My pick</h2><p><b style="font-weight:500;color:var(--fg)">A · One surface</b> as the home, with <b style="font-weight:500;color:var(--fg)">B’s light</b> as a quiet colour wash that shows the state of your day, and <b style="font-weight:500;color:var(--fg)">C · Orbit</b> for the AI team page. It’s the most different from every other app while still easy to use on day one. D is the boldest; worth a prototype later.</p></div>
+</div></body></html>

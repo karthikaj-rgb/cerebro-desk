@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cerebro Presence</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#f7f7f9; --side:#efeff3; --fg:#14151a; --fg2:#5b5d68; --fg3:#8c8e99; --line:rgba(20,21,26,.08); --raise:#fff; --raise2:rgba(255,255,255,.94); --chip:rgba(20,21,26,.06); --hover:rgba(20,21,26,.05); --ring:rgba(20,21,26,.09); --need:#f0973f; --needbg:rgba(240,151,63,.12); --needtx:#b4610f; --ok:#1f9d5c; --s:0 0 0 1px rgba(20,21,26,.06), 0 24px 50px -30px rgba(20,21,26,.3); --SB:272px; }
+:root[data-theme='dark'] { --bg:#0a0a0d; --side:#0f0f13; --fg:#f1f1f5; --fg2:#a4a6b1; --fg3:#6c6f7b; --line:rgba(255,255,255,.07); --raise:#16171c; --raise2:rgba(22,23,28,.95); --chip:rgba(255,255,255,.07); --hover:rgba(255,255,255,.05); --ring:rgba(255,255,255,.08); --needbg:rgba(240,151,63,.14); --needtx:#ffb066; --s:0 0 0 1px rgba(255,255,255,.08), 0 24px 50px -24px rgba(0,0,0,.8); }
+* { box-sizing:border-box; } html, body { margin:0; height:100%; }
+body { background:var(--bg); color:var(--fg); font:400 15px/1.5 Inter, system-ui, sans-serif; -webkit-font-smoothing:antialiased; overflow:hidden; user-select:none; transition:background .3s; }
+button { font:inherit; color:inherit; border:0; background:none; cursor:pointer; text-align:left; }
+canvas.face { display:block; flex:none; }
+kbd { font:500 10.5px Inter; opacity:.55; }
+
+/* ── The sidebar: every place you already have ── */
+.sb { position:fixed; left:0; top:0; bottom:0; width:var(--SB); background:var(--side); border-right:1px solid var(--line); display:flex; flex-direction:column; z-index:40; }
+.sbh { display:flex; align-items:center; gap:10px; padding:18px 18px 12px; font-size:11.5px; font-weight:600; letter-spacing:.14em; }
+.sbh .sp { flex:1; }
+.tools { display:flex; gap:6px; padding:0 12px 8px; }
+.tools button { flex:1; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13.5px; color:var(--fg2); background:var(--chip); transition:color .15s, background .15s; }
+.tools button:hover { color:var(--fg); }
+.scroll { flex:1; overflow-y:auto; padding:4px 10px 10px; scrollbar-width:none; } .scroll::-webkit-scrollbar { display:none; }
+.it { width:100%; display:flex; align-items:center; gap:10px; height:38px; padding:0 10px; border-radius:10px; font-size:14px; color:var(--fg2); transition:background .12s, color .12s; position:relative; }
+.it:hover { background:var(--hover); color:var(--fg); } .it.on { background:var(--chip); color:var(--fg); }
+.it .t { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .it small { font-size:12px; color:var(--fg3); font-variant-numeric:tabular-nums; }
+.it .hash { width:20px; text-align:center; color:var(--fg3); flex:none; } .it .ic { width:20px; display:grid; place-items:center; flex:none; color:var(--fg3); }
+.it .ic svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.it em { font-style:normal; font-size:11px; font-weight:600; min-width:20px; height:20px; padding:0 6px; border-radius:10px; background:var(--need); color:#1a1205; display:grid; place-items:center; }
+.sec { font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--fg3); padding:16px 10px 6px; display:flex; align-items:center; justify-content:space-between; }
+.sec button { color:var(--fg3); font-size:16px; line-height:1; width:22px; height:22px; border-radius:6px; display:grid; place-items:center; } .sec button:hover { background:var(--hover); color:var(--fg); }
+/* the jobs that need you sit right under Now, loud */
+.nrow { width:100%; display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:12px; margin-top:4px; background:var(--needbg); box-shadow:inset 0 0 0 1px rgba(240,151,63,.25); transition:background .15s, box-shadow .15s; }
+.nrow:hover { box-shadow:inset 0 0 0 1px rgba(240,151,63,.55); }
+.nrow.on { background:var(--raise); box-shadow:inset 0 0 0 1.5px var(--need), 0 10px 24px -16px rgba(240,151,63,.7); }
+.nrow .tx { flex:1; min-width:0; } .nrow b { display:block; font-weight:500; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .nrow small { display:block; font-size:12px; color:var(--fg3); }
+.nrow .st { font-weight:600; color:var(--needtx); font-variant-numeric:tabular-nums; }
+.nrow.done { background:none; box-shadow:none; } .nrow.done b { color:var(--fg3); } .nrow.done .st { color:var(--ok); }
+.nrow.later { background:none; box-shadow:inset 0 0 0 1px var(--line); } .nrow.later .st { color:var(--fg3); font-weight:500; }
+.nrow.start { background:none; box-shadow:none; } .nrow.start:hover { background:var(--hover); }
+.team { display:grid; grid-template-columns:repeat(5, 1fr); gap:2px; padding:2px 0; }
+.team button { display:flex; flex-direction:column; align-items:center; gap:4px; padding:7px 0 5px; border-radius:10px; font-size:10.5px; color:var(--fg2); position:relative; }
+.team button:hover { background:var(--hover); } .team button.on { background:var(--chip); color:var(--fg); }
+.team button i { position:absolute; top:4px; right:12px; width:8px; height:8px; border-radius:50%; background:var(--need); box-shadow:0 0 0 2px var(--side); }
+.foot { border-top:1px solid var(--line); padding:8px 10px 12px; display:flex; flex-direction:column; gap:2px; }
+.foot .rev { font-size:11px; font-weight:500; padding:2px 8px; border-radius:99px; background:var(--needbg); color:var(--needtx); }
+.me { display:flex; align-items:center; gap:10px; padding:8px 10px; } .me .av { width:32px; height:32px; border-radius:50%; background:var(--fg); color:var(--bg); display:grid; place-items:center; font-size:11.5px; font-weight:600; }
+.me b { display:block; font-weight:500; font-size:14px; } .me small { font-size:12px; color:var(--fg3); }
+
+/* ── Main ── */
+.main { position:fixed; left:var(--SB); right:0; top:0; bottom:0; }
+.bar { position:absolute; left:0; right:0; top:0; height:64px; display:flex; align-items:center; gap:8px; padding:0 22px; z-index:30; }
+.bar .sp { flex:1; }
+.pill { height:34px; padding:0 14px; border-radius:17px; display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--fg2); background:var(--chip); transition:background .15s, color .15s; }
+.pill:hover { color:var(--fg); } .pill.on { background:var(--fg); color:var(--bg); }
+.money b { color:var(--fg); font-weight:500; font-variant-numeric:tabular-nums; } .money i { width:7px; height:7px; border-radius:50%; background:var(--ok); }
+.icon { width:34px; height:34px; border-radius:17px; display:grid; place-items:center; background:var(--chip); color:var(--fg2); } .icon:hover { color:var(--fg); }
+.icon svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.date { font-size:13px; color:var(--fg3); }
+
+/* What needs you, said plainly at the top */
+.head { position:absolute; left:28px; top:64px; z-index:20; }
+.head h1 { margin:0; font-weight:300; font-size:44px; letter-spacing:-.035em; line-height:1.05; }
+.head h1 b { font-weight:400; color:var(--need); } .head h1 b.ok { color:var(--ok); }
+.head p { margin:6px 0 0; font-size:15px; color:var(--fg2); } .head p b { color:var(--needtx); font-weight:500; }
+
+/* The team in orbit around Cerebro: the closer, the more it needs you */
+.stage { position:absolute; inset:0; z-index:5; }
+.stage svg.rings { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+.stage svg.rings ellipse { fill:none; stroke:var(--ring); } .stage svg.rings ellipse.r1 { stroke:rgba(240,151,63,.55); stroke-dasharray:2 6; stroke-width:1.3; }
+.stage svg.rings ellipse.g1 { fill:rgba(240,151,63,.05); stroke:none; }
+.stage svg.rings path.tether { fill:none; stroke:var(--need); stroke-width:1.6; stroke-dasharray:3 6; animation:flow 1s linear infinite; opacity:.9; }
+@keyframes flow { to { stroke-dashoffset:-18; } }
+.ringlbl { position:absolute; z-index:0; transform:translate(-50%,-50%); font-size:9.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--fg3); padding:2px 8px; border-radius:99px; background:var(--bg); white-space:nowrap; pointer-events:none; }
+.ringlbl.n { color:var(--needtx); }
+.ag { position:absolute; left:0; top:0; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; will-change:transform; }
+.ag .nm { font-size:11.5px; color:var(--fg); white-space:nowrap; padding:2px 9px; border-radius:99px; background:var(--raise2); box-shadow:0 0 0 1px var(--line); opacity:0; transform:translateY(-3px); transition:opacity .2s, transform .2s; }
+.ag:hover .nm, .ag.need .nm, .ag.work .nm { opacity:1; transform:none; }
+.ag.need .nm { background:var(--need); color:#1a1205; font-weight:600; box-shadow:none; }
+.ag .fw { position:relative; }
+.ag .prog { position:absolute; inset:-10%; width:120%; height:120%; transform:rotate(-90deg); opacity:0; transition:opacity .3s; pointer-events:none; }
+.ag .prog circle { fill:none; stroke-width:2.5; } .ag .prog .bg { stroke:var(--line); } .ag .prog .fg { stroke:#8b90ff; stroke-linecap:round; }
+.ag.work .prog { opacity:1; }
+.ag .chk { position:absolute; bottom:0; right:-2px; width:18px; height:18px; border-radius:50%; background:var(--ok); color:#fff; display:grid; place-items:center; font-size:11px; opacity:0; transform:scale(.4); transition:all .35s cubic-bezier(.3,1.6,.5,1); }
+.ag.done .chk { opacity:1; transform:none; }
+.core { position:absolute; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; gap:8px; z-index:50; cursor:pointer; }
+.core small { font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--fg3); }
+
+/* Tags above the card: every job, the one on screen selected */
+.tags { display:flex; gap:6px; margin-bottom:10px; overflow-x:auto; scrollbar-width:none; padding:2px; } .tags::-webkit-scrollbar { display:none; }
+.tag { flex:none; display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 13px 0 6px; border-radius:18px; font-size:13px; color:var(--fg2); background:var(--raise2); box-shadow:0 0 0 1px var(--line); transition:background .15s, box-shadow .15s, color .15s; white-space:nowrap; }
+.tag:hover { color:var(--fg); box-shadow:0 0 0 1px rgba(240,151,63,.5); }
+.tag b { font-weight:600; color:var(--needtx); font-variant-numeric:tabular-nums; }
+.tag.need { background:var(--needbg); box-shadow:0 0 0 1px rgba(240,151,63,.3); color:var(--fg); }
+.tag.on { background:var(--fg); color:var(--bg); box-shadow:none; } .tag.on b { color:var(--need); }
+.tag.done { background:none; color:var(--fg3); } .tag.done b { color:var(--ok); }
+.tag.later { background:none; color:var(--fg3); } .tag.later b { color:var(--fg3); font-weight:500; }
+.tag.start { background:none; } .tagsep { flex:none; width:1px; margin:8px 2px; background:var(--line); }
+/* Orbit or Surface */
+.modes { display:inline-flex; gap:2px; padding:3px; border-radius:99px; background:var(--chip); margin-left:12px; }
+.modes button { height:28px; padding:0 13px; border-radius:14px; font-size:12.5px; color:var(--fg2); } .modes button.on { background:var(--raise); color:var(--fg); box-shadow:0 1px 2px rgba(0,0,0,.18); }
+/* Surface: Cerebro says it in one line, and what needs you comes up as tags */
+.surface, .askbox { display:none; }
+body[data-mode='surface'] .stage, body[data-mode='surface'] .head, body[data-mode='surface'] .q .tags { display:none; }
+body[data-mode='surface'] .surface { display:flex; }
+body[data-mode='surface'] .askbox { display:flex; }
+body[data-mode='surface'] .q { bottom:104px; }
+.surface { position:absolute; left:0; right:0; top:72px; bottom:330px; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:18px; padding:0 40px; z-index:6; }
+.sgreet { margin:0; font-weight:400; font-size:clamp(26px, 3.2vw, 42px); letter-spacing:-.03em; line-height:1.15; max-width:820px; }
+.sgreet b { font-weight:400; color:var(--need); } .sgreet b.ok { color:var(--ok); }
+.stags { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; max-width:1000px; }
+.stag { display:inline-flex; align-items:center; gap:10px; height:52px; padding:0 18px 0 8px; border-radius:26px; font-size:16px; color:var(--fg); background:var(--raise2); box-shadow:0 0 0 1px var(--line); opacity:0; transform:translateY(10px) scale(.96); animation:tagIn .5s cubic-bezier(.2,.8,.2,1) forwards; transition:background .2s, box-shadow .2s, color .2s; white-space:nowrap; }
+@keyframes tagIn { to { opacity:1; transform:none; } }
+.stag b { font-weight:600; color:var(--needtx); font-variant-numeric:tabular-nums; font-size:14px; }
+.stag.need { background:var(--needbg); box-shadow:0 0 0 1px rgba(240,151,63,.35), 0 10px 30px -18px rgba(240,151,63,.6); }
+.stag.need:hover { box-shadow:0 0 0 1.5px var(--need), 0 14px 34px -16px rgba(240,151,63,.7); transform:translateY(-2px); }
+.stag.on { background:var(--fg); color:var(--bg); box-shadow:0 0 0 1.5px var(--need), 0 16px 36px -16px rgba(240,151,63,.75); } .stag.on b { color:var(--need); }
+.stag.done { background:none; color:var(--fg3); box-shadow:0 0 0 1px var(--line); } .stag.done b { color:var(--ok); }
+.stag.later { background:none; color:var(--fg3); box-shadow:0 0 0 1px dashed var(--line); } .stag.later b { color:var(--fg3); font-weight:500; }
+.stag.start { background:none; height:44px; font-size:14.5px; color:var(--fg2); } .stag.start:hover { color:var(--fg); background:var(--hover); }
+.sall { display:flex; align-items:center; gap:12px; font-size:17px; color:var(--fg3); min-height:40px; }
+.sall .b { height:38px; }
+.askbox { position:absolute; left:50%; bottom:32px; transform:translateX(-50%); width:min(560px, calc(100% - 40px)); height:52px; border-radius:26px; background:var(--raise2); box-shadow:0 0 0 1px var(--line), 0 14px 34px -24px rgba(0,0,0,.5); align-items:center; gap:10px; padding:0 7px 0 20px; color:var(--fg3); font-size:15px; z-index:25; }
+.askbox span { flex:1; } .askbox kbd { padding:3px 7px; border-radius:7px; background:var(--chip); } .askbox i { width:38px; height:38px; border-radius:50%; background:var(--fg); color:var(--bg); display:grid; place-items:center; font-style:normal; font-weight:600; }
+/* The one question on screen */
+.q { position:absolute; left:50%; bottom:28px; transform:translateX(-50%); width:min(640px, calc(100% - 40px)); z-index:25; }
+.card { border-radius:24px; background:var(--raise2); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:var(--s); padding:18px 20px 16px; transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .3s; }
+.card.need { box-shadow:0 0 0 1.5px rgba(240,151,63,.6), 0 30px 60px -30px rgba(240,151,63,.35); }
+.card.out { opacity:0; transform:translateY(12px) scale(.985); }
+.meta { display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--fg3); } .meta b { color:var(--fg2); font-weight:500; }
+.meta .stake { margin-left:auto; font-weight:600; padding:3px 10px; border-radius:99px; background:var(--needbg); color:var(--needtx); font-variant-numeric:tabular-nums; }
+.meta .stake.good { background:rgba(31,157,92,.14); color:#3ccf86; } :root:not([data-theme='dark']) .meta .stake.good { color:var(--ok); }
+.meta .of { font-size:11.5px; color:var(--fg3); margin-left:8px; font-variant-numeric:tabular-nums; }
+.say { font-size:clamp(18px, 1.9vw, 23px); letter-spacing:-.018em; line-height:1.34; margin:10px 0 0; }
+.say .w { display:inline-block; opacity:0; transform:translateY(5px); filter:blur(3px); animation:wIn .42s cubic-bezier(.2,.8,.2,1) forwards; white-space:pre; }
+@keyframes wIn { to { opacity:1; transform:none; filter:none; } }
+.say .ctx { color:var(--fg2); }
+.more { font-size:14px; color:var(--fg2); max-height:0; overflow:hidden; transition:max-height .35s, margin .35s; margin:0; } .more.open { max-height:90px; margin:8px 0 0; }
+.opts { display:flex; flex-wrap:wrap; gap:6px; max-height:0; overflow:hidden; transition:max-height .35s, margin .35s; } .opts.open { max-height:120px; margin:12px 0 0; }
+.opts button { height:32px; padding:0 13px; border-radius:16px; font-size:13px; background:var(--chip); color:var(--fg2); } .opts button.on { background:var(--fg); color:var(--bg); }
+.acts { display:flex; align-items:center; gap:8px; margin-top:14px; flex-wrap:wrap; } .acts .sp { flex:1; }
+.b { height:40px; padding:0 17px; border-radius:20px; font-size:14px; font-weight:500; display:inline-flex; align-items:center; gap:8px; transition:transform .12s; }
+.b:active { transform:scale(.97); } .b.p { background:var(--fg); color:var(--bg); } .b.s { background:var(--chip); color:var(--fg); } .b.t { color:var(--fg2); padding:0 8px; font-weight:400; }
+.b kbd { border:1px solid currentColor; border-radius:5px; padding:0 4px; opacity:.45; }
+.receipt { display:flex; align-items:center; gap:12px; margin-top:12px; } .receipt .ok { width:34px; height:34px; border-radius:50%; background:var(--ok); color:#fff; display:grid; place-items:center; font-size:17px; flex:none; animation:pop .5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes pop { from { transform:scale(.3); opacity:0; } }
+.receipt p { margin:0; font-size:17px; letter-spacing:-.01em; } .receipt small { display:block; color:var(--fg3); font-size:13px; }
+.work { display:flex; align-items:center; gap:12px; font-size:16px; margin-top:12px; } .work .bar2 { flex:1; height:4px; border-radius:2px; background:var(--line); overflow:hidden; } .work .bar2 i { display:block; height:100%; width:0; background:#8b90ff; border-radius:2px; }
+.steps { margin:12px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px; font-size:14px; color:var(--fg3); }
+.steps li { display:flex; align-items:center; gap:9px; } .steps li i { width:16px; height:16px; border-radius:50%; box-shadow:inset 0 0 0 1.5px var(--line); display:grid; place-items:center; font-size:9px; font-style:normal; flex:none; }
+.steps li.run { color:var(--fg); } .steps li.run i { box-shadow:inset 0 0 0 1.5px #8b90ff; } .steps li.ok { color:var(--fg2); } .steps li.ok i { background:var(--ok); color:#fff; box-shadow:none; }
+
+/* A place you opened from the sidebar: the real Cerebro V2.2, beside the sidebar */
+.pane { position:absolute; inset:0; z-index:35; background:var(--bg); opacity:0; pointer-events:none; transition:opacity .25s; }
+.pane.on { opacity:1; pointer-events:auto; } .pane iframe { position:relative; width:100%; height:100%; border:0; display:block; transition:opacity .25s; }
+.pane .load { position:absolute; inset:0; display:grid; place-items:center; color:var(--fg3); font-size:13px; pointer-events:none; }
+
+/* Zoom into an agent (from the orbit) */
+.zoom { position:absolute; right:16px; top:72px; bottom:16px; width:min(360px, calc(100% - 32px)); z-index:32; border-radius:24px; background:var(--raise2); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); box-shadow:var(--s); padding:18px 14px; display:flex; flex-direction:column; gap:4px; transform:translateX(calc(100% + 40px)); transition:transform .4s cubic-bezier(.2,.8,.2,1); overflow-y:auto; }
+.zoom.on { transform:none; }
+.dh { display:flex; align-items:center; gap:10px; padding:0 6px 8px; } .dh b { font-size:17px; font-weight:500; } .dh .x { margin-left:auto; width:32px; height:32px; border-radius:50%; background:var(--chip); color:var(--fg2); font-size:13px; display:grid; place-items:center; flex:none; }
+.moons { position:relative; height:190px; margin:4px 0; }
+.moons .mn { position:absolute; transform:translate(-50%,-50%); display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--fg2); white-space:nowrap; }
+.moons .mn i { width:9px; height:9px; border-radius:50%; background:var(--fg3); opacity:.6; } .moons .mn.hot { color:var(--fg); font-weight:500; } .moons .mn.hot i { background:#e0523f; opacity:1; box-shadow:0 0 0 4px rgba(224,82,63,.2); }
+.moons .ctr { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); }
+.kv { font-size:13.5px; padding:0 6px; } .kv div { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-top:1px solid var(--line); } .kv span { color:var(--fg3); } .kv b { font-weight:500; text-align:right; }
+.skills { display:flex; flex-wrap:wrap; gap:6px; padding:8px 6px; } .skills span { font-size:12px; padding:5px 10px; border-radius:99px; background:var(--chip); color:var(--fg2); }
+.dacts { display:flex; gap:8px; padding:8px 6px 0; flex-wrap:wrap; }
+
+/* ⌘K */
+.cmd { position:fixed; inset:0; z-index:60; display:none; align-items:flex-start; justify-content:center; padding-top:16vh; background:rgba(0,0,0,.35); }
+.cmd.on { display:flex; } .cmd .box { width:min(560px, calc(100vw - 32px)); border-radius:20px; background:var(--raise); box-shadow:var(--s); overflow:hidden; animation:pop .2s ease-out; }
+.cmd input { width:100%; height:56px; border:0; outline:0; background:none; font:inherit; font-size:17px; color:var(--fg); padding:0 20px; user-select:text; }
+.cmd .rs { border-top:1px solid var(--line); padding:6px; max-height:52vh; overflow-y:auto; }
+.cmd .rs button { width:100%; display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:12px; font-size:14px; } .cmd .rs button.hi { background:var(--chip); } .cmd .rs small { margin-left:auto; color:var(--fg3); font-size:12px; }
+
+.toast { position:fixed; left:calc(var(--SB) + (100vw - var(--SB)) / 2); top:76px; transform:translate(-50%,-14px); z-index:70; padding:9px 10px 9px 16px; border-radius:99px; background:var(--fg); color:var(--bg); font-size:13.5px; display:flex; align-items:center; gap:12px; opacity:0; transition:all .3s cubic-bezier(.2,.8,.2,1); pointer-events:none; }
+.toast.on { opacity:1; transform:translate(-50%,0); pointer-events:auto; } .toast button { color:var(--bg); opacity:.75; text-decoration:underline; text-underline-offset:3px; font-size:13px; padding:2px 6px; }
+
+/* Narrow screens: the sidebar slides in from a menu button */
+.menu { display:none; }
+@media (max-width:900px) {
+  :root { --SB:0px; } .sb { width:290px; transform:translateX(-100%); transition:transform .3s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 60px rgba(0,0,0,.4); }
+  body.sbo .sb { transform:none; } .menu { display:grid; } .money span.l { display:none; } .head h1 { font-size:32px; } .head { top:60px; left:18px; }
+}
+</style></head>
+<body>
+
+<aside class="sb" id="sb">
+  <div class="sbh" id="brand"><span>CEREBRO</span><span class="sp"></span></div>
+  <div class="tools"><button data-go="new"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New</button><button id="searchBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search <kbd>⌘K</kbd></button></div>
+  <div class="scroll" id="sbScroll"></div>
+  <div class="foot" id="foot"></div>
+</aside>
+
+<main class="main" id="main">
+  <div class="bar">
+    <button class="icon menu" id="menuBtn" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <span class="date">Friday, Nov 14</span><span class="modes" id="modes"><button data-mode="orbit">Orbit</button><button data-mode="surface">Surface</button></span>
+    <span class="sp"></span>
+    <span class="pill money"><i></i><span class="l">Back this month</span> <b id="money">$0.0k</b></span>
+    <button class="pill" id="talkBtn" title="Cerebro reads each question out loud (T)">Talk</button>
+    <button class="icon" id="themeBtn" title="Light or dark (D)"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button>
+  </div>
+  <div class="head" id="head"></div>
+  <section class="surface" id="surface"><div class="sface" id="sface"></div><h2 class="sgreet" id="sgreet"></h2><div class="stags" id="stags"></div><div class="sall" id="sall"></div></section>
+  <button class="askbox" id="askbox"><span>Say or type anything…</span><kbd>⌘K</kbd><i>↑</i></button>
+  <div class="stage" id="stage"><svg class="rings" id="rings"></svg></div>
+  <div class="q"><div class="tags" id="tags"></div><div class="card" id="card"></div></div>
+  <div class="zoom" id="zoom"></div>
+  <div class="pane" id="pane"><div class="load">Opening…</div><iframe id="frame" title="Cerebro"></iframe></div>
+</main>
+
+<div class="cmd" id="cmd"><div class="box"><input id="cmdIn" placeholder="Ask anything, or jump to a client, chat or agent…" autocomplete="off"><div class="rs" id="cmdRs"></div></div></div>
+<div class="toast" id="toast"><span id="toastT"></span><button id="toastU">Undo</button></div>
+
+<script>
+// ═══ Faces: V2.2's living faces (Stitch and Stickers), ported as is, plus eyes that look around ═══
+const faces = new Set()
+const isDark = () => document.documentElement.dataset.theme === 'dark'
+const hsla = (h, s, l, a = 1) => `hsla(${h},${s}%,${l}%,${a})`
+function rr(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath() }
+function drawStitch(f, t, W) {
+  const x = f.x, D = isDark(), s = f.state
+  const N = W > 90 ? 13 : W > 36 ? 9 : 5, cell = W / N, h = f.hue
+  const pk = Math.max(0, 1 - (t - f.poke) * 2)
+  x.fillStyle = D ? hsla(h, 35, 12) : hsla(h, 70, 95); rr(x, 0, 0, W, W, W * 0.3); x.fill()
+  x.save(); rr(x, 0, 0, W, W, W * 0.3); x.clip()
+  const br = (N / 2) * (0.64 + 0.05 * Math.sin(t * 2 + f.seed) + pk * 0.15)
+  // the eyes look where you are (or look around when you're still): up to one stitch each way
+  const gx = Math.round((f.lx - 0.5) * 2.2), gy = Math.round((f.ly - 0.5) * 1.6)
+  const ex = Math.round(N / 2 - N * 0.16 - 0.5) + gx, ex2 = Math.round(N / 2 + N * 0.16 - 0.5) + gx, ey = Math.round(N / 2 - N * 0.1 - 0.5) + gy
+  const blink = (t + f.seed) % 4 < 0.14
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const cx = (i + 0.5) * cell, cy = (j + 0.5) * cell
+    const dx = cx / W - f.px, dy = cy / W - f.py, dp = Math.hypot(dx, dy)
+    const push = f.hover * Math.max(0, 0.3 - dp) * W * 0.25
+    const ox = dp ? (dx / dp) * push : 0, oy = dp ? (dy / dp) * push : 0
+    const inside = Math.hypot(i + 0.5 - N / 2, j + 0.5 - N / 2) < br
+    const wave = 0.5 + 0.5 * Math.sin(i * 0.7 + j * 0.5 - t * (s === 'work' ? 4 : 1.4))
+    let l = (D ? 24 : 86) + (D ? 8 : -6) * wave, sat = 70, hue = h
+    if (inside) { l = D ? 60 + 6 * wave : 60 - 8 * wave; sat = 85 }
+    if (s === 'work' && Math.abs((i + j) / (2 * N) - ((t * 0.6) % 1.2 - 0.1)) < 0.08) l = D ? 82 : 46
+    if (s === 'need' && inside && Math.sin(t * 6) > 0) { hue = 38; sat = 95 }
+    if (inside && j === ey && (i === ex || i === ex2) && !blink) { l = D ? 8 : 14; sat = 20 }
+    if (inside && s === 'talk' && j === Math.round(N / 2 + N * 0.14) && Math.abs(i + 0.5 - N / 2) < N * 0.18 && Math.sin(t * 14 + i) > -0.2) { l = D ? 8 : 14 }
+    const sz = cell * (inside ? 0.86 : 0.7) * (1 + pk * 0.2 * Math.sin(t * 20 + i))
+    x.fillStyle = hsla(hue, sat, l)
+    rr(x, cx - sz / 2 + ox, cy - sz / 2 + oy, sz, sz, sz * 0.32); x.fill()
+  }
+  x.restore()
+}
+function drawSticker(f, t, W) {
+  const x = f.x, D = isDark(), s = f.state, h = f.hue, c = W / 2
+  const pk = Math.max(0, 1 - (t - f.poke) * 2.5)
+  const wig = f.hover * 0.12 * Math.sin(t * 12) + (s === 'need' ? 0.15 * Math.sin(t * 8) : 0) + (s === 'work' ? 0.04 * Math.sin(t * 6) : 0)
+  x.save(); x.translate(c, c + (s === 'need' ? -Math.abs(Math.sin(t * 5)) * W * 0.04 : 0)); x.rotate(wig); x.scale(1 + pk * 0.2, 1 - pk * 0.15)
+  const R = W * 0.37
+  x.beginPath()
+  if (f.shape === 'burst') { for (let k = 0; k <= 24; k++) { const a = (k / 24) * Math.PI * 2, r = k % 2 ? R * 0.82 : R; x.lineTo(Math.cos(a + t * (s === 'work' ? 1.2 : 0.3)) * r, Math.sin(a + t * (s === 'work' ? 1.2 : 0.3)) * r) } }
+  else if (f.shape === 'flower') { for (let k = 0; k < 5; k++) { const a = (k / 5) * Math.PI * 2 + t * (s === 'work' ? 1.4 : 0.4); x.moveTo(Math.cos(a) * R * 0.48 + R * 0.5, Math.sin(a) * R * 0.48); x.arc(Math.cos(a) * R * 0.48, Math.sin(a) * R * 0.48, R * 0.5, 0, 7) } }
+  else if (f.shape === 'star') { for (let k = 0; k <= 10; k++) { const a = (k / 10) * Math.PI * 2 - Math.PI / 2, r = k % 2 ? R * 0.58 : R * 1.05; x.lineTo(Math.cos(a) * r, Math.sin(a) * r) } }
+  else if (f.shape === 'window') rr(x, -R, -R * 0.9, R * 2, R * 1.8, R * 0.38)
+  else if (f.shape === 'circle') x.arc(0, 0, R, 0, 7)
+  else { for (let k = 0; k <= 48; k++) { const a = (k / 48) * Math.PI * 2, r = R * (1 + 0.08 * Math.sin(a * 4 + t * (s === 'work' ? 4 : 1))); x.lineTo(Math.cos(a) * r, Math.sin(a) * r) } }
+  x.closePath()
+  x.lineJoin = 'round'
+  x.lineWidth = Math.max(2.4, W * 0.08); x.strokeStyle = D ? 'rgba(255,255,255,.9)' : '#fff'
+  x.shadowColor = 'rgba(0,0,0,.2)'; x.shadowBlur = W * 0.05; x.shadowOffsetY = W * 0.025; x.stroke(); x.shadowBlur = 0; x.shadowOffsetY = 0
+  x.fillStyle = s === 'need' && Math.sin(t * 6) > 0.3 ? hsla(38, 90, 58) : hsla(h, 82, D ? 60 : 62)
+  x.fill()
+  if (f.shape === 'window') { x.fillStyle = 'rgba(255,255,255,.5)'; rr(x, -R * 0.72, -R * 0.66, R * 1.44, R * 0.17, R * 0.08); x.fill() }
+  const blink = (t + f.seed) % 3 < 0.12
+  const lx = (f.lx - 0.5) * R * 0.36, ly = (f.ly - 0.5) * R * 0.24
+  x.fillStyle = '#1b1830'
+  for (const sx of [-1, 1]) { x.beginPath(); x.ellipse(sx * R * 0.25 + lx, -R * 0.02 + ly, R * 0.085, blink ? R * 0.015 : s === 'need' ? R * 0.12 : R * 0.095, 0, 0, 7); x.fill() }
+  x.strokeStyle = '#1b1830'; x.lineWidth = Math.max(1, R * 0.08); x.lineCap = 'round'; x.beginPath()
+  if (s === 'talk') { x.ellipse(0, R * 0.3, R * 0.12, R * (0.05 + 0.08 * Math.abs(Math.sin(t * 11))), 0, 0, 7); x.fill() }
+  else if (s === 'work') { x.moveTo(-R * 0.12, R * 0.3); x.lineTo(R * 0.12, R * 0.26); x.stroke() }
+  else if (s === 'need') { x.arc(0, R * 0.32, R * 0.07, 0, 7); x.fill() }
+  else { x.arc(0, R * 0.14, R * 0.17, 0.2 * Math.PI, 0.8 * Math.PI); x.stroke() }
+  x.restore()
+}
+const DPR = Math.min(2, devicePixelRatio || 1)
+let PX = -1, PY = -1, lastMove = -9
+addEventListener('pointermove', (e) => { PX = e.clientX; PY = e.clientY; lastMove = performance.now() / 1000 })
+/** A living face. state: idle | work | need | talk */
+function makeFace(a, size, state = 'idle') {
+  const c = document.createElement('canvas'); c.className = 'face'; c.width = c.height = Math.round(size * DPR); c.style.width = c.style.height = size + 'px'
+  const f = { c, x: c.getContext('2d'), kind: a.kind, hue: a.hue, shape: a.shape || 'blob', state, px: 0.5, py: 0.5, lx: 0.5, ly: 0.5, hover: 0, hv: 0, poke: -9, seed: Math.random() * 100 }
+  c.addEventListener('pointermove', (e) => { const r = c.getBoundingClientRect(); f.px = (e.clientX - r.left) / r.width; f.py = (e.clientY - r.top) / r.height; f.hv = 1 })
+  c.addEventListener('pointerleave', () => { f.hv = 0; f.px = 0.5; f.py = 0.5 })
+  c.addEventListener('pointerdown', () => { f.poke = performance.now() / 1000 })
+  c._f = f; faces.add(f)
+  return c
+}
+// Where the eyes go: at your cursor while you move; when you're still, a slow look-around (left, right, up, back).
+const LOOK = [[0.5, 0.5], [0.1, 0.45], [0.9, 0.5], [0.5, 0.18]]
+function faceLoop() {
+  const t = performance.now() / 1000, idle = t - lastMove > 2.5
+  for (const f of faces) {
+    if (!f.c.isConnected) { if (t - (f.born ?? (f.born = t)) > 1) faces.delete(f); continue }
+    const W = f.c.width; f.hover += (f.hv - f.hover) * 0.12
+    let tx = 0.5, ty = 0.5
+    if (!idle && PX >= 0) { const r = f.c.getBoundingClientRect(), dx = PX - (r.left + r.width / 2), dy = PY - (r.top + r.height / 2), d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 260); tx = 0.5 + (dx / d) * 0.5 * m; ty = 0.5 + (dy / d) * 0.5 * m }
+    else { const p = (t * 0.22 + f.seed) % 4, k = Math.floor(p), fr = p - k, P = LOOK[k], Q = LOOK[(k + 1) % 4], e = fr < 0.75 ? 0 : (fr - 0.75) / 0.25; tx = P[0] + (Q[0] - P[0]) * e; ty = P[1] + (Q[1] - P[1]) * e }
+    f.lx += (tx - f.lx) * 0.14; f.ly += (ty - f.ly) * 0.14
+    f.x.clearRect(0, 0, W, W)
+    if (f.kind === 'stitch') drawStitch(f, t, W); else drawSticker(f, t, W)
+  }
+  requestAnimationFrame(faceLoop)
+}
+requestAnimationFrame(faceLoop)
+
+
+const AGENTS = [
+  { id: 'cerebro', name: 'Cerebro', role: 'Main · runs your day, hands work to the team', kind: 'stitch', hue: 250, skills: ['Morning brief', 'Hands off to the team', 'Remembers for you'], week: '61 things overnight' },
+  { id: 'ads', name: 'Ads agent', role: 'Runs ads and billing', kind: 'sticker', hue: 22, shape: 'burst', skills: ['Resume paused ads', 'Switch expired cards', 'Budget alerts'], week: '3 campaigns resumed', moons: [['Harbor Dental', 1], ['Lumen Spa'], ['Peak Fitness'], ['Smile Studio'], ['Glow Med Spa']] },
+  { id: 'sites', name: 'Sites agent', role: 'Builds and fixes websites and funnels', kind: 'sticker', hue: 172, shape: 'window', skills: ['Build a site', 'Landing pages', 'Repair widgets'], week: 'Lumen site refreshed', moons: [['Peak Fitness', 1], ['Lumen Spa'], ['Harbor Dental'], ['Glow Med Spa']] },
+  { id: 'marketing', name: 'Marketing agent', role: 'Campaigns, emails and texts', kind: 'sticker', hue: 330, shape: 'flower', skills: ['Plan a campaign', 'Write in each client’s voice', 'Schedule sends'], week: '36 messages drafted', moons: [['12 dental clients'], ['Lumen Spa'], ['Glow Med Spa']] },
+  { id: 'reputation', name: 'Reputation agent', role: 'Reviews and replies', kind: 'sticker', hue: 42, shape: 'star', skills: ['Reply to reviews', 'Flag 1–2★', 'Ask happy patients'], week: '41 replies sent', moons: [['Harbor Dental'], ['Lumen Spa'], ['Peak Fitness'], ['Smile Studio']] },
+  { id: 'voice', name: 'Voice agent', role: 'Answers calls and texts back', kind: 'sticker', hue: 140, shape: 'circle', skills: ['Missed-call text-back', 'Book by phone', 'After-hours'], week: '61 missed calls covered', moons: [['14 clinics', 1], ['Pearl Dental Studio'], ['Smile Studio']] },
+  { id: 'onboard', name: 'Onboarding agent', role: 'Sets up new clients', kind: 'stitch', hue: 265, skills: ['Import contacts', 'Media kit', 'Calendars'], week: '1 client set up', moons: [['Glow Med Spa']] },
+  { id: 'reporting', name: 'Reporting agent', role: 'Numbers, reports and risk', kind: 'stitch', hue: 205, skills: ['Client reports', 'Who needs attention', 'Churn risk'], week: '36 reports ready', moons: [['1,284 clients']] },
+  { id: 'social', name: 'Social agent', role: 'Posts and content', kind: 'sticker', hue: 300, shape: 'blob', skills: ['Draft posts', 'Pick best photos', 'Schedule'], week: '12 posts drafted', moons: [['Lumen Spa'], ['Glow Med Spa']] },
+]
+const JOBS = [
+  { id: 'harbor', agent: 'ads', title: 'Harbor ads paused', client: 'Harbor Dental', stake: '−$2.4k/mo', back: 2.4, say: 'Harbor’s ads stopped on Tuesday. The card on file expired.', ask: 'Switch to the new Visa ••4411?', more: 'They added it last week. Spend stays at $640 a week, and the 3 campaigns pick up where they left off.', yes: 'Switch card', opts: [['Visa ••4411', 'Switch to the new Visa ••4411?'], ['Mastercard ••2290', 'Switch to the Mastercard ••2290?'], ['Ask Harbor for a card', 'Text Dr. Chen a secure link for a new card?']], steps: ['Open Harbor Dental', 'Replace the card', 'Resume 3 campaigns', 'Check the first impressions'], done: 'Harbor’s ads are live again.', sub: 'Visa ••4411 · 3 campaigns resumed · $2.4k a month back', audio: 'har' },
+  { id: 'peak', agent: 'sites', title: 'Booking widget down', client: 'Peak Fitness', stake: '−$1.6k/mo', back: 1.6, say: 'Peak Fitness’s booking widget broke on Sunday night. No bookings since.', ask: 'Repair it now?', more: 'A site update removed the calendar embed. I’ll put it back and run a test booking.', yes: 'Repair it', opts: [['Last working version', 'Repair it now?'], ['Friday’s version', 'Put back Friday’s version?']], steps: ['Find what broke', 'Put the calendar back', 'Make a test booking'], done: 'The widget works again.', sub: 'A test booking went through · Marco knows · $1.6k a month back', audio: 'peak' },
+  { id: 'calls', agent: 'voice', title: 'Missed calls after 5 PM', client: '14 clinics', stake: '+18% missed', back: 2.0, say: 'Calls after 5 PM go unanswered at 14 clinics. Missed calls are up 18% this month.', ask: 'Set up a text-back from each clinic’s number?', more: 'Each clinic texts back within a minute from its own number and books straight into the calendar. No extra cost.', yes: 'Set it up', opts: [['After 5 PM', 'Set up a text-back from each clinic’s number?'], ['After 6 PM', 'Text back missed calls after 6 PM?'], ['All day', 'Text back every missed call, all day?']], steps: ['Write a text in each clinic’s voice', 'Connect 14 numbers', 'Turn it on tonight'], done: 'Text-back goes live at 14 clinics tonight.', sub: '61 callers a week get a text in a minute · ~$2.0k a month back', audio: 'calls' },
+]
+const STARTS = [
+  { id: 'glow', agent: 'onboard', title: 'Onboard Glow Med Spa', client: 'Glow Med Spa', stake: 'Signed yesterday', good: 1, back: 0, say: 'Glow Med Spa signed yesterday. I can set them up across five tools: contacts, site, media kit, automations and calendars.', ask: 'Start now?', more: 'It takes about 5 minutes. I’ll stop and ask when I need a decision.', yes: 'Start', opts: [], steps: ['Import 2,140 contacts', 'Build the site in sage and cream', 'Media kit', 'Automations', 'Calendars'], done: 'Glow Med Spa is set up.', sub: 'Site, contacts, calendars and automations are live', audio: 'glow' },
+  { id: 'bf', agent: 'marketing', title: 'Black Friday in 24 days', client: '12 dental clients', stake: '6.1% last year', good: 1, back: 0, say: 'Black Friday is 24 days out. Last year’s offer converted 6.1% across your dental clients.', ask: 'Draft a campaign for your 12 dental clients?', more: 'Free whitening with a cleaning did best. Two emails and a text, each in the clinic’s voice. Nothing sends until you approve.', yes: 'Draft it', opts: [['Free whitening', 'Draft a campaign for your 12 dental clients?'], ['20% off a cleaning', 'Draft “20% off a cleaning” for 12 clinics?']], steps: ['Pick the offer', 'Choose 2,140 patients', 'Write 2 emails and a text', 'Hold for your review'], done: 'Black Friday is drafted for 12 clinics.', sub: 'Waiting for your review · sends Nov 24', audio: 'bf' },
+]
+const ALLJ = [...JOBS, ...STARTS]
+const CHANNELS = ['harbor-dental', 'glow-med-spa', 'peak-fitness', 'lumen-spa']
+const PAST = [['p1', 'Glow Med Spa signed', 'Yesterday'], ['p2', 'Q4 pricing page', 'Yesterday'], ['p3', 'Why did Lumen dip?', 'Yesterday'], ['p4', 'Review replies · 41 sent', 'Last week']]
+
+const ag = (id) => AGENTS.find((a) => a.id === id)
+const svg = { now: '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>', mem: '<svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-1zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/></svg>' }
+
+// ═══ State ═══
+const S = { list: [...JOBS], job: JOBS[0], phase: 'ask', done: [], later: [], opt: {}, more: false, change: false, talk: false, shown: 0, place: 'now', zoom: null }
+const RING = { need: 0.46, work: 0.73, idle: 1, done: 0.73 }
+const state = { ads: 'need', sites: 'need', voice: 'need', marketing: 'work', reporting: 'idle', reputation: 'idle', onboard: 'idle', social: 'idle' }
+const prog = { marketing: 0.62 }
+const cur = () => S.job
+const needN = () => JOBS.filter((j) => !S.done.includes(j.id) && !S.later.includes(j)).length
+const backTotal = () => S.done.reduce((s, id) => s + (ALLJ.find((j) => j.id === id)?.back ?? 0), 0)
+const brand = document.getElementById('brand'); brand.prepend(makeFace(ag('cerebro'), 24))
+
+// ═══ Sidebar ═══
+const sc = document.getElementById('sbScroll'), foot = document.getElementById('foot')
+function face(id, size, st) { const f = makeFace(ag(id), size, st); return f }
+function drawSide() {
+  const n = needN(), y = sc.scrollTop
+  sc.innerHTML = ''
+  const now = document.createElement('button'); now.className = 'it' + (S.place === 'now' ? ' on' : ''); now.dataset.place = 'now'
+  now.innerHTML = `<span class="ic">${svg.now}</span><span class="t">Now</span>${n ? `<em>${n}</em>` : '<small>All clear</small>'}`
+  sc.append(now)
+  const row = (j, cls, st) => {
+    const b = document.createElement('button'); b.className = `nrow ${cls}${S.place === 'now' && S.job === j && S.phase !== 'clear' ? ' on' : ''}`; b.dataset.job = j.id
+    b.append(face(j.agent, 28, cls === 'need' ? 'need' : 'idle'))
+    b.insertAdjacentHTML('beforeend', `<span class="tx"><b>${j.title}</b><small>${j.client}${st ? ` · <span class="st">${st}</span>` : ''}</small></span>`)
+    return b
+  }
+  // AI team: faces you can open
+  sc.insertAdjacentHTML('beforeend', '<div class="sec">AI team<button data-go="new" title="New agent">+</button></div>')
+  const tm = document.createElement('div'); tm.className = 'team'
+  AGENTS.slice(0, 10).forEach((a) => { const b = document.createElement('button'); b.dataset.place = `agent-${a.id}`; if (S.place === b.dataset.place) b.classList.add('on'); b.append(face(a.id, 26, a.id !== 'cerebro' && state[a.id] === 'need' ? 'need' : 'idle')); b.insertAdjacentHTML('beforeend', `<span>${a.name.replace(' agent', '').replace('Reputation', 'Reviews').replace('Onboarding', 'Onboard').replace('Reporting', 'Reports')}</span>${a.id !== 'cerebro' && state[a.id] === 'need' ? '<i></i>' : ''}`); tm.append(b) })
+  sc.append(tm)
+  sc.insertAdjacentHTML('beforeend', `<div class="sec">Channels<button data-go="new" title="New channel">+</button></div>${CHANNELS.map((c) => `<button class="it${S.place === `ch-${c}` ? ' on' : ''}" data-place="ch-${c}"><span class="hash">#</span><span class="t">${c}</span></button>`).join('')}`)
+  sc.insertAdjacentHTML('beforeend', `<div class="sec">Today</div>${ALLJ.filter((j) => S.done.includes(j.id)).map((j) => `<button class="it${S.place === j.id ? ' on' : ''}" data-place="${j.id}"><span class="t">${j.title}</span><small style="color:var(--ok)">✓</small></button>`).join('') || '<div style="padding:4px 10px;font-size:12.5px;color:var(--fg3)">Chats you finish today show up here.</div>'}`)
+  ;['Yesterday', 'Last week'].forEach((w) => sc.insertAdjacentHTML('beforeend', `<div class="sec">${w}</div>${PAST.filter((p) => p[2] === w).map((p) => `<button class="it${S.place === p[0] ? ' on' : ''}" data-place="${p[0]}"><span class="t">${p[1]}</span></button>`).join('')}`))
+  sc.scrollTop = y
+  foot.innerHTML = `<button class="it${S.place === 'memory' ? ' on' : ''}" data-place="memory"><span class="ic">${svg.mem}</span><span class="t">Memory</span><span class="rev">3 to review</span></button>
+    <div class="me"><span class="av">KA</span><span><b>Karthik AJ</b><small>Acme Agency · 1,284 clients</small></span></div>`
+}
+document.getElementById('sb').addEventListener('click', (e) => {
+  const g = e.target.closest('[data-go]'); if (g) return go(g.dataset.go)
+  const j = e.target.closest('[data-job]')
+  if (j) { const x = ALLJ.find((y) => y.id === j.dataset.job); if (S.done.includes(x.id)) return go(x.id); goNow(); if (S.phase !== 'work') { S.later = S.later.filter((y) => y !== x); S.list = [x, ...S.list.filter((y) => y !== x)]; show(x) } return closeSb() }
+  const p = e.target.closest('[data-place]'); if (!p) return
+  if (p.dataset.place === 'now') { goNow(); return closeSb() }
+  go(p.dataset.place)
+})
+function closeSb() { document.body.classList.remove('sbo') }
+document.getElementById('menuBtn').addEventListener('click', () => document.body.classList.toggle('sbo'))
+
+// ═══ Places: the real Cerebro V2.2, opened beside the sidebar ═══
+const pane = document.getElementById('pane'), frameEl = document.getElementById('frame')
+function go(place) {
+  S.place = place; closeZoom(); stopVoice(); closeSb()
+  frameEl.style.opacity = '0'
+  frameEl.onload = () => setTimeout(() => (frameEl.style.opacity = '1'), 200)
+  frameEl.src = `../v22/?bare=1&go=${encodeURIComponent(place)}&theme=${document.documentElement.dataset.theme}`
+  pane.classList.add('on'); drawSide()
+}
+function goNow() { if (S.place === 'now') return; S.place = 'now'; pane.classList.remove('on'); setTimeout(() => { if (S.place === 'now') frameEl.src = 'about:blank' }, 300); drawSide() }
+
+// ═══ Headline ═══
+const head = document.getElementById('head')
+function drawHead() {
+  const n = needN(), stake = JOBS.filter((j) => !S.done.includes(j.id)).reduce((s, j) => s + j.back, 0)
+  head.innerHTML = n ? `<h1><b>${n} ${n === 1 ? 'thing needs' : 'things need'}</b> you.</h1><p><b>$${stake.toFixed(1)}k a month</b> at stake. The rest is handled.</p>`
+    : `<h1><b class="ok">All clear,</b> Karthik.</h1><p>$${backTotal().toFixed(1)}k a month back today${S.later.length ? `, ${S.later.length} saved for later` : ''}.</p>`
+}
+
+// ═══ Orbit ═══
+const stage = document.getElementById('stage'), rings = document.getElementById('rings'), main = document.getElementById('main')
+const nodes = {}, orbiters = AGENTS.filter((a) => a.id !== 'cerebro')
+orbiters.forEach((a, i) => {
+  const el = document.createElement('div'); el.className = 'ag'; el.dataset.id = a.id
+  const fw = document.createElement('div'); fw.className = 'fw'; const cv = makeFace(a, 60, state[a.id])
+  fw.append(cv); fw.insertAdjacentHTML('beforeend', `<svg class="prog" viewBox="0 0 50 50"><circle class="bg" cx="25" cy="25" r="22"/><circle class="fg" cx="25" cy="25" r="22" stroke-dasharray="138.2" stroke-dashoffset="138.2"/></svg><span class="chk">✓</span>`)
+  el.append(fw); el.insertAdjacentHTML('beforeend', `<span class="nm">${a.name.replace(' agent', '')}</span>`)
+  el.addEventListener('click', () => openZoom(a.id)); stage.append(el)
+  nodes[a.id] = { el, f: cv._f, ang: (i / orbiters.length) * Math.PI * 2 + 0.4, r: RING[state[a.id]], spd: 0.028 + (i % 3) * 0.006 }
+})
+const core = document.createElement('div'); core.className = 'core'; const coreFace = makeFace(ag('cerebro'), 124); core.append(coreFace); core.insertAdjacentHTML('beforeend', '<small>Cerebro</small>')
+core.addEventListener('click', () => openZoom('cerebro')); stage.append(core)
+const lbls = ['Needs you', 'Working', 'Idle'].map((t, i) => { const s = document.createElement('span'); s.className = 'ringlbl' + (i ? '' : ' n'); s.textContent = t; stage.append(s); return s })
+const K = 0.6 // how tall the orbit is (1 = a circle)
+function geo() {
+  const w = main.clientWidth, h = main.clientHeight
+  const top = 150, bottom = h - 250
+  const cx = w / 2, cy = (top + bottom) / 2 + 8
+  const R = Math.max(110, Math.min(w * 0.4, ((bottom - top) / 2 - 36) / K, 440))
+  return { cx, cy, R }
+}
+let last = performance.now()
+function frame(t) {
+  const dt = Math.min(0.05, (t - last) / 1000); last = t
+  if (S.place === 'now') {
+    const { cx, cy, R } = geo(), j = cur(), n = j && S.phase === 'ask' ? nodes[j.agent] : null
+    rings.innerHTML = `<ellipse class="g1" cx="${cx}" cy="${cy}" rx="${R * RING.need}" ry="${R * RING.need * K}"/>` + [RING.need, RING.work, RING.idle].map((f, i) => `<ellipse class="r${i + 1}" cx="${cx}" cy="${cy}" rx="${R * f}" ry="${R * f * K}"/>`).join('') + (n?.x ? `<path class="tether" d="M${n.x} ${n.y} Q${(cx + n.x) / 2} ${(cy + n.y) / 2 - 40} ${cx} ${cy}"/>` : '')
+    lbls.forEach((l, i) => { const f = [RING.need, RING.work, RING.idle][i]; l.style.left = cx + 'px'; l.style.top = cy - R * f * K + 'px' })
+    core.style.left = cx + 'px'; core.style.top = cy + 'px'
+    for (const a of orbiters) {
+      const o = nodes[a.id], st = state[a.id]
+      o.r += ((RING[st] ?? 1) - o.r) * Math.min(1, dt * 2.2)
+      o.ang += o.spd * dt * (st === 'need' ? 0.5 : 1)
+      const x = cx + Math.cos(o.ang) * R * o.r, y = cy + Math.sin(o.ang) * R * o.r * K
+      const depth = (Math.sin(o.ang) + 1) / 2, sc2 = (0.76 + depth * 0.32) * (st === 'need' ? 1.18 : 1)
+      o.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${sc2})`
+      o.el.style.zIndex = Math.round(depth * 100) + (Math.sin(o.ang) > 0 ? 60 : 0)
+      o.el.style.opacity = st === 'need' ? 1 : 0.45 + depth * 0.55
+      o.x = x; o.y = y; o.f.state = st === 'done' ? 'idle' : st
+      o.el.classList.toggle('need', st === 'need'); o.el.classList.toggle('work', st === 'work'); o.el.classList.toggle('done', st === 'done')
+      if (prog[a.id] != null) o.el.querySelector('.prog .fg').setAttribute('stroke-dashoffset', 138.2 * (1 - prog[a.id]))
+    }
+  }
+  requestAnimationFrame(frame)
+}
+requestAnimationFrame(frame)
+
+// ═══ The question card ═══
+const card = document.getElementById('card')
+const words = (text, cls, delay = 0) => text.split(/(\s+)/).map((w, i) => (w.trim() ? `<span class="w ${cls}" style="animation-delay:${delay + i * 0.02}s">${w}</span>` : w)).join('')
+function money() {
+  const target = backTotal(), el = document.getElementById('money'), from = S.shown, t0 = performance.now()
+  const tick = () => { const p = Math.min(1, (performance.now() - t0) / 900), v = from + (target - from) * (1 - Math.pow(1 - p, 3)); el.textContent = `$${v.toFixed(1)}k`; if (p < 1) setTimeout(tick, 30); else S.shown = target }
+  tick()
+}
+function ofN(j) { const i = JOBS.indexOf(j); return i < 0 ? '' : `<span class="of">${JOBS.filter((x) => S.done.includes(x.id)).length + 1} of ${JOBS.length}</span>` }
+const metaFor = (j, right) => `<div class="meta"><span class="mf" data-agent="${j.agent}"></span><b>${ag(j.agent).name}</b> · ${j.client}${right}</div>`
+function mountFaces(root, st) { root.querySelectorAll('.mf').forEach((m) => m.replaceWith(makeFace(ag(m.dataset.agent), 22, st))) }
+function render(anim = true) {
+  const j = cur()
+  card.classList.add('out')
+  setTimeout(() => {
+    card.classList.toggle('need', S.phase === 'ask' && !!j && !j.good)
+    if (S.phase === 'clear') {
+      const lt = S.later[0]
+      card.innerHTML = `<div class="meta"><span class="mf" data-agent="cerebro"></span><b>Cerebro</b><span class="stake good">${lt ? `${S.later.length} for later` : 'All clear'}</span></div>
+        <div class="say">${words(lt ? `${lt.title} is waiting in Later.` : 'Nothing needs you. Want to start something?', '')}</div>
+        <div class="acts">${lt ? `<button class="b p" data-job="${lt.id}">Do it now</button>` : ''}${STARTS.filter((n) => !S.done.includes(n.id)).map((n) => `<button class="b s" data-job="${n.id}">${n.id === 'glow' ? 'Onboard Glow Med Spa' : 'Draft Black Friday'}</button>`).join('')}</div>`
+      mountFaces(card, 'idle')
+    } else if (S.phase === 'work') {
+      card.innerHTML = `${metaFor(j, '<span class="stake good">Working</span>')}<div class="work">${ag(j.agent).name} is on it<span class="bar2"><i id="wbar"></i></span></div><ul class="steps">${j.steps.map((s) => `<li><i></i>${s}</li>`).join('')}</ul>`
+      mountFaces(card, 'work')
+    } else if (S.phase === 'receipt') {
+      const sub = j.id === 'harbor' && S.opt.harbor ? j.sub.replace('Visa ••4411', j.opts[S.opt.harbor][0]) : j.sub
+      card.innerHTML = `${metaFor(j, '<span class="stake good">Done</span>')}<div class="receipt"><span class="ok">✓</span><p>${j.done}<small>${sub}</small></p></div>
+        <div class="acts"><button class="b p" data-k="next">${S.list.length ? 'Next' : 'Finish'} <kbd>↵</kbd></button><button class="b s" data-k="undo">Undo</button><span class="sp"></span><button class="b t" data-place="${j.id}">Open the chat</button></div>`
+      mountFaces(card, 'idle')
+    } else {
+      const o = S.opt[j.id] ?? 0, ask = j.opts[o]?.[1] ?? j.ask
+      card.innerHTML = `${metaFor(j, `<span class="stake${j.good ? ' good' : ''}">${j.stake}</span>`)}
+        <div class="say">${words(j.say, 'ctx')} ${words(ask, '', j.say.split(' ').length * 0.02 + 0.12)}</div>
+        <p class="more${S.more ? ' open' : ''}">${j.more}</p>
+        ${j.opts.length ? `<div class="opts${S.change ? ' open' : ''}">${j.opts.map((x, i) => `<button class="${i === o ? 'on' : ''}" data-opt="${i}">${x[0]}</button>`).join('')}</div>` : ''}
+        <div class="acts"><button class="b p" data-k="yes">${j.yes} <kbd>Y</kbd></button>${j.opts.length ? '<button class="b s" data-k="change">Change <kbd>C</kbd></button>' : ''}<button class="b s" data-k="later">Not now <kbd>N</kbd></button><span class="sp"></span><button class="b t" data-k="more">${S.more ? 'Less' : 'Why?'}</button><button class="b t" data-place="${j.id}">Chat</button></div>`
+      mountFaces(card, j.good ? 'idle' : 'need')
+      if (S.talk) speak(j)
+    }
+    card.classList.remove('out')
+  }, anim ? 220 : 0)
+  drawHead(); drawSide(); drawTags(); drawSurface()
+}
+
+// ═══ Tags: the jobs, the one on screen selected ═══
+const tags = document.getElementById('tags')
+function drawTags() {
+  const on = S.phase !== 'clear' ? S.job : null
+  const tag = (j, cls, right) => `<button class="tag ${cls}${j === on ? ' on' : ''}" data-tag="${j.id}"><span class="mf" data-agent="${j.agent}"></span>${j.title}${right ? ` <b>${right}</b>` : ''}</button>`
+  tags.innerHTML = JOBS.map((j) => (S.done.includes(j.id) ? tag(j, 'done', '✓') : S.later.includes(j) ? tag(j, 'later', 'Later') : tag(j, 'need', j.stake.replace('/mo', '').replace(' missed', '')))).join('')
+    + '<span class="tagsep"></span>' + STARTS.map((j) => tag(j, S.done.includes(j.id) ? 'done' : 'start', S.done.includes(j.id) ? '✓' : '')).join('')
+  tags.querySelectorAll('.mf').forEach((m) => { const id = m.closest('[data-tag]').dataset.tag, j = ALLJ.find((x) => x.id === id); m.replaceWith(makeFace(ag(m.dataset.agent), 24, JOBS.includes(j) && !S.done.includes(id) && !S.later.includes(j) ? 'need' : 'idle')) })
+  tags.querySelector('.tag.on')?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+}
+tags.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-tag]'); if (!t || S.phase === 'work') return
+  const j = ALLJ.find((x) => x.id === t.dataset.tag)
+  if (S.done.includes(j.id)) return go(j.id)
+  S.later = S.later.filter((x) => x !== j); S.list = [j, ...S.list.filter((x) => x !== j)]; show(j)
+})
+
+// ═══ Doing the job ═══
+let lastDone = null
+function show(j) { S.job = j; S.phase = j ? 'ask' : 'clear'; S.more = false; S.change = false; if (j) state[j.agent] = 'need'; if (!j && S.talk) play('g-clear'); render() }
+function yes() {
+  const j = cur(); if (!j || S.phase !== 'ask' || S.place !== 'now') return
+  stopVoice(); S.phase = 'work'; S.list = S.list.filter((x) => x !== j)
+  state[j.agent] = 'work'; prog[j.agent] = 0; render()
+  const T = 700 * j.steps.length + 500; let t0 = 0
+  const run = () => {
+    const t = performance.now(); if (!t0) t0 = t
+    const p = Math.min(1, (t - t0) / T); prog[j.agent] = p
+    const bar = document.getElementById('wbar'); if (bar) bar.style.width = p * 100 + '%'
+    card.querySelectorAll('.steps li').forEach((li, i) => { const a = i / j.steps.length, b = (i + 1) / j.steps.length; li.className = p >= b ? 'ok' : p >= a ? 'run' : ''; li.querySelector('i').textContent = p >= b ? '✓' : '' })
+    if (p < 1) return setTimeout(run, 40)
+    state[j.agent] = 'done'; delete prog[j.agent]; S.done.push(j.id); S.phase = 'receipt'; lastDone = j.id
+    money(); render(); if (S.talk) play(`g-${j.audio}-done`)
+    if (S.auto) setTimeout(() => { if (S.phase !== 'receipt') return; const nx = S.list.find((x) => JOBS.includes(x)); if (!nx) { S.auto = false; return show(S.list[0]) } S.list = [nx, ...S.list.filter((x) => x !== nx)]; show(nx); setTimeout(yes, 700) }, 1100)
+    setTimeout(() => { if (state[j.agent] === 'done') { state[j.agent] = 'idle'; drawSide() } }, 2600)
+  }
+  setTimeout(run, 300)
+}
+function next() { if (S.phase === 'receipt') show(S.list[0]) }
+function later() {
+  const j = cur(); if (!j || S.phase !== 'ask') return
+  stopVoice(); S.list = S.list.filter((x) => x !== j); S.later.push(j); state[j.agent] = 'idle'
+  toast(`Later: ${j.title}`, () => { S.later = S.later.filter((x) => x !== j); S.list.unshift(j); show(j) })
+  show(S.list[0])
+}
+function undo() {
+  const id = lastDone; if (!id) return
+  const j = ALLJ.find((x) => x.id === id); S.done = S.done.filter((x) => x !== id); lastDone = null; S.list.unshift(j); money(); show(j); toast('Undone. It’s back on your list.')
+}
+card.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return
+  if (b.dataset.opt != null) { S.opt[cur().id] = +b.dataset.opt; S.change = false; return render(false) }
+  if (b.dataset.job) { const x = ALLJ.find((y) => y.id === b.dataset.job); S.later = S.later.filter((y) => y !== x); S.list = [x, ...S.list.filter((y) => y !== x)]; return show(x) }
+  if (b.dataset.place) return go(b.dataset.place)
+  const k = b.dataset.k
+  if (k === 'yes') yes(); else if (k === 'later') later(); else if (k === 'next') next(); else if (k === 'undo') undo()
+  else if (k === 'more') { S.more = !S.more; card.querySelector('.more')?.classList.toggle('open', S.more); b.textContent = S.more ? 'Less' : 'Why?' }
+  else if (k === 'change') { S.change = !S.change; card.querySelector('.opts')?.classList.toggle('open', S.change) }
+})
+
+// ═══ Zoom into an agent: its clients circle it like moons ═══
+const zoom = document.getElementById('zoom')
+function openZoom(id) {
+  const a = ag(id); S.zoom = id
+  const job = JOBS.find((j) => j.agent === id && !S.done.includes(j.id))
+  const st = id === 'cerebro' ? `${needN()} need you` : { need: 'Needs you', work: 'Working', idle: 'Idle', done: 'Just finished' }[state[id]]
+  const moons = a.moons ?? AGENTS.filter((x) => x.id !== 'cerebro').map((x) => [x.name.replace(' agent', ''), state[x.id] === 'need' ? 1 : 0])
+  zoom.innerHTML = `<div class="dh"><span class="mf"></span><span><b>${a.name}</b><br><small style="color:var(--fg3);font-size:13px">${a.role}</small></span><button class="x" data-x>✕</button></div>
+    <div class="moons" id="moons"><svg viewBox="0 0 340 190" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><ellipse cx="170" cy="95" rx="136" ry="74" fill="none" stroke="var(--ring)"/><ellipse cx="170" cy="95" rx="84" ry="45" fill="none" stroke="var(--ring)"/></svg><div class="ctr"></div></div>
+    <div class="kv"><div><span>Right now</span><b>${st}</b></div><div><span>This week</span><b>${a.week}</b></div>${job && state[id] === 'need' ? `<div><span>Waiting on you</span><b style="color:var(--needtx)">${job.client} · ${job.stake}</b></div>` : ''}</div>
+    <div class="skills">${a.skills.map((s) => `<span>${s}</span>`).join('')}</div>
+    <div class="dacts">${job && state[id] === 'need' ? `<button class="b p" data-job="${job.id}">${job.yes} for ${job.client}</button>` : ''}<button class="b s" data-place="agent-${id}">Open chat</button></div>`
+  zoom.querySelector('.dh .mf').replaceWith(makeFace(a, 40, state[id] ?? 'idle'))
+  zoom.querySelector('.ctr').append(makeFace(a, 64, state[id] ?? 'idle'))
+  const m = zoom.querySelector('#moons')
+  const els = moons.map(([name, hot], i) => { const s = document.createElement('span'); s.className = 'mn' + (hot && (id === 'cerebro' || state[id] === 'need') ? ' hot' : ''); s.innerHTML = `<i></i>${name}`; m.append(s); return { s, ang: (i / moons.length) * Math.PI * 2 } })
+  const place = () => { const w = m.clientWidth || 330; els.forEach((o, i) => { const r = i % 2 ? 0.4 : 0.25; o.s.style.left = w / 2 + Math.cos(o.ang) * w * r + 'px'; o.s.style.top = 95 + Math.sin(o.ang) * 190 * r * 0.8 + 'px' }) }
+  place(); const spin = () => { if (S.zoom !== id || !m.isConnected) return; els.forEach((o) => (o.ang += 0.003)); place(); requestAnimationFrame(spin) }; requestAnimationFrame(spin)
+  zoom.classList.add('on')
+}
+function closeZoom() { zoom.classList.remove('on'); S.zoom = null }
+zoom.addEventListener('click', (e) => {
+  if (e.target.closest('[data-x]')) return closeZoom()
+  const p = e.target.closest('[data-place]'); if (p) return go(p.dataset.place)
+  const j = e.target.closest('[data-job]'); if (j && S.phase !== 'work') { closeZoom(); const x = ALLJ.find((y) => y.id === j.dataset.job); S.list = [x, ...S.list.filter((y) => y !== x)]; show(x) }
+})
+
+// ═══ ⌘K ═══
+const cmd = document.getElementById('cmd'), cmdIn = document.getElementById('cmdIn'), cmdRs = document.getElementById('cmdRs')
+const CMDS = () => [
+  ...ALLJ.map((j) => ({ label: j.client, sub: j.title, f: j.agent, go: () => { if (S.done.includes(j.id)) return go(j.id); goNow(); if (S.phase === 'work') return; S.later = S.later.filter((x) => x !== j); S.list = [j, ...S.list.filter((x) => x !== j)]; show(j) } })),
+  ...AGENTS.map((a) => ({ label: a.name, sub: a.role, f: a.id, go: () => go(`agent-${a.id}`) })),
+  ...PAST.map((p) => ({ label: p[1], sub: `Chat · ${p[2]}`, f: 'cerebro', go: () => go(p[0]) })),
+  ...CHANNELS.map((c) => ({ label: `#${c}`, sub: 'Channel', f: 'cerebro', go: () => go(`ch-${c}`) })),
+  { label: 'Memory', sub: 'What Cerebro remembers', f: 'cerebro', go: () => go('memory') },
+  { label: '3 learnings to review', sub: 'Memory', f: 'cerebro', go: () => go('review') },
+]
+let hi = 0
+function openCmd() { cmd.classList.add('on'); cmdIn.value = ''; hi = 0; drawCmd(); setTimeout(() => cmdIn.focus(), 10) }
+function drawCmd() {
+  const q = cmdIn.value.toLowerCase(), all = CMDS(), rs = all.filter((c) => !q || (c.label + ' ' + c.sub).toLowerCase().includes(q)).slice(0, 8)
+  cmdRs.innerHTML = rs.length ? rs.map((c, i) => `<button class="${i === hi ? 'hi' : ''}" data-i="${all.indexOf(c)}"><span class="mf" data-agent="${c.f}"></span>${c.label}<small>${c.sub}</small></button>`).join('') : `<button class="hi"><span class="mf" data-agent="cerebro"></span>Ask Cerebro: “${cmdIn.value}”<small>↵</small></button>`
+  cmdRs.querySelectorAll('.mf').forEach((m) => m.replaceWith(makeFace(ag(m.dataset.agent), 22)))
+}
+cmdIn.addEventListener('input', () => { hi = 0; drawCmd() })
+cmdRs.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; cmd.classList.remove('on'); if (b.dataset.i) CMDS()[+b.dataset.i].go(); else go('new') })
+cmd.addEventListener('click', (e) => { if (e.target === cmd) cmd.classList.remove('on') })
+cmdIn.addEventListener('keydown', (e) => {
+  const bs = [...cmdRs.querySelectorAll('button')]
+  if (e.key === 'ArrowDown') { hi = Math.min(bs.length - 1, hi + 1); drawCmd(); e.preventDefault() } else if (e.key === 'ArrowUp') { hi = Math.max(0, hi - 1); drawCmd(); e.preventDefault() }
+  else if (e.key === 'Enter') bs[hi]?.click(); else if (e.key === 'Escape') cmd.classList.remove('on')
+})
+document.getElementById('searchBtn').addEventListener('click', openCmd)
+
+// ═══ Talk: V2.2's recorded voice ═══
+let audio = null
+function stopVoice() { if (audio) { audio.pause(); audio = null } coreFace._f.state = 'idle' }
+function play(name, then) {
+  if (audio) audio.pause()
+  audio = new Audio(`../audio/${name}.m4a`); coreFace._f.state = 'talk'
+  audio.onended = () => { coreFace._f.state = 'idle'; then?.() }; audio.onerror = () => { coreFace._f.state = 'idle'; then?.() }
+  audio.play().catch(() => (coreFace._f.state = 'idle'))
+}
+function speak(j) { play(`g-${j.audio}-say`, () => S.talk && cur() === j && S.phase === 'ask' && play(`g-${j.audio}-ask`)) }
+function toggleTalk() { S.talk = !S.talk; document.getElementById('talkBtn').classList.toggle('on', S.talk); if (S.talk && S.phase === 'ask' && S.place === 'now') speak(cur()); else stopVoice() }
+document.getElementById('talkBtn').addEventListener('click', toggleTalk)
+
+// ═══ Bits ═══
+let toastT = 0, undoFn = null
+function toast(t, u) { const el = document.getElementById('toast'); document.getElementById('toastT').textContent = t; undoFn = u; document.getElementById('toastU').style.display = u ? '' : 'none'; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 3200) }
+document.getElementById('toastU').addEventListener('click', () => { undoFn?.(); undoFn = null; document.getElementById('toast').classList.remove('on') })
+function theme(t) { document.documentElement.dataset.theme = t; try { localStorage.setItem('presence-theme2', t) } catch {} ; if (S.place !== 'now') go(S.place) }
+document.getElementById('themeBtn').addEventListener('click', () => theme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'))
+try { document.documentElement.dataset.theme = localStorage.getItem('presence-theme2') || 'dark' } catch {}
+addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); return openCmd() }
+  if (cmd.classList.contains('on') || e.metaKey || e.ctrlKey || e.altKey) return
+  if (e.key === 'Escape') { if (S.zoom) return closeZoom(); if (S.place !== 'now') return goNow() }
+  if (S.place !== 'now') return
+  const k = e.key.toLowerCase()
+  if (k === 'y') yes(); else if (k === 'n') later(); else if (k === 'enter') next(); else if (k === 't') toggleTalk(); else if (k === 'd') document.getElementById('themeBtn').click()
+  else if (k === 'c' && S.phase === 'ask') card.querySelector('[data-k="change"]')?.click()
+})
+// ═══ Surface: one line from Cerebro, the jobs as tags ═══
+const surf = { face: document.getElementById('sface'), greet: document.getElementById('sgreet'), tags: document.getElementById('stags'), all: document.getElementById('sall') }
+surf.face.append(makeFace(ag('cerebro'), 92))
+let lastSig = ''
+function drawSurface() {
+  const n = needN(), W = ['No', 'One', 'Two', 'Three'], on = S.phase !== 'clear' ? S.job : null
+  surf.greet.innerHTML = n ? `Morning, Karthik. <b>${W[n] ?? n} thing${n === 1 ? '' : 's'}</b> need${n === 1 ? 's' : ''} you.` : `<b class="ok">All clear,</b> Karthik.${backTotal() ? ` $${backTotal().toFixed(1)}k a month is back.` : ''}`
+  // tags only animate in when the set changes, not on every click
+  const sig = JOBS.map((j) => j.id + (S.done.includes(j.id) ? 'd' : S.later.includes(j) ? 'l' : '')).join() + STARTS.map((j) => (S.done.includes(j.id) ? 'd' : '')).join()
+  const fresh = sig !== lastSig; lastSig = sig
+  const tag = (j, cls, right, i) => `<button class="stag ${cls}${j === on ? ' on' : ''}" data-tag="${j.id}" style="${fresh ? `animation-delay:${0.08 + i * 0.07}s` : 'animation:none;opacity:1;transform:none'}"><span class="mf" data-agent="${j.agent}"></span>${j.title}${right ? ` <b>${right}</b>` : ''}</button>`
+  const needs = JOBS.map((j, i) => (S.done.includes(j.id) ? tag(j, 'done', '✓', i) : S.later.includes(j) ? tag(j, 'later', 'Later', i) : tag(j, 'need', j.stake.replace('/mo', '').replace(' missed', ''), i))).join('')
+  const starts = STARTS.map((j, i) => tag(j, S.done.includes(j.id) ? 'done' : 'start', S.done.includes(j.id) ? '✓' : '', JOBS.length + i)).join('')
+  surf.tags.innerHTML = needs + `<span style="flex-basis:100%;height:0"></span>` + starts
+  surf.tags.querySelectorAll('.mf').forEach((m) => { const id = m.closest('[data-tag]').dataset.tag, j = ALLJ.find((x) => x.id === id), hot = JOBS.includes(j) && !S.done.includes(id) && !S.later.includes(j); m.replaceWith(makeFace(ag(m.dataset.agent), hot ? 36 : 28, hot ? 'need' : 'idle')) })
+  surf.all.innerHTML = n > 1 && S.phase === 'ask' && !S.auto ? `Want me to take all ${W[n]?.toLowerCase() ?? n}? <button class="b p" data-all>Take all ${n}</button>` : S.auto ? 'Working through them one by one…' : ''
+}
+surf.tags.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-tag]'); if (!t || S.phase === 'work') return
+  const j = ALLJ.find((x) => x.id === t.dataset.tag)
+  if (S.done.includes(j.id)) return go(j.id)
+  S.later = S.later.filter((x) => x !== j); S.list = [j, ...S.list.filter((x) => x !== j)]; show(j)
+})
+surf.all.addEventListener('click', (e) => { if (!e.target.closest('[data-all]')) return; S.auto = true; const nx = JOBS.find((j) => !S.done.includes(j.id) && !S.later.includes(j)); if (nx) { S.list = [nx, ...S.list.filter((x) => x !== nx)]; show(nx); setTimeout(yes, 600) } })
+document.getElementById('askbox').addEventListener('click', openCmd)
+// Orbit or Surface, remembered
+function setMode(m) { S.mode = m; document.body.dataset.mode = m; document.querySelectorAll('#modes button').forEach((b) => b.classList.toggle('on', b.dataset.mode === m)); try { localStorage.setItem('presence-mode', m) } catch {} }
+document.getElementById('modes').addEventListener('click', (e) => { const b = e.target.closest('[data-mode]'); if (b) { if (S.place !== 'now') goNow(); setMode(b.dataset.mode) } })
+try { setMode(localStorage.getItem('presence-mode') || 'orbit') } catch { setMode('orbit') }
+render(false)
+</script>
+</body></html>
